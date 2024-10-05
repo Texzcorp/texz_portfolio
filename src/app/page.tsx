@@ -1,11 +1,36 @@
 import React from 'react';
 
-import { Heading, Flex, Text, Button,  Avatar, RevealFx } from '@/once-ui/components';
+import { Heading, Icon, IconButton, SmartImage, Flex, Tag, Text, Button,  Avatar, RevealFx } from '@/once-ui/components';
 import { Projects } from '@/app/work/components/Projects';
 
-import { about, baseURL, home, newsletter, person, routes } from '@/app/resources'
+import { about, baseURL, social, home, newsletter, person, routes } from '@/app/resources'
 import { Mailchimp } from '@/app/components';
 import { Posts } from '@/app/blog/components/Posts';
+import TableOfContents from '@/app/about/components/TableOfContents';
+import styles from '@/app/about/about.module.scss'
+
+const structure = [
+    { 
+        title: about.intro.title,
+        display: about.intro.display,
+        items: []
+    },
+    { 
+        title: about.work.title,
+        display: about.work.display,
+        items: about.work.experiences.map(experience => experience.company)
+    },
+    { 
+        title: about.studies.title,
+        display: about.studies.display,
+        items: about.studies.institutions.map(institution => institution.name)
+    },
+    { 
+        title: about.technical.title,
+        display: about.technical.display,
+        items: about.technical.skills.map(skill => skill.title)
+    },
+]
 
 export function generateMetadata() {
 	const title = home.title;
@@ -63,6 +88,28 @@ export default function Home() {
 					}),
 				}}
 			/>
+			<script
+                type="application/ld+json"
+                suppressHydrationWarning
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        '@context': 'https://schema.org',
+                        '@type': 'Person',
+                        name: person.name,
+                        jobTitle: person.role,
+                        description: about.intro.description,
+                        url: `https://${baseURL}/about`,
+                        image: `${baseURL}/images/${person.avatar}`,
+                        sameAs: social
+                            .filter((item) => item.link && !item.link.startsWith('mailto:')) // Filter out empty links and email links
+                            .map((item) => item.link),
+                        worksFor: {
+                            '@type': 'Organization',
+                            name: about.work.experiences[0].company || ''
+                        },
+                    }),
+                }}
+            />
 			<Flex
 				fillWidth
 				direction="column"
@@ -121,38 +168,20 @@ export default function Home() {
 			{ newsletter.display &&
 				<Mailchimp/>
 			}
-		</Flex>
-	);
-}
 
-export default function About() {
-    return (
-        <Flex
-            fillWidth maxWidth="m"
-            direction="column">
-            <script
-                type="application/ld+json"
-                suppressHydrationWarning
-                dangerouslySetInnerHTML={{
-                    __html: JSON.stringify({
-                        '@context': 'https://schema.org',
-                        '@type': 'Person',
-                        name: person.name,
-                        jobTitle: person.role,
-                        description: about.intro.description,
-                        url: `https://${baseURL}/about`,
-                        image: `${baseURL}/images/${person.avatar}`,
-                        sameAs: social
-                            .filter((item) => item.link && !item.link.startsWith('mailto:')) // Filter out empty links and email links
-                            .map((item) => item.link),
-                        worksFor: {
-                            '@type': 'Organization',
-                            name: about.work.experiences[0].company || ''
-                        },
-                    }),
-                }}
-            />
-            { about.tableOfContent.display && (
+
+
+
+
+
+
+
+
+
+
+
+
+			{ about.tableOfContent.display && (
                 <Flex
                     style={{ left: '0', top: '50%', transform: 'translateY(-50%)' }}
                     position="fixed"
@@ -270,6 +299,10 @@ export default function About() {
                         </Flex>
                     )}
 
+					<RevealFx translateY="16" delay={0.6}>
+						<Projects range={[1,1]}/>
+					</RevealFx>
+
                     { about.work.display && (
                         <>
                             <Heading
@@ -347,6 +380,13 @@ export default function About() {
                             </Flex>
                         </>
                     )}
+
+					{routes['/blog'] && (
+						<Flex fillWidth paddingX="20">
+							<Posts range={[1,2]} columns="2"/>
+						</Flex>
+					)}
+					<Projects range={[2,2]}/>
 
                     { about.studies.display && (
                         <>
@@ -437,3 +477,34 @@ export default function About() {
         </Flex>
     );
 }
+
+// 		</Flex>
+// 	);
+// }
+// export default function About() {
+//     return (
+//         <Flex
+//             fillWidth maxWidth="m"
+//             direction="column">
+            // <script
+            //     type="application/ld+json"
+            //     suppressHydrationWarning
+            //     dangerouslySetInnerHTML={{
+            //         __html: JSON.stringify({
+            //             '@context': 'https://schema.org',
+            //             '@type': 'Person',
+            //             name: person.name,
+            //             jobTitle: person.role,
+            //             description: about.intro.description,
+            //             url: `https://${baseURL}/about`,
+            //             image: `${baseURL}/images/${person.avatar}`,
+            //             sameAs: social
+            //                 .filter((item) => item.link && !item.link.startsWith('mailto:')) // Filter out empty links and email links
+            //                 .map((item) => item.link),
+            //             worksFor: {
+            //                 '@type': 'Organization',
+            //                 name: about.work.experiences[0].company || ''
+            //             },
+            //         }),
+            //     }}
+            // />
