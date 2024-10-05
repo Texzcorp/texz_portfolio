@@ -96,6 +96,14 @@ export const Header = () => {
                             <Flex paddingX="2" hide="s">{work.label}</Flex>
                         </ToggleButton>
                     )}
+                    { routes['/music'] && (
+                        <ToggleButton
+                            prefixIcon="grid"
+                            href="/music"
+                            selected={pathname.startsWith('/music')}>
+                            <Flex paddingX="2" hide="s">{music.label}</Flex>
+                        </ToggleButton>
+                    )}
                     { routes['/blog'] && (
                         <ToggleButton
                             prefixIcon="book"
