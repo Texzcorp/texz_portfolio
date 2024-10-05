@@ -49,26 +49,19 @@ import {
     SiCss3,
     SiDocker,
     SiKubernetes,
-    SiNodeDotJs,
     SiElectron,
     SiVuedotjs,
     SiSass,
     SiAdobe,
     SiBlender,
     SiFigma,
-    SiFinaldraft
 } from "react-icons/si"; // Icons for software dev, arts, writing, and experimental projects
 
 import {
-    GiGamepad,
-    GiConsoleController,
     GiMusicalNotes,
     GiDrumKit,
-    GiElectricGuitar,
     GiPianoKeys,
     GiMicrophone,
-    GiLevelEndFlag,
-    GiJoystick,
     GiPaintBrush,
     GiFilmProjector,
     GiArtificialHive,
@@ -78,13 +71,10 @@ import {
 
 import {
     MdOutlineMusicNote,
-    MdCode,
-    MdDeveloperBoard,
     MdMusicNote,
     MdQueueMusic,
     MdBrush,
     MdPalette,
-    MdExperiment,
     MdLightbulbOutline,
     MdOutlineEdit,
     MdOutlineDescription,
@@ -97,9 +87,7 @@ import {
     TbMusic,
     TbMusicOff,
     TbNotes,
-    TbMusicNote,
     TbMusicCode,
-    TbQuill,
     TbBook,
     TbScript,
     TbHome,
@@ -153,7 +141,6 @@ export const iconLibrary: Record<string, IconType> = {
     css: SiCss3,
     docker: SiDocker,
     kubernetes: SiKubernetes,
-    node: SiNodeDotJs,
     electron: SiElectron,
     vue: SiVuedotjs,
     sass: SiSass,
@@ -164,7 +151,6 @@ export const iconLibrary: Record<string, IconType> = {
     queueMusic: MdQueueMusic,
     musicalNotes: GiMusicalNotes,
     drumKit: GiDrumKit,
-    guitar: GiElectricGuitar,
     piano: GiPianoKeys,
     microphone: GiMicrophone,
     musicAlt: TbMusic,
@@ -182,18 +168,15 @@ export const iconLibrary: Record<string, IconType> = {
     figma: SiFigma,
 
     // Nouveaux icônes pour les projets expérimentaux
-    experiment: MdExperiment,
     lightbulb: MdLightbulbOutline,
     testTubes: GiTestTubes,
     artificialHive: GiArtificialHive,
 
     // Nouveaux icônes pour l'écriture, narrative design, et scénarisation
-    quill: TbQuill,
     feather: GiFeather,
-    book: MdBook,
+    bookv: MdBook,
     description: MdOutlineDescription,
     edit: MdOutlineEdit,
-    finalDraft: SiFinaldraft,
     script: TbScript,
     narrativeDesign: TbBook,
 
