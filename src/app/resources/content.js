@@ -173,7 +173,7 @@ const work = {
 }
 
 const music = {
-    label: 'music',
+    label: 'Music',
     title: 'My musics',
     description: `Design and dev projects by ${person.name}`
     // Create new project pages by adding a new .mdx file to app/blog/posts

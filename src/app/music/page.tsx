@@ -32,7 +32,7 @@ export function generateMetadata() {
 	};
 }
 
-export default function music() {
+export default function Music() {
     let allProjects = getPosts(['src', 'app', 'music', 'projects']);
 
     return (
@@ -55,7 +55,7 @@ export default function music() {
                             name: person.name,
                         },
                         hasPart: allProjects.map(project => ({
-                            '@type': 'Creativemusic',
+                            '@type': 'CreativeMusic',
                             headline: project.metadata.title,
                             description: project.metadata.summary,
                             url: `https://${baseURL}/projects/${project.slug}`,
