@@ -90,7 +90,7 @@ export const Header = () => {
                     )}
                     { routes['/work'] && (
                         <ToggleButton
-                            prefixIcon="grid"
+                            prefixIcon="hioutlinecodebracket"
                             href="/work"
                             selected={pathname.startsWith('/work')}>
                             <Flex paddingX="2" hide="s">{work.label}</Flex>
@@ -98,18 +98,10 @@ export const Header = () => {
                     )}
                     { routes['/music'] && (
                         <ToggleButton
-                            prefixIcon="grid"
+                            prefixIcon="musicnotelight"
                             href="/music"
                             selected={pathname.startsWith('/music')}>
                             <Flex paddingX="2" hide="s">{music.label}</Flex>
-                        </ToggleButton>
-                    )}
-                    { routes['/blog'] && (
-                        <ToggleButton
-                            prefixIcon="book"
-                            href="/blog"
-                            selected={pathname.startsWith('/blog')}>
-                            <Flex paddingX="2" hide="s">{blog.label}</Flex>
                         </ToggleButton>
                     )}
                     { routes['/gallery'] && (
@@ -118,6 +110,14 @@ export const Header = () => {
                             href="/gallery"
                             selected={pathname.startsWith('/gallery')}>
                             <Flex paddingX="2" hide="s">{gallery.label}</Flex>
+                        </ToggleButton>
+                    )}
+                    { routes['/blog'] && (
+                        <ToggleButton
+                            prefixIcon="book"
+                            href="/blog"
+                            selected={pathname.startsWith('/blog')}>
+                            <Flex paddingX="2" hide="s">{blog.label}</Flex>
                         </ToggleButton>
                     )}
                     { routes['/experimentalproj'] && (
