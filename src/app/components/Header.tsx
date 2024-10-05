@@ -90,7 +90,7 @@ export const Header = () => {
                     )}
                     { routes['/work'] && (
                         <ToggleButton
-                            prefixIcon="hioutlinecodebracket"
+                            prefixIcon="outlinecodebracket"
                             href="/work"
                             selected={pathname.startsWith('/work')}>
                             <Flex paddingX="2" hide="s">{work.label}</Flex>
@@ -98,7 +98,7 @@ export const Header = () => {
                     )}
                     { routes['/music'] && (
                         <ToggleButton
-                            prefixIcon="musicnotelight"
+                            prefixIcon="musicnote"
                             href="/music"
                             selected={pathname.startsWith('/music')}>
                             <Flex paddingX="2" hide="s">{music.label}</Flex>
