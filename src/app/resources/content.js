@@ -157,23 +157,31 @@ const about = {
 }
 
 const blog = {
-    label: 'Blog',
-    title: 'Writing about design and tech...',
+    label: 'Writing & Narrative Design',
+    title: 'Experiences in Narration & Scriptwriting',
     description: `Read what ${person.name} has been up to recently`
     // Create new blog posts by adding a new .mdx file to app/blog/posts
     // All posts will be listed on the /blog route
 }
 
 const work = {
-    label: 'Work',
-    title: 'My projects',
+    label: 'Video Games & Programming',
+    title: 'My video Games & programming projects',
     description: `Design and dev projects by ${person.name}`
     // Create new project pages by adding a new .mdx file to app/blog/posts
     // All projects will be listed on the /home and /work routes
 }
 
+const experimentalproj = {
+    label: 'Experimental projects',
+    title: 'Experimental projects I worked on',
+    description: `Experimental projects by ${person.name}`
+    // Create new project pages by adding a new .mdx file to app/blog/posts
+    // All projects will be listed on the /home and /work routes
+}
+
 const music = {
-    label: 'Music',
+    label: 'Music Production',
     title: 'My musics',
     description: `Design and dev projects by ${person.name}`
     // Create new project pages by adding a new .mdx file to app/blog/posts
@@ -181,7 +189,7 @@ const music = {
 }
 
 const gallery = {
-    label: 'Gallery',
+    label: 'Visual Arts',
     title: 'My photo gallery',
     description: `A photo collection by ${person.name}`,
     // Images from https://pexels.com
@@ -259,4 +267,4 @@ const gallery = {
     ]
 }
 
-export { person, social, newsletter, home, about, blog, work, music, gallery };
+export { person, social, newsletter, home, about, blog, work, music, gallery, experimentalproj };
