@@ -1,11 +1,13 @@
 import { MDXRemote, MDXRemoteProps } from 'next-mdx-remote/rsc';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, DetailedHTMLProps, AudioHTMLAttributes } from 'react';
 
 import { SmartImage, SmartLink, Text } from '@/once-ui/components';
 import { HeadingLink } from '@/app/components';
 
 import { TextProps } from '@/once-ui/interfaces';
 import { SmartImageProps } from '@/once-ui/components/SmartImage';
+import MusicPlayer from '@/app/components/MusicPlayer'; // Assurez-vous que le chemin est correct
+
 
 type TableProps = {
     data: {
@@ -121,6 +123,11 @@ function createParagraph({ children }: TextProps) {
     );
 };
 
+const AudioComponent = (props: DetailedHTMLProps<AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement>) => {
+    // Utiliser MusicPlayer avec les props attendues
+    return <MusicPlayer src={props.src || ''} />;
+};
+
 const components = {
     p: createParagraph as any,
     h1: createHeading(1) as any,
@@ -132,6 +139,8 @@ const components = {
     img: createImage as any,
     a: CustomLink as any,
     Table,
+    // Nouveau composant pour la musique
+    audio: AudioComponent, // Utiliser AudioComponent ici avec les bons types
 };
 
 type CustomMDXProps = MDXRemoteProps & {

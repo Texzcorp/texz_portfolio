@@ -1,6 +1,6 @@
 import { getPosts } from '@/app/utils';
 import { Flex } from '@/once-ui/components';
-import { Projects } from '@/app/work/components/Projects';
+import { Projects } from '@/app/music/components/Projects';
 import { baseURL, person, music } from '../resources';
 
 export function generateMetadata() {

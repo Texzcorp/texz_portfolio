@@ -9,6 +9,11 @@ type Team = {
     linkedIn: string;
 };
 
+type Music = {
+    src: string;
+    title: string;
+};
+
 type Metadata = {
     title: string;
     publishedAt: string;
@@ -16,6 +21,8 @@ type Metadata = {
     image?: string;
     images: string[];
     team: Team[];
+    mainMusic?: Music;          // Modification pour la musique principale
+    extraMusics?: Music[];      // Modification pour les musiques supplémentaires
 };
 
 function getMDXFiles(dir: string) {
@@ -34,12 +41,25 @@ function readMDXFile(filePath: string) {
     const rawContent = fs.readFileSync(filePath, 'utf-8');
     const { data, content } = matter(rawContent);
 
+    // Vérification pour convertir les chaînes en objets avec src et title
+    const mainMusic: Music | undefined = typeof data.mainMusic === 'string'
+        ? { src: data.mainMusic, title: 'Musique principale' }
+        : data.mainMusic;
+
+    const extraMusics: Music[] = (data.extraMusics || []).map((music: string | Music) =>
+        typeof music === 'string'
+            ? { src: music, title: 'Musique supplémentaire' }
+            : music
+    );
+
     const metadata: Metadata = {
         title: data.title || '',
         publishedAt: data.publishedAt,
         summary: data.summary || '',
         images: data.images || [],
         team: data.team || [],
+        mainMusic,               // Gestion de la musique principale en objet
+        extraMusics,             // Gestion des musiques supplémentaires en objets
     };
 
     return { metadata, content };

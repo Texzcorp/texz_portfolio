@@ -2,6 +2,7 @@
 
 import { AvatarGroup, Flex, Heading, RevealFx, SmartImage, SmartLink, Text } from "@/once-ui/components";
 import { useEffect, useState } from "react";
+import MusicPlayer from './MusicPlayer'; // Import du lecteur audio
 
 interface ProjectCardProps {
     href: string;
@@ -10,6 +11,8 @@ interface ProjectCardProps {
     content: string;
     description: string;
     avatars: { src: string }[];
+    mainMusic?: string; // Ajouter la musique principale
+    extraMusics?: string[]; // Ajouter les musiques supplémentaires
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -18,7 +21,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     title,
     content,
     description,
-    avatars
+    avatars,
+    mainMusic, // Prop pour la musique principale
+    extraMusics, // Prop pour les musiques supplémentaires
 }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
@@ -146,6 +151,27 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                             </SmartLink>
                         )}
                     </Flex>
+                )}
+                
+                {/* Section Musique */}
+                {mainMusic && (
+                    <div>
+                        <Text variant="body-default-s">Écouter la musique principale :</Text>
+                        <MusicPlayer src={mainMusic} />
+                    </div>
+                )}
+
+                {extraMusics && extraMusics.length > 0 && (
+                    <div>
+                        <Text variant="body-default-s">Autres musiques :</Text>
+                        <ul>
+                            {extraMusics.map((music, index) => (
+                                <li key={index}>
+                                    <a href={music}>Musique {index + 1}</a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 )}
             </Flex>
         </Flex>

@@ -1,0 +1,8 @@
+@media (--m) {
+    .project-image {
+        display: none;  /* Masquer l'image en mode mobile */
+    }
+    .icon-image {
+        display: inline-block;  /* Afficher l'icône à gauche du titre */
+    }
+}
