@@ -56,38 +56,42 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
             let currentScrollInfluence = 0;
 
             const drawVerticalFluidWaves = () => {
-                const waveCount = 5;
-                const baseAmplitude = 50; 
-                const baseFrequency = 0.001;
-                const waveSpeed = 0.003;
-
+                const waveCount = 7; // Nombre d'ondes pour plus de richesse visuelle
+                const baseAmplitude = 80;
+                const baseFrequency = 0.0005;
+                const waveSpeed = 0.0025;
+            
                 const pageHeight = Math.max(document.body.scrollHeight, window.innerHeight);
-                // Calculer la nouvelle valeur de scrollInfluence
                 targetScrollInfluence = Math.sin(window.scrollY * 0.002) * 100;
-
-                // Appliquer une interpolation lente entre l'influence actuelle et la cible
-                const smoothingFactor = 0.05; // Plus la valeur est basse, plus l'interpolation est lente
+            
+                const smoothingFactor = 0.05;
                 currentScrollInfluence = lerp(currentScrollInfluence, targetScrollInfluence, smoothingFactor);
-
+            
                 for (let i = 0; i < waveCount; i++) {
-                    // Amplitude influencée par l'effet lissé du scroll
-                    const amplitude = baseAmplitude + currentScrollInfluence + i * 3 + (mouseY / h) * 0.1;
-                    const frequency = baseFrequency + (i * 0.101) + (mouseX / w) * 0.004;
-
-                    const color = `hsla(${Math.sin(t * 1.05 + i) * 180 + 180}, 100%, 70%, 0.2)`;
+                    const amplitude = baseAmplitude + currentScrollInfluence + i * 4 + (mouseY / h) * 0.2;
+                    const frequency = baseFrequency + (i * 0.05) + (mouseX / w) * 0.008;
+            
+                    const color = `hsla(${Math.sin(t * 0.0001 + i) * 180 + 180}, 100%, 70%, ${0.2 + (i * 0.05)})`;
                     ctx.beginPath();
-                    ctx.lineWidth = 3;
+                    ctx.lineWidth = 2 + (i * 0.2);
+            
+                    // Ajout de l'effet néon "baveux"
+                    ctx.shadowBlur = 20; // Le flou de l'ombre pour simuler la lumière diffuse
+                    ctx.shadowColor = color; // Couleur de l'ombre, identique à celle des ondes pour l'effet néon
+                    ctx.shadowOffsetX = 0; // Aucune déviation horizontale
+                    ctx.shadowOffsetY = 0; // Aucune déviation verticale
                     ctx.strokeStyle = color;
-                    ctx.globalAlpha = 0.4 + (i * 0.1);
-
-                    const controlPoints = 8;
+            
+                    ctx.globalAlpha = 0.3 + (i * 0.1);
+            
+                    const controlPoints = 10;
                     let previousY = 0, previousX = w / 2;
-
+            
                     for (let y = 0; y <= pageHeight; y += pageHeight / controlPoints) {
-                        const mouseEffect = Math.sin((y - mouseY) * 0.0075) * (mouseX / w) * 15;
-
+                        const mouseEffect = Math.sin((y - mouseY) * 0.01) * (mouseX / w) * 25;
+            
                         const x = w / 2 + Math.sin((y * frequency) + (t * waveSpeed) + (i * Math.PI / 2)) * (amplitude + mouseEffect);
-
+            
                         if (y === 0) {
                             ctx.moveTo(x, y);
                         } else {
@@ -101,7 +105,12 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                     ctx.stroke();
                 }
                 ctx.globalAlpha = 1;
+            
+                // Réinitialiser l'effet d'ombre pour ne pas l'appliquer à d'autres éléments
+                ctx.shadowBlur = 0;
+                ctx.shadowColor = 'transparent';
             };
+            
        
 
             const animate = () => {
