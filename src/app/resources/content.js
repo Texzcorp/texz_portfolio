@@ -195,74 +195,74 @@ const gallery = {
     // Images from https://pexels.com
     images: [
         { 
-            src: '/images/gallery/img-01.jpg', 
+            src: '/images/gallery/img (1).png', 
             alt: 'image',
             orientation: 'vertical'
         },
         { 
-            src: '/images/gallery/img-02.jpg', 
+            src: '/images/gallery/img (14).png', 
             alt: 'image',
-            orientation: 'horizontal'
+            orientation: 'square'
         },
         { 
-            src: '/images/gallery/img-03.jpg', 
+            src: '/images/gallery/img (3).png', 
             alt: 'image',
             orientation: 'vertical'
         },
         { 
-            src: '/images/gallery/img-04.jpg', 
+            src: '/images/gallery/img (10).png', 
             alt: 'image',
-            orientation: 'horizontal'
+            orientation: 'square'
         },
         { 
-            src: '/images/gallery/img-05.jpg', 
+            src: '/images/gallery/img (4).png', 
             alt: 'image',
-            orientation: 'horizontal'
+            orientation: 'square'
         },
         { 
-            src: '/images/gallery/img-06.jpg', 
+            src: '/images/gallery/img (6).png', 
+            alt: 'image',
+            orientation: 'square'
+        },
+        { 
+            src: '/images/gallery/img (5).png', 
+            alt: 'image',
+            orientation: 'square'
+        },
+        { 
+            src: '/images/gallery/img (7).png', 
             alt: 'image',
             orientation: 'vertical'
         },
         { 
-            src: '/images/gallery/img-07.jpg', 
+            src: '/images/gallery/img (8).png', 
+            alt: 'image',
+            orientation: 'square'
+        },
+        { 
+            src: '/images/gallery/img (12).png', 
             alt: 'image',
             orientation: 'horizontal'
         },
         { 
-            src: '/images/gallery/img-08.jpg', 
+            src: '/images/gallery/img (9).png', 
             alt: 'image',
             orientation: 'vertical'
         },
         { 
-            src: '/images/gallery/img-09.jpg', 
+            src: '/images/gallery/img (11).png', 
+            alt: 'image',
+            orientation: 'square'
+        },
+        { 
+            src: '/images/gallery/img (13).png', 
             alt: 'image',
             orientation: 'horizontal'
         },
         { 
-            src: '/images/gallery/img-10.jpg', 
+            src: '/images/gallery/img (2).png', 
             alt: 'image',
-            orientation: 'horizontal'
-        },
-        { 
-            src: '/images/gallery/img-11.jpg', 
-            alt: 'image',
-            orientation: 'vertical'
-        },
-        { 
-            src: '/images/gallery/img-12.jpg', 
-            alt: 'image',
-            orientation: 'horizontal'
-        },
-        { 
-            src: '/images/gallery/img-13.jpg', 
-            alt: 'image',
-            orientation: 'horizontal'
-        },
-        { 
-            src: '/images/gallery/img-14.jpg', 
-            alt: 'image',
-            orientation: 'horizontal'
+            orientation: 'square'
         },
     ]
 }

@@ -2,11 +2,12 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { MdOutlineMusicNote, MdVolumeUp, MdVolumeOff } from 'react-icons/md';
-import { HiPlay, HiPause } from 'react-icons/hi'; 
+import { HiPlay, HiPause } from 'react-icons/hi';
+import styles from './MusicPlayer.module.scss';
 
 interface MusicPlayerProps {
   src: string;
-  compact?: boolean; // Ajout d'une prop pour définir si le lecteur est compact ou non
+  compact?: boolean;
 }
 
 const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
@@ -14,13 +15,15 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState(0.35);
   const [muted, setMuted] = useState(false);
 
   useEffect(() => {
     const audio = audioRef.current;
 
     if (audio) {
+      audio.volume = 0.35;
+
       const updateTime = () => setCurrentTime(audio.currentTime);
       const setAudioData = () => setDuration(audio.duration);
 
@@ -62,12 +65,16 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
     }
   };
 
-  // Choisir le style en fonction de si c'est un player compact ou non
   const playerStyles = compact ? compactPlayerStyles : glassPlayerStyles;
 
   return (
-    <div style={playerStyles.container}>
-
+    <div
+      className={`${styles.container} ${isPlaying ? styles.playing : ''}`}
+      style={playerStyles.container}
+    >
+      {isPlaying && (
+        <div className={styles.waveAnimation}><div className={styles.particle}></div><div className={styles.particle}></div><div className={styles.particle}></div></div>
+      )}
       <button onClick={togglePlay} style={playerStyles.button}>
         {isPlaying ? <HiPause size={compact ? 28 : 32} color="#00FFFF" /> : <HiPlay size={compact ? 28 : 32} color="#00FFFF" />}
       </button>
@@ -82,12 +89,12 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
             audioRef.current.currentTime = Number(e.target.value);
           }
         }}
-        style={playerStyles.progress}
+        className={styles.progress}
       />
 
       {!compact && (
         <span style={playerStyles.time}>
-          {Math.floor(currentTime / 60)}:{Math.floor(currentTime % 60).toString().padStart(2, '0')} / 
+          {Math.floor(currentTime / 60)}:{Math.floor(currentTime % 60).toString().padStart(2, '0')} /
           {Math.floor(duration / 60)}:{Math.floor(duration % 60).toString().padStart(2, '0')}
         </span>
       )}
@@ -103,7 +110,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
           step="0.01"
           value={volume}
           onChange={handleVolumeChange}
-          style={playerStyles.volumeSlider}
+          className={styles.volumeSlider}
         />
       </div>
 
@@ -113,133 +120,152 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
 };
 
 const glassPlayerStyles = {
-    container: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '15px',
-      padding: '10px',
-      backgroundColor: 'rgba(0, 0, 0, 0.4)', // Fond plus sombre
-      backdropFilter: 'blur(10px)', // Glassmorphism effect
-      borderRadius: '20px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)', // Légèrement plus sombre aussi
-      border: '1px solid rgba(255, 255, 255, 0.2)',
-      width: '100%',
-      maxWidth: '600px',
-    },
-    leftSection: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    button: {
-      backgroundColor: '#000000', // Fond noir pour le bouton play
-      border: 'none',
-      color: '#00FFFF', // Icône cyan
-      padding: '0px',
-      paddingLeft: '15px',
-      borderRadius: '50%',
-      cursor: 'pointer',
-      fontSize: '19px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '80px',
-      height: '40px',
-      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', // Ombre légèrement renforcée pour plus de contraste
-    },
-    progress: {
-      width: '100%',
-      margin: '0 10px',
-      backgroundColor: 'rgba(255, 255, 255, 0.3)',
-      borderRadius: '5px',
-      outline: 'none',
-      cursor: 'pointer',
-    },
-    time: {
-      fontSize: '12px', // Ajout de la propriété time
-      color: '#ffffff', // Texte blanc
-    },
-    volumeControl: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    volumeButton: {
-      backgroundColor: 'transparent',
-      border: 'none',
-      color: 'white',
-      cursor: 'pointer',
-    },
-    volumeSlider: {
-      width: '80px',
-      marginLeft: '10px',
-      backgroundColor: 'rgba(255, 255, 255, 0.3)',
-      borderRadius: '5px',
-      outline: 'none',
-    },
-  };
-  
-  const compactPlayerStyles = {
-    container: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '10px',
-      padding: '7px',
-      backgroundColor: 'rgba(0, 0, 0, 0.3)', // Fond un peu plus sombre
-      backdropFilter: 'blur(10px)', // Toujours le glassmorphism
-      borderRadius: '16px',
-      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      width: '100%',
-      maxWidth: '500px', // Version plus petite
-    },
-    leftSection: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    button: {
-      backgroundColor: '#000000',
-      border: 'none',
-      color: '#00FFFF',
-      padding: '0px',
-      paddingLeft: '13px',
-      borderRadius: '50%',
-      cursor: 'pointer',
-      fontSize: '19px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '35px',
-      height: '30px',
-    },
-    progress: {
-      width: '70%', // Barre de progression plus courte
-      margin: '0 5px',
-      backgroundColor: 'rgba(255, 255, 255, 0.3)',
-      borderRadius: '5px',
-      outline: 'none',
-      cursor: 'pointer',
-    },
-    time: {
-      fontSize: '10px', // Ajout de la propriété time pour la version compacte
-      color: '#ffffff', // Texte blanc
-    },
-    volumeControl: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    volumeButton: {
-      backgroundColor: 'transparent',
-      border: 'none',
-      color: 'white',
-      cursor: 'pointer',
-    },
-    volumeSlider: {
-      width: '60px',
-      marginLeft: '5px',
-      backgroundColor: 'rgba(255, 255, 255, 0.3)',
-      borderRadius: '5px',
-      outline: 'none',
-    },
-  };
-  
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '15px',
+    padding: '10px',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)', // Fond plus léger
+    backdropFilter: 'blur(10px)', // Glassmorphism effect
+    borderRadius: '20px',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)', 
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    width: '100%',
+    maxWidth: '620px',
+  },
+  button: {
+    backgroundColor: 'rgba(0, 0, 0, 0.0)', // Fond noir translucide pour le bouton play
+    border: 'none',
+    color: '#00FFFF', 
+    padding: '0px',
+    paddingLeft: '15px',
+    borderRadius: '50%',
+    cursor: 'pointer',
+    fontSize: '19px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '80px',
+    height: '40px',
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.0)', 
+  },
+  progress: {
+    width: '100%',
+    margin: '0 10px',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)', // Barre translucide
+    borderRadius: '10px',
+    outline: 'none',
+    cursor: 'pointer',
+    height: '8px',
+    appearance: 'none' as React.CSSProperties['appearance'], // Utilisation du type correct
+    boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.2)', // Ombre intérieure
+  },
+  progressThumb: {
+    width: '12px', // Taille du curseur
+    height: '12px',
+    borderRadius: '50%',
+    backgroundColor: '#00FFFF',
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', // Ombre autour du curseur
+    cursor: 'pointer',
+  },
+  time: {
+    fontSize: '12px',
+    color: '#ffffff',
+    minWidth: '60px',
+    textAlign: 'right',
+  },
+  volumeControl: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  volumeButton: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    color: 'white',
+    cursor: 'pointer',
+  },
+  volumeSlider: {
+    width: '80px',
+    marginLeft: '10px',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)', // Fond transparent
+    borderRadius: '10px',
+    outline: 'none',
+    height: '8px',
+    appearance: 'none' as React.CSSProperties['appearance'], // Utilisation du type correct
+    boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.2)', // Ombre intérieure
+  },
+  volumeThumb: {
+    width: '12px', // Taille du curseur
+    height: '12px',
+    borderRadius: '50%',
+    backgroundColor: '#00FFFF',
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', // Ombre autour du curseur
+    cursor: 'pointer',
+  },
+};
+
+const compactPlayerStyles = {
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    padding: '7px',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Fond un peu plus sombre
+    backdropFilter: 'blur(10px)', // Toujours le glassmorphism
+    borderRadius: '16px',
+    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    width: '100%',
+    maxWidth: '500px', // Version plus petite
+  },
+  button: {
+    backgroundColor: 'rgba(0, 0, 0, 0.0)',
+    border: 'none',
+    color: '#00FFFF',
+    padding: '0px',
+    paddingLeft: '13px',
+    borderRadius: '50%',
+    cursor: 'pointer',
+    fontSize: '19px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '35px',
+    height: '30px',
+  },
+  progress: {
+    width: '70%', // Barre de progression plus courte
+    margin: '0 5px',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: '5px',
+    outline: 'none',
+    cursor: 'pointer',
+    height: '8px',
+    appearance: 'none' as React.CSSProperties['appearance'], // Utilisation du type correct
+  },
+  time: {
+    fontSize: '10px', // Ajout de la propriété time pour la version compacte
+    color: '#ffffff',
+  },
+  volumeControl: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  volumeButton: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    color: 'white',
+    cursor: 'pointer',
+  },
+  volumeSlider: {
+    width: '60px',
+    marginLeft: '5px',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: '5px',
+    outline: 'none',
+    height: '8px',
+    appearance: 'none' as React.CSSProperties['appearance'], // Utilisation du type correct
+  },
+};
 
 export default MusicPlayer;

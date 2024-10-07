@@ -13,6 +13,20 @@ export default function MasonryGrid() {
         560: 1
     };
 
+    // Fonction pour définir l'aspect ratio en fonction de l'orientation
+    const getAspectRatio = (orientation: string) => {
+        switch (orientation) {
+            case "vertical":
+                return "9 / 12";
+            case "horizontal":
+                return "16 / 9";
+            case "square":
+                return "1 / 1";
+            default:
+                return "16 / 9"; // Valeur par défaut si aucune orientation n'est définie
+        }
+    };
+
     return (
         <Masonry
             breakpointCols={breakpointColumnsObj}
@@ -22,7 +36,7 @@ export default function MasonryGrid() {
                 <SmartImage
                     key={index}
                     radius="m"
-                    aspectRatio={image.orientation === "horizontal" ? "16 / 9" : "9 / 16"}
+                    aspectRatio={getAspectRatio(image.orientation)}
                     src={image.src}
                     alt={image.alt}
                     className={styles.gridItem}
