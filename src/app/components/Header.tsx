@@ -14,6 +14,21 @@ type TimeDisplayProps = {
     locale?: string;  // Optionally allow locale, defaulting to 'en-GB'
 };
 
+interface Gallery {
+    label: string;
+    preset: string;
+    title: string;
+    description: string;
+    images: Image[];
+}
+
+interface Image {
+    src: string;
+    alt: string;
+    orientation: string;
+    span?: number;
+}
+
 const TimeDisplay: React.FC<TimeDisplayProps> = ({ timeZone, locale = 'en-GB' }) => {
     const [currentTime, setCurrentTime] = useState('');
 
@@ -109,7 +124,7 @@ export const Header = () => {
                             prefixIcon="projector"
                             href="/gallery"
                             selected={pathname.startsWith('/gallery')}>
-                            <Flex paddingX="2" hide="s">{gallery.label}</Flex>
+                            <Flex paddingX="2" hide="s">{gallery[0].label}</Flex> {/* Utilisation de gallery.label */}
                         </ToggleButton>
                     )}
                     { routes['/blog'] && (

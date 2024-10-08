@@ -188,83 +188,158 @@ const music = {
     // All projects will be listed on the /home and /work routes
 }
 
-const gallery = {
-    label: 'Visual Arts',
-    title: 'My photo gallery',
-    description: `A photo collection by ${person.name}`,
-    // Images from https://pexels.com
-    images: [
-        { 
-            src: '/images/gallery/img (1).png', 
-            alt: 'image',
-            orientation: 'vertical'
-        },
-        { 
-            src: '/images/gallery/img (14).png', 
-            alt: 'image',
-            orientation: 'square'
-        },
-        { 
-            src: '/images/gallery/img (3).png', 
-            alt: 'image',
-            orientation: 'vertical'
-        },
-        { 
-            src: '/images/gallery/img (10).png', 
-            alt: 'image',
-            orientation: 'square'
-        },
-        { 
-            src: '/images/gallery/img (4).png', 
-            alt: 'image',
-            orientation: 'square'
-        },
-        { 
-            src: '/images/gallery/img (6).png', 
-            alt: 'image',
-            orientation: 'square'
-        },
-        { 
-            src: '/images/gallery/img (5).png', 
-            alt: 'image',
-            orientation: 'square'
-        },
-        { 
-            src: '/images/gallery/img (7).png', 
-            alt: 'image',
-            orientation: 'vertical'
-        },
-        { 
-            src: '/images/gallery/img (8).png', 
-            alt: 'image',
-            orientation: 'square'
-        },
-        { 
-            src: '/images/gallery/img (12).png', 
-            alt: 'image',
-            orientation: 'horizontal'
-        },
-        { 
-            src: '/images/gallery/img (9).png', 
-            alt: 'image',
-            orientation: 'vertical'
-        },
-        { 
-            src: '/images/gallery/img (11).png', 
-            alt: 'image',
-            orientation: 'square'
-        },
-        { 
-            src: '/images/gallery/img (13).png', 
-            alt: 'image',
-            orientation: 'horizontal'
-        },
-        { 
-            src: '/images/gallery/img (2).png', 
-            alt: 'image',
-            orientation: 'square'
-        },
-    ]
-}
+const gallery = [
+    {
+        label: 'Visual Arts',
+        preset: 'art3D',
+        title: 'My 3D Art Gallery',
+        description: `A photo collection by ${person.name}`,
+        images: [
+            { 
+                src: '/images/gallery/img (1).png', 
+                alt: 'image',
+                orientation: 'Horizontal',
+                span: 1 
+            },
+            { 
+                src: '/images/gallery/img (14).png', 
+                alt: 'image',
+                orientation: 'Horizontal',
+                span: 1
+            },
+            { 
+                src: '/images/gallery/video-01.mp4', 
+                alt: 'image',
+                orientation: 'Horizontal'
+            },
+        ]
+    },
+    {
+        preset: 'dessins',
+        title: 'My Dessins Gallery',
+        description: `A photo collection by ${person.name}`,
+        images: [
+            { 
+                src: '/images/gallery/img (4).png', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/img (5).png', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/img (6).png', 
+                alt: 'image',
+                orientation: 'square',
+                span: 2
+            },
+            { 
+                src: '/images/gallery/img (7).png', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/img (10).png', 
+                alt: 'image',
+                orientation: 'square',
+                span: 2
+            },
+            { 
+                src: '/images/gallery/img (11).png', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/img (3).png', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/img (14).png', 
+                alt: 'image',
+                orientation: 'square',
+                span: 2
+            },
+            { 
+                src: '/images/gallery/img (8).png', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/img (1).png', 
+                alt: 'image',
+                orientation: 'square',
+                span: 2
+            },
+            { 
+                src: '/images/gallery/img (9).png', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/img (2).png', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/img (12).png', 
+                alt: 'image',
+                orientation: 'horizontal'
+            },
+            { 
+                src: '/images/gallery/img (13).png', 
+                alt: 'image',
+                orientation: 'horizontal'
+            },
+
+        ]
+    },
+    {
+        preset: 'logo',
+        title: 'My Logo Gallery',
+        description: `A photo collection by ${person.name}`,
+        images: [
+            { 
+                src: '/images/gallery/img (7).png', 
+                alt: 'image',
+                orientation: 'square',
+                span: 2
+            },
+            { 
+                src: '/images/gallery/img (8).png', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/img (12).png', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/img (9).png', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/img (11).png', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/img (13).png', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/img (2).png', 
+                alt: 'image',
+                orientation: 'square'
+            },
+        ]
+    }
+];
+
 
 export { person, social, newsletter, home, about, blog, work, music, gallery, experimentalproj };

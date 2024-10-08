@@ -1,14 +1,43 @@
-.masonryGrid {
-    display: flex;
-    margin-left: calc(-1 * var(--static-space-16));
+.gridContainer {
+    display: grid;
     width: 100%;
 }
 
-.masonryGridColumn {
-    padding-left: var(--static-space-16);
-    background-clip: padding-box;
+.gridItem {
+    margin-bottom: var(--static-space-16);  // Assure un espacement entre les items
 }
 
-.gridItem {
-    margin-bottom: var(--static-space-16);
+.gridImage {
+    width: 100%;
+    height: auto;
+}
+
+
+/* Classe supplémentaire pour adapter des images de plusieurs colonnes et lignes */
+.span-1 {
+    grid-column-end: span 1;
+    grid-row-end: span 1;
+}
+
+.span-2 {
+    grid-column-end: span 2;
+    grid-row-end: span 2; /* Prend également deux lignes */
+}
+
+.galleryTitle {
+    margin-top: 60px;  // Ajuste cette valeur selon tes besoins
+    margin-bottom: 5px;
+    font-size: 2rem; // Exemple de réglage de la taille de police
+}
+
+.galleryDescription {
+    margin-bottom: 30px; // Ajuste l'espacement entre le titre et la description
+}
+
+// Gallery.module.scss
+
+.galleryContainer {
+    margin-left: 50px;   // Ajuste selon la marge souhaitée
+    margin-right: 50px;  // Ajuste selon la marge souhaitée
+    padding: 0 16px;     // Optionnel : ajoute un padding pour un peu plus d'espace interne
 }
