@@ -6,7 +6,7 @@ const person = {
     get name() {
         return `${this.firstName} ${this.lastName}`;
     },
-    role:      'Multiartiste',
+    role:      'Multidisciplinary Artist and Creative Developer',
     avatar:    '/images/avatar.jpg',
     location:  'Europe/Paris',        // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
     languages: ['French', 'English']  // optional: Leave the array empty if you don't want to display languages
@@ -47,9 +47,9 @@ const home = {
     label: 'Home',
     title: `${person.name}'s Portfolio`,
     description: `Portfolio website showcasing my work as a ${person.role}`,
-    headline: <>Design engineer and builder</>,
-    subline: <>I'm Selene, a design engineer at <InlineCode>FLY</InlineCode>, where I craft intuitive<br/> user experiences. After hours, I build my own projects.</>
-}
+    headline: <>Multidisciplinary Artist and Creative Developer</>,
+    subline: <>I'm Tex, a creator pushing boundaries in game development, music, visual arts, and experimental projects.<br/> Explore my projects from experimental designs to professional work.</>
+}    
 
 const about = {
     label: 'About',
@@ -192,23 +192,23 @@ const gallery = [
     {
         label: 'Visual Arts',
         preset: 'art3D',
-        title: 'My 3D Art Gallery',
+        title: 'My Virtual Production Gallery',
         description: `A photo collection by ${person.name}`,
         images: [
             { 
-                src: '/images/gallery/img (1).png', 
+                src: '/images/gallery/RND (2).mp4', 
                 alt: 'image',
                 orientation: 'Horizontal',
                 span: 1 
             },
             { 
-                src: '/images/gallery/img (14).png', 
+                src: '/images/gallery/RND (3).mp4', 
                 alt: 'image',
                 orientation: 'Horizontal',
                 span: 1
             },
             { 
-                src: '/images/gallery/video-01.mp4', 
+                src: '/images/gallery/RND (1).mp4', 
                 alt: 'image',
                 orientation: 'Horizontal'
             },

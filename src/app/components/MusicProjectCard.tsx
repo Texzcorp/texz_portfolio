@@ -1,4 +1,4 @@
-import { Flex, Heading, Text } from '@/once-ui/components';
+import { Flex, Heading, Text, RevealFx } from '@/once-ui/components';
 import MusicPlayer from './MusicPlayer';
 import { MdOutlineMusicNote } from 'react-icons/md';
 
@@ -37,72 +37,96 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
                 }} 
                 className="image-container"
             >
-                <img 
-                    src={image} 
-                    alt={title} 
-                    style={{ width: '100%', borderRadius: '8px' }} 
-                    className="project-image"
-                />
+                <RevealFx
+                    style={{width: '100%'}}
+                    delay={0.25}
+                    speed="slow"
+                >
+                    <img 
+                        src={image} 
+                        alt={title} 
+                        style={{ width: '100%', borderRadius: '8px' }} 
+                        className="project-image"
+                    />
+                </RevealFx>
             </Flex>
     
             {/* Contenu à droite : titre, description, lecteur de musique */}
             <Flex flex={1} direction="column" gap="s">
-                <Heading as="h3" variant="display-strong-xs">
-                    <img 
-                        src={image} 
-                        alt={title} 
-                        style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '10px', display: 'none' }} 
-                        className="icon-image"  // Icône à gauche en mode mobile
-                    />
-                    {title}
-                </Heading>
-                <Text>{description}</Text>
+                <RevealFx
+                    style={{width: '100%'}}
+                    delay={0.25}
+                    speed="fast"
+                >
+                    <Heading as="h3" variant="display-strong-xs">
+                        <img 
+                            src={image} 
+                            alt={title} 
+                            style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '10px', display: 'none' }} 
+                            className="icon-image"  // Icône à gauche en mode mobile
+                        />
+                        {title}
+                    </Heading>
+                    <Text>{description}</Text>
+                </RevealFx>
     
                 {/* Lecteur de musique principal avec titre stylisé glassmorphism */}
                 {mainMusic && (
-                    <div>
-                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                            {/* Icône placée à gauche du titre */}
-                            <MdOutlineMusicNote 
-                                size={40}  // Taille de l'icône
-                                color="rgba(0, 255, 255, 0.7)" // Couleur cyan transparente
-                                style={{ marginRight: '5px', marginTop: '8px' }}  // Espacement entre l'icône et le titre
-                            />
-                            {/* Titre de la musique principale */}
-                            <Text as="h4" style={glassTitleStyle}>
-                                {mainMusic.title}
-                            </Text>
+                    <RevealFx
+                        style={{width: '100%'}}
+                        delay={0.02}
+                        speed="slow"
+                    >
+                        <div>
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                {/* Icône placée à gauche du titre */}
+                                <MdOutlineMusicNote 
+                                    size={40}  // Taille de l'icône
+                                    color="rgba(0, 255, 255, 0.7)" // Couleur cyan transparente
+                                    style={{ marginRight: '5px', marginTop: '8px' }}  // Espacement entre l'icône et le titre
+                                />
+                                {/* Titre de la musique principale */}
+                                <Text as="h4" style={glassTitleStyle}>
+                                    {mainMusic.title}
+                                </Text>
+                            </div>
+                            <MusicPlayer src={mainMusic.src} />
                         </div>
-                        <MusicPlayer src={mainMusic.src} />
-                    </div>
+                    </RevealFx>
                 )}
     
                 {/* Lecteurs compacts pour les musiques supplémentaires avec leurs titres stylisés glassmorphism */}
                 {extraMusics && extraMusics.length > 0 && (
-                    <div style={{ marginTop: '16px' }}>
-                        <Text>More in the same style :</Text>
-                        <ul style={{ paddingLeft: '25px' }}>
-                            {extraMusics.map((music, idx) => (
-                                <li key={idx} style={{ listStyleType: 'none', marginBottom: '4px' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-                                        {/* Icône de note de musique à gauche du titre */}
-                                        <MdOutlineMusicNote 
-                                            size={25}  // Taille plus petite pour l'icône
-                                            color="rgba(0, 255, 255, 0.7)" // Couleur cyan transparente
-                                            style={{ marginRight: '10px', marginTop: '8px' }}  // Espacement et centrage avec le titre
-                                        />
-                                        <Text as="h5" style={glassExtraTitleStyle}>
-                                            {music.title}
-                                        </Text>
-                                    </div>
-                                    {/* Lecteur de musique sur une nouvelle ligne avec espacement */}
-                                    <div style={{ marginTop: '5px' }}>
-                                        <MusicPlayer src={music.src} compact />
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    <RevealFx
+                        style={{width: '100%'}}
+                        delay={0.25}
+                        speed="slow"
+                    >
+                        <div style={{ marginTop: '16px' }}>
+                            <Text>More in the same style :</Text>
+                            <ul style={{ paddingLeft: '25px' }}>
+                                {extraMusics.map((music, idx) => (
+                                    <li key={idx} style={{ listStyleType: 'none', marginBottom: '4px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+                                            {/* Icône de note de musique à gauche du titre */}
+                                            <MdOutlineMusicNote 
+                                                size={25}  // Taille plus petite pour l'icône
+                                                color="rgba(0, 255, 255, 0.7)" // Couleur cyan transparente
+                                                style={{ marginRight: '10px', marginTop: '8px' }}  // Espacement et centrage avec le titre
+                                            />
+                                            <Text as="h5" style={glassExtraTitleStyle}>
+                                                {music.title}
+                                            </Text>
+                                        </div>
+                                        {/* Lecteur de musique sur une nouvelle ligne avec espacement */}
+                                        <div style={{ marginTop: '5px' }}>
+                                            <MusicPlayer src={music.src} compact />
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </RevealFx>
                 )}
             </Flex>
         </Flex>

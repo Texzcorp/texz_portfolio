@@ -1,4 +1,4 @@
-import { Flex } from "@/once-ui/components";
+import { Flex, RevealFx } from "@/once-ui/components";
 import MasonryGrid from "./components/MasonryGrid";
 import { baseURL, gallery as galleries, person } from "../resources"; // Renommer pour éviter confusion
 import styles from './Gallery.module.scss'; // Si ton fichier SCSS est dans le même dossier que page.tsx
@@ -57,8 +57,13 @@ export default function Gallery() {
 
                 return (
                     <div key={index}>
-                        <h2 className={styles.galleryTitle}>{gallery.title}</h2> {/* Ajout de la classe */}
-                        <p className={styles.galleryDescription}>{gallery.description}</p> {/* Ajout de la classe */}
+                        <RevealFx
+                            style={{width: '100%'}}
+                            delay={0.4}
+                        >
+                            <h2 className={styles.galleryTitle}>{gallery.title}</h2> 
+                            <p className={styles.galleryDescription}>{gallery.description}</p> {/* Ajout de la classe */}
+                        </RevealFx>
 
                         <script
                             type="application/ld+json"

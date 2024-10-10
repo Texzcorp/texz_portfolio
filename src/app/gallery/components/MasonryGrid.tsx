@@ -1,6 +1,6 @@
 "use client";
 
-import { SmartImage } from "@/once-ui/components";
+import { SmartImage, RevealFx } from "@/once-ui/components";
 import { gallery } from "@/app/resources";
 import styles from "@/app/gallery/Gallery.module.scss";
 
@@ -101,13 +101,19 @@ export default function MasonryGrid({ gallery, rowGapAdjustment = 0 }: MasonryGr
                         gridRowEnd: `span ${getGridRowSpan(preset, image.span)}`  // Ajout de la gestion des lignes
                     }}
                 >
-                    <SmartImage
-                        radius="m"
-                        aspectRatio={getAspectRatio(image.orientation)}
-                        src={image.src}
-                        alt={image.alt}
-                        className={styles.gridImage}
-                    />
+                    <RevealFx
+                        style={{width: '100%'}}
+                        delay={0.4}
+                        speed="slow"
+                    >
+                        <SmartImage
+                            radius="m"
+                            aspectRatio={getAspectRatio(image.orientation)}
+                            src={image.src}
+                            alt={image.alt}
+                            className={styles.gridImage}
+                        />
+                    </RevealFx>
                 </div>
             ))}
         </div>

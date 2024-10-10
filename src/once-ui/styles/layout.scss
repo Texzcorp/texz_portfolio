@@ -36,7 +36,7 @@
     }
 }
 
-@media (--s) {
+@media (max-width: 1168px) {
     .s-flex-hide {
         display: none !important;
     }
