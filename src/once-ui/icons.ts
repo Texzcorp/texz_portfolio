@@ -15,7 +15,7 @@ import {
     HiInformationCircle,
     HiExclamationCircle,
     HiCheckCircle,
-    HiMiniGlobeAsiaAustralia,
+    HiMiniGlobeEuropeAfrica,
     HiEnvelope,
     HiCalendarDays
 } from "react-icons/hi2";
@@ -114,7 +114,7 @@ export const iconLibrary: Record<string, IconType> = {
     errorCircle: HiExclamationCircle,
     checkCircle: HiCheckCircle,
     email: HiEnvelope,
-    globe: HiMiniGlobeAsiaAustralia,
+    globe: HiMiniGlobeEuropeAfrica,
     person: PiUserCircleDuotone,
     grid: PiGridFourDuotone,
     book: PiBookBookmarkDuotone,
