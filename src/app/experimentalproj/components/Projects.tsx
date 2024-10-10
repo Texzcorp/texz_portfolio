@@ -25,7 +25,7 @@ export function Projects({ range }: ProjectsProps) {
             {displayedProjects.map((post) => (
                 <ProjectCard
                     key={post.slug}
-                    href={`/work/${post.slug}`}
+                    href={`/experimentalproj/${post.slug}`}
                     images={post.metadata.images}
                     title={post.metadata.title}
                     description={post.metadata.summary}

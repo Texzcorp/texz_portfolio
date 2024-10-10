@@ -27,41 +27,45 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas?.getContext('2d');
-
+    
         if (canvas && ctx) {
             let w = canvas.width = window.innerWidth;
             let h = canvas.height = window.innerHeight;
             let t = 0;
             let mouseX = w / 2;
             let mouseY = h / 2;
-
+            let pageHeight = Math.max(document.body.scrollHeight, window.innerHeight); // Initialisation
+    
             const resizeCanvas = () => {
                 w = canvas.width = window.innerWidth;
                 h = canvas.height = window.innerHeight;
+                pageHeight = Math.max(document.body.scrollHeight, window.innerHeight); // Mise à jour lors du redimensionnement
+                ctx.clearRect(0, 0, w, h); // Nettoyer le canvas après redimensionnement
             };
-
+    
             window.addEventListener('resize', resizeCanvas);
-
+    
             window.addEventListener('mousemove', (e) => {
                 mouseX = e.clientX;
                 mouseY = e.clientY;
             });
-
+    
             // Fonction d'interpolation (lerp)
             const lerp = (start: number, end: number, t: number): number => {
                 return start + (end - start) * t;
-            };            
-
+            };
+    
             let targetScrollInfluence = 0;
             let currentScrollInfluence = 0;
-
+    
             const drawVerticalFluidWaves = () => {
-                const waveCount = 7; // Nombre d'ondes pour plus de richesse visuelle
+                const waveCount = 7;
                 const baseAmplitude = 80;
                 const baseFrequency = 0.0005;
                 const waveSpeed = 0.0025;
             
-                const pageHeight = Math.max(document.body.scrollHeight, window.innerHeight);
+                // Recalcul de la hauteur totale de la page
+                const pageHeight = Math.max(document.body.scrollHeight, window.innerHeight) + 120; // Ajout d'un offset de 100px
                 targetScrollInfluence = Math.sin(window.scrollY * 0.002) * 100;
             
                 const smoothingFactor = 0.05;
@@ -76,24 +80,31 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                     ctx.lineWidth = 2 + (i * 0.2);
             
                     // Ajout de l'effet néon "baveux"
-                    ctx.shadowBlur = 20; // Le flou de l'ombre pour simuler la lumière diffuse
-                    ctx.shadowColor = color; // Couleur de l'ombre, identique à celle des ondes pour l'effet néon
-                    ctx.shadowOffsetX = 0; // Aucune déviation horizontale
-                    ctx.shadowOffsetY = 0; // Aucune déviation verticale
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = color;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
                     ctx.strokeStyle = color;
             
-                    ctx.globalAlpha = 0.3 + (i * 0.1);
+                    ctx.globalAlpha = 0.95 + (i * 0.1);
             
-                    const controlPoints = 10;
                     let previousY = 0, previousX = w / 2;
             
+                    // On ajuste dynamiquement le nombre de points en fonction de la hauteur
+                    const controlPoints = Math.floor(pageHeight / 200); // Divise la hauteur pour répartir les points proportionnellement
+            
+                    // Boucle de dessin des ondes
                     for (let y = 0; y <= pageHeight; y += pageHeight / controlPoints) {
+                        // Augmentation légère de l'effet d'ondulation même pour les premières positions Y
                         const mouseEffect = Math.sin((y - mouseY) * 0.01) * (mouseX / w) * 25;
             
-                        const x = w / 2 + Math.sin((y * frequency) + (t * waveSpeed) + (i * Math.PI / 2)) * (amplitude + mouseEffect);
+                        // Ajouter une petite valeur d'oscillation dès les premières positions Y
+                        const oscillationFactor = Math.max(0.1, Math.sin(y * frequency + t * waveSpeed + i * Math.PI / 2));
+            
+                        const x = w / 2 + Math.sin((y * frequency) + (t * waveSpeed) + (i * Math.PI / 2)) * (amplitude + mouseEffect) * oscillationFactor;
             
                         if (y === 0) {
-                            ctx.moveTo(x, y);
+                            ctx.moveTo(x, y); // Commence l'onde directement avec une légère oscillation
                         } else {
                             const midX = (previousX + x) / 2;
                             const midY = (previousY + y) / 2;
@@ -102,31 +113,33 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                         previousX = x;
                         previousY = y;
                     }
+            
+                    // Ajouter un dernier point exactement au bas de la page pour s'assurer que les ondes atteignent le bas
+                    ctx.lineTo(w / 2, pageHeight); // Dessiner une ligne droite jusqu'au bas
                     ctx.stroke();
                 }
                 ctx.globalAlpha = 1;
             
-                // Réinitialiser l'effet d'ombre pour ne pas l'appliquer à d'autres éléments
+                // Réinitialiser l'effet d'ombre
                 ctx.shadowBlur = 0;
                 ctx.shadowColor = 'transparent';
-            };
-            
-       
-
+            };            
+    
             const animate = () => {
+                ctx.clearRect(0, 0, w, h);
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
                 ctx.fillRect(0, 0, w, h);
                 drawVerticalFluidWaves();
                 t++;
                 requestAnimationFrame(animate);
             };
-
+    
             animate();
             return () => {
                 window.removeEventListener('resize', resizeCanvas);
             };
         }
-    }, []);
+    }, []);    
 
     useEffect(() => {
         if (shootingStars) {
@@ -161,7 +174,7 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                         width: '100%',
                         height: '100%',
                         filter: 'contrast(1.5)',
-                        background: 'radial-gradient(100% 100% at 49.99% 0%, var(--static-transparent) 0%, var(--page-background) 100%), radial-gradient(87.4% 84.04% at 6.82% 16.24%, var(--brand-background-medium) 0%, var(--static-transparent) 100%), radial-gradient(217.89% 126.62% at 48.04% 0%, var(--accent-solid-medium) 0%, var(--static-transparent) 100%)',
+                        background: 'radial-gradient(circle at 50% 110%, rgba(0, 0, 0, 1) 8%, rgba(0, 0, 0, 0) 25%), radial-gradient(100% 300% at 25.99% 0%, var(--static-transparent) 0%, var(--page-background) 100%), radial-gradient(87.4% 84.04% at 6.82% 16.24%, var(--brand-background-medium) 0%, var(--static-transparent) 100%), radial-gradient(217.89% 86.62% at 68.04% 0%, var(--accent-solid-medium) 0%, var(--static-transparent) 100%)',
                         ...style,
                     }}></div>
             )}
