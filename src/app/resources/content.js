@@ -2,7 +2,7 @@ import { InlineCode } from "@/once-ui/components";
 
 const person = {
     firstName: 'Texz',
-    lastName:  'Yo',
+    lastName:  '',
     get name() {
         return `${this.firstName} ${this.lastName}`;
     },
@@ -69,7 +69,7 @@ const about = {
     intro: {
         display: true,
         title: 'Introduction',
-        description: <>Selene is a Jakarta-based design engineer with a passion for transforming complex challenges into simple, elegant design solutions. Her work spans digital interfaces, interactive experiences, and the convergence of design and technology.</>
+        description: <>Texz is a multidisciplinary creator with deep technical expertise across game development, software engineering, music production, and digital art. With a passion for mastering diverse tools and technologies, Texz brings a wide-ranging approach to each project, constantly exploring new ways to push the boundaries of what’s possible.</>
     },
     work: {
         display: true, // set to false to hide this section
