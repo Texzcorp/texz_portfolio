@@ -13,7 +13,7 @@ const person = {
 }
 
 const newsletter = {
-    display: true,
+    display: false,
     title: <>Subscribe to {person.firstName}'s Newsletter</>,
     description: <>I occasionally write about design, technology, and share thoughts on the intersection of creativity and engineering.</>
 }
@@ -145,13 +145,19 @@ const about = {
                 description: <>Technical and artistic skills in virtual production and video game development using Unreal Engine.</>,
                 images: [
                     {
-                        src: '/images/projects/project-01/cover-02.jpg',
+                        src: '/images/projects/technical/UE1.jpg',
                         alt: 'Project image',
                         width: 16,
                         height: 9
                     },
                     {
-                        src: '/images/projects/project-01/cover-03.jpg',
+                        src: '/images/projects/technical/UE2.jpg',
+                        alt: 'Project image',
+                        width: 16,
+                        height: 9
+                    },
+                    {
+                        src: '/images/projects/technical/UE3.jpg',
                         alt: 'Project image',
                         width: 16,
                         height: 9
@@ -163,7 +169,13 @@ const about = {
                 description: <>Creation of tools and micro-software to enhance productivity using Python.</>,
                 images: [
                     {
-                        src: '/images/projects/project-01/cover-04.jpg',
+                        src: '/images/projects/technical/Python1.jpg',
+                        alt: 'Project image',
+                        width: 16,
+                        height: 9
+                    },
+                    {
+                        src: '/images/projects/technical/Python2.jpg',
                         alt: 'Project image',
                         width: 16,
                         height: 9
@@ -175,7 +187,13 @@ const about = {
                 description: <>Musical composition with Reaper</>,
                 images: [
                     {
-                        src: '/images/projects/project-01/cover-04.jpg',
+                        src: '/images/projects/technical/Reaper1.jpg',
+                        alt: 'Project image',
+                        width: 16,
+                        height: 9
+                    },
+                    {
+                        src: '/images/projects/technical/Reaper2.jpg',
                         alt: 'Project image',
                         width: 16,
                         height: 9
@@ -187,7 +205,13 @@ const about = {
                 description: <>Extensive skills in image editing, drawing, and design using GIMP.</>,
                 images: [
                     {
-                        src: '/images/projects/project-01/cover-04.jpg',
+                        src: '/images/projects/technical/Gimp1.jpg',
+                        alt: 'Project image',
+                        width: 16,
+                        height: 9
+                    },
+                    {
+                        src: '/images/projects/technical/Gimp2.jpg',
                         alt: 'Project image',
                         width: 16,
                         height: 9
