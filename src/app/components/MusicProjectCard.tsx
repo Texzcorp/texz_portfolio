@@ -57,6 +57,7 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
                     style={{width: '100%'}}
                     delay={0.25}
                     speed="fast"
+                    
                 >
                     <Heading as="h3" variant="display-strong-xs">
                         <img 
@@ -83,7 +84,7 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
                                 <MdOutlineMusicNote 
                                     size={40}  // Taille de l'icône
                                     color="rgba(0, 255, 255, 0.7)" // Couleur cyan transparente
-                                    style={{ marginRight: '5px', marginTop: '8px' }}  // Espacement entre l'icône et le titre
+                                    style={{ marginRight: '5px', marginTop: '8px', marginLeft: '4px' }}  // Espacement entre l'icône et le titre
                                 />
                                 {/* Titre de la musique principale */}
                                 <Text as="h4" style={glassTitleStyle}>

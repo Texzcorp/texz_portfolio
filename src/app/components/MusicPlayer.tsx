@@ -130,8 +130,9 @@ const glassPlayerStyles = {
     borderRadius: '20px',
     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)', 
     border: '1px solid rgba(255, 255, 255, 0.2)',
-    width: '100%',
+    width: '98%',
     maxWidth: '620px',
+    marginLeft: '8px'
   },
   button: {
     backgroundColor: 'rgba(0, 0, 0, 0.0)', // Fond noir translucide pour le bouton play

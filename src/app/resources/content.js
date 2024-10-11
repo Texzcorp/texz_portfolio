@@ -73,7 +73,7 @@ const about = {
     },
     work: {
         display: true, // set to false to hide this section
-        title: 'Work Experience',
+        title: 'Virtual production',
         experiences: [
             {
                 company: 'FLY',
@@ -101,12 +101,22 @@ const about = {
                     <>Led a cross-functional team to launch a new product line, contributing to a 15% increase in overall company revenue.</>
                 ],
                 images: [ ]
+            },
+            {
+                company: 'test',
+                timeframe: '2018 - 2022',
+                role: 'Lead Designer',
+                achievements: [
+                    <>Developed a design system that unified the brand across multiple platforms, improving design consistency by 40%.</>,
+                    <>Led a cross-functional team to launch a new product line, contributing to a 15% increase in overall company revenue.</>
+                ],
+                images: [ ]
             }
         ]
     },
     studies: {
         display: true, // set to false to hide this section
-        title: 'Studies',
+        title: 'Music',
         institutions: [
             {
                 name: 'University of Jakarta',
@@ -118,13 +128,21 @@ const about = {
             }
         ]
     },
+    writing: {
+        display: true, // set to false to hide this section
+        title: 'Narration & Scriptwriting',
+    },
+    progvideogames: {
+        display: true, // set to false to hide this section
+        title: 'Programmation & video games',
+    },
     technical: {
         display: true, // set to false to hide this section
         title: 'Technical skills',
         skills: [
             {
-                title: 'Figma',
-                description: <>Able to prototype in Figma with Once UI with unnatural speed.</>,
+                title: 'Unreal Engine',
+                description: <>Technical and artistic skills in virtual production and video game development using Unreal Engine.</>,
                 images: [
                     {
                         src: '/images/projects/project-01/cover-02.jpg',
@@ -141,8 +159,32 @@ const about = {
                 ]
             },
             {
-                title: 'Next.js',
-                description: <>Building next gen apps with Next.js + Once UI + Supabase.</>,
+                title: 'Python',
+                description: <>Creation of tools and micro-software to enhance productivity using Python.</>,
+                images: [
+                    {
+                        src: '/images/projects/project-01/cover-04.jpg',
+                        alt: 'Project image',
+                        width: 16,
+                        height: 9
+                    },
+                ]
+            },
+            {
+                title: 'Reaper',
+                description: <>Musical composition with Reaper</>,
+                images: [
+                    {
+                        src: '/images/projects/project-01/cover-04.jpg',
+                        alt: 'Project image',
+                        width: 16,
+                        height: 9
+                    },
+                ]
+            },
+            {
+                title: 'GIMP',
+                description: <>Extensive skills in image editing, drawing, and design using GIMP.</>,
                 images: [
                     {
                         src: '/images/projects/project-01/cover-04.jpg',
@@ -153,7 +195,7 @@ const about = {
                 ]
             }
         ]
-    }
+    },
 }
 
 const blog = {

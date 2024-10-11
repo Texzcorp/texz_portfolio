@@ -7,7 +7,7 @@ interface ProjectsProps {
     range?: [number, number?];
 }
 
-export function Projects({ range }: ProjectsProps) {
+export function MusicProjects({ range }: ProjectsProps) {
     let allProjects = getPosts(['src', 'app', 'music', 'projects']);
 
     const sortedProjects = allProjects.sort((a, b) => {
