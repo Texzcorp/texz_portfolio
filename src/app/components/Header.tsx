@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 import { Flex, ToggleButton } from "@/once-ui/components"
 import styles from '@/app/components/Header.module.scss'
+import Head from 'next/head'; // Import du composant Head
 
 import { routes, display } from '@/app/resources'
 import { person, home, about, blog, work, music, gallery, experimentalproj } from '@/app/resources'
@@ -65,6 +66,10 @@ export const Header = () => {
     const pathname = usePathname() ?? '';
 
     return (
+        <>
+        <Head>
+            <meta property="og:site_name" content="Texz's Portfolio" />
+        </Head>
         <Flex style={{height: 'fit-content'}}
             className={styles.position}
             as="header"
@@ -154,6 +159,6 @@ export const Header = () => {
                     <TimeDisplay timeZone={person.location}/>
                 )}
             </Flex>
-        </Flex>
+        </Flex></>
     )
 }

@@ -146,7 +146,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                                 href={href}>
                                     <Text
                                         variant="body-default-s">
-                                        Read case study
+                                        Read more
                                     </Text>
                             </SmartLink>
                         )}

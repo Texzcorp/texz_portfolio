@@ -48,7 +48,7 @@ const home = {
     title: `${person.name}'s Portfolio`,
     description: `Portfolio website showcasing my work as a ${person.role}`,
     headline: <>Multidisciplinary Artist and Creative Developer</>,
-    subline: <>I'm Tex, a creator pushing boundaries in game development, music, visual arts, and experimental projects.<br/> Explore my projects from experimental designs to professional work.</>
+    subline: <>A creator pushing boundaries in game development, music, visual arts, and experimental projects.<br/> Explore my projects from experimental designs to professional work.</>
 }    
 
 const about = {
@@ -69,7 +69,7 @@ const about = {
     intro: {
         display: true,
         title: 'Introduction',
-        description: <>Texz is a multidisciplinary creator with deep technical expertise across game development, software engineering, music production, and digital art. With a passion for mastering diverse tools and technologies, Texz brings a wide-ranging approach to each project, constantly exploring new ways to push the boundaries of what’s possible.</>
+        description: <>A multidisciplinary creator with deep technical expertise, seamlessly blending game development, software engineering, music production, and digital art. Driven by a relentless curiosity for mastering diverse tools and technologies, each project is an exploration of pushing boundaries and reimagining what’s achievable across multiple creative realms. </>
     },
     work: {
         display: true, // set to false to hide this section

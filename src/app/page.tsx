@@ -285,10 +285,22 @@ export default function Home() {
                         <Heading
                             as="h2"
                             id={about.work.title}
-                            variant="display-strong-s" marginBottom="40">
+                            variant="display-strong-s" marginBottom="8">
                             Virtual production
                         </Heading>
                     </RevealFx>
+
+                    <Flex
+                            direction="column"
+                            textVariant="body-default-m"
+                            fillWidth
+                            gap="8"
+                            marginBottom="l"
+                            textSize="l"
+                            onBackground="neutral-strong"
+                            >
+                            <RevealFx translateY="16" delay={0.6} speed="slow">I'm exploring innovative methods to capture the detailed essence of both the real world and cinema. Utilizing little-known and complex tools, I create unprecedented visuals in virtual production with real-time engines (UE5), ensuring seamless compatibility with live streaming.</RevealFx>
+                    </Flex>
                     
                     {/* Exemple de call de ma gallerie de projet virtual production */}
                     <Flex fillWidth direction="column" className={styles.galleryContainer}> 
@@ -344,19 +356,43 @@ export default function Home() {
                     <Heading
                         as="h2"
                         id={about.studies.title}
-                        variant="display-strong-s" marginBottom="40" marginTop="40">
+                        variant="display-strong-s" marginBottom="8" marginTop="40">
                         Music composition
                     </Heading>
 
+                    <Flex
+                            direction="column"
+                            textVariant="body-default-m"
+                            fillWidth
+                            gap="8"
+                            marginBottom="l"
+                            textSize="l"
+                            onBackground="neutral-strong"
+                            >
+                            <RevealFx translateY="16" delay={0.6} speed="slow">As a versatile composer, I focus on blending genres and creating unique musical styles. While my portfolio may categorize pieces into distinct genres, most of my work defies simple classification. I consistently bring something extra—whether it's harmonic richness, melodic depth, or intricate rhythms. Jazz-inspired chords often add emotional complexity and ambiguity to my compositions.</RevealFx>
+                    </Flex>
+                    
                     {/* Exemple de call de projet musique */}
 					<MusicProjects range={[1,1]}/>
 
                     <Heading
                         as="h2"
                         id={about.writing.title}
-                        variant="display-strong-s" marginBottom="40" marginTop="40">
+                        variant="display-strong-s" marginBottom="8" marginTop="40">
                         Narration & Scriptwriting
                     </Heading>
+
+                    <Flex
+                            direction="column"
+                            textVariant="body-default-m"
+                            fillWidth
+                            gap="8"
+                            marginBottom="l"
+                            textSize="l"
+                            onBackground="neutral-strong"
+                            >
+                            <RevealFx translateY="16" delay={0.6} speed="slow">I craft deeply immersive narratives with a unique world-building approach and memorable, unconventional characters. My writing shifts between humor and complex dramatic stories with morally ambiguous themes. I believe the best comedies are those that reflect on impactful situations, and the most compelling villains are those that challenge our allegiance to the hero.</RevealFx>
+                    </Flex>
 
                     {/* Exemple de call de projet d'écriture */}
 					{routes['/blog'] && (
@@ -373,20 +409,33 @@ export default function Home() {
                     <Heading
                         as="h2"
                         id={about.progvideogames.title}
-                        variant="display-strong-s" marginBottom="40" marginTop="40">
+                        variant="display-strong-s" marginBottom="8" marginTop="40">
                         Programmation & video games
                     </Heading>
+
+                    <Flex
+                            direction="column"
+                            textVariant="body-default-m"
+                            fillWidth
+                            gap="8"
+                            marginBottom="l"
+                            textSize="l"
+                            onBackground="neutral-strong"
+                            >
+                            <RevealFx translateY="16" delay={0.6} speed="slow">I develop cutting-edge methods for complex, modular procedural generation to enhance productivity while maintaining a strong attention to detail and coherence across interconnected code systems and visual feedback. My work includes granular storytelling through level design, intuitive UI/UX design, and ensuring a seamless player experience. My approach is to create complex systems behind the scenes while presenting a clean, accessible interface that gradually reveals its depth as the player masters the game.</RevealFx>
+                    </Flex>
 
                     {/* Exemple de call d'un projet de jeu vidéo */}
                     <Projects range={[1,1]}/>
                     
+                    <hr style={{ marginBottom: '60px', border: 'none', borderTop: '1px solid #ccc', width: '70%' }} />
                     
                     { about.technical.display && (
                         <>
                             <Heading
                                 as="h2"
                                 id={about.technical.title}
-                                variant="display-strong-s" marginBottom="40">
+                                variant="display-strong-s" marginBottom="20">
                                 {about.technical.title}
                             </Heading>
                             <Flex
