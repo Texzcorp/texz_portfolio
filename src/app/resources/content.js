@@ -259,22 +259,22 @@ const gallery = [
         label: 'Visual Arts',
         preset: 'art3D',
         title: 'My Virtual Production Gallery',
-        description: `A photo collection by ${person.name}`,
+        description: `Some scenes made with unreal engine 5`,
         images: [
             { 
-                src: '/images/gallery/RND (2).mp4', 
+                src: '/images/gallery/virtual-prod/RND (2).mp4', 
                 alt: 'image',
                 orientation: 'Horizontal',
                 span: 1 
             },
             { 
-                src: '/images/gallery/RND (3).mp4', 
+                src: '/images/gallery/virtual-prod/RND (3).mp4', 
                 alt: 'image',
                 orientation: 'Horizontal',
                 span: 1
             },
             { 
-                src: '/images/gallery/RND (1).mp4', 
+                src: '/images/gallery/virtual-prod/RND (1).mp4', 
                 alt: 'image',
                 orientation: 'Horizontal'
             },
@@ -282,80 +282,80 @@ const gallery = [
     },
     {
         preset: 'dessins',
-        title: 'My Dessins Gallery',
-        description: `A photo collection by ${person.name}`,
+        title: 'My drawings gallery',
+        description: `Some drawings I made`,
         images: [
             { 
-                src: '/images/gallery/img (4).png', 
+                src: '/images/gallery/dessins/img (4).jpg', 
                 alt: 'image',
                 orientation: 'square'
             },
             { 
-                src: '/images/gallery/img (5).png', 
+                src: '/images/gallery/dessins/img (5).jpg', 
                 alt: 'image',
                 orientation: 'square'
             },
             { 
-                src: '/images/gallery/img (6).png', 
+                src: '/images/gallery/dessins/img (6).jpg', 
                 alt: 'image',
                 orientation: 'square',
                 span: 2
             },
             { 
-                src: '/images/gallery/img (7).png', 
+                src: '/images/gallery/dessins/img (7).jpg', 
                 alt: 'image',
                 orientation: 'square'
             },
             { 
-                src: '/images/gallery/img (10).png', 
+                src: '/images/gallery/dessins/img (10).jpg', 
                 alt: 'image',
                 orientation: 'square',
                 span: 2
             },
             { 
-                src: '/images/gallery/img (11).png', 
+                src: '/images/gallery/dessins/img (11).jpg', 
                 alt: 'image',
                 orientation: 'square'
             },
             { 
-                src: '/images/gallery/img (3).png', 
+                src: '/images/gallery/dessins/img (3).jpg', 
                 alt: 'image',
                 orientation: 'square'
             },
             { 
-                src: '/images/gallery/img (14).png', 
+                src: '/images/gallery/dessins/img (14).jpg', 
                 alt: 'image',
                 orientation: 'square',
                 span: 2
             },
             { 
-                src: '/images/gallery/img (8).png', 
+                src: '/images/gallery/dessins/img (8).jpg', 
                 alt: 'image',
                 orientation: 'square'
             },
             { 
-                src: '/images/gallery/img (1).png', 
+                src: '/images/gallery/dessins/img (1).jpg', 
                 alt: 'image',
                 orientation: 'square',
                 span: 2
             },
             { 
-                src: '/images/gallery/img (9).png', 
+                src: '/images/gallery/dessins/img (9).jpg', 
                 alt: 'image',
                 orientation: 'square'
             },
             { 
-                src: '/images/gallery/img (2).png', 
+                src: '/images/gallery/dessins/img (2).jpg', 
                 alt: 'image',
                 orientation: 'square'
             },
             { 
-                src: '/images/gallery/img (12).png', 
+                src: '/images/gallery/dessins/img (12).jpg', 
                 alt: 'image',
                 orientation: 'horizontal'
             },
             { 
-                src: '/images/gallery/img (13).png', 
+                src: '/images/gallery/dessins/img (13).jpg', 
                 alt: 'image',
                 orientation: 'horizontal'
             },
@@ -368,41 +368,89 @@ const gallery = [
         description: `A photo collection by ${person.name}`,
         images: [
             { 
-                src: '/images/gallery/img (7).png', 
+                src: '/images/gallery/logo/Texz (1).jpg', 
                 alt: 'image',
                 orientation: 'square',
                 span: 2
             },
             { 
-                src: '/images/gallery/img (8).png', 
+                src: '/images/gallery/logo/Texz (2).jpg', 
                 alt: 'image',
                 orientation: 'square'
             },
             { 
-                src: '/images/gallery/img (12).png', 
+                src: '/images/gallery/logo/Texz (3).jpg', 
                 alt: 'image',
                 orientation: 'square'
             },
             { 
-                src: '/images/gallery/img (9).png', 
+                src: '/images/gallery/logo/Texz (4).jpg', 
                 alt: 'image',
                 orientation: 'square'
             },
             { 
-                src: '/images/gallery/img (11).png', 
+                src: '/images/gallery/logo/Barba (1).jpg', 
                 alt: 'image',
                 orientation: 'square'
             },
             { 
-                src: '/images/gallery/img (13).png', 
+                src: '/images/gallery/logo/Din.jpg', 
                 alt: 'image',
                 orientation: 'square'
             },
             { 
-                src: '/images/gallery/img (2).png', 
+                src: '/images/gallery/logo/RCD (2).jpg', 
                 alt: 'image',
                 orientation: 'square'
             },
+            { 
+                src: '/images/gallery/logo/Barba (2).jpg', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/logo/Barba (3).jpg', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/logo/RCD (1).jpg', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/logo/RCD (3).jpg', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/logo/Recul.jpg', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            
+            
+            { 
+                src: '/images/gallery/logo/KAIROS.jpg', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/logo/Shaker.jpg', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/logo/infody (2).jpg', 
+                alt: 'image',
+                orientation: 'square'
+            },
+            { 
+                src: '/images/gallery/logo/infody (1).jpg', 
+                alt: 'image',
+                orientation: 'horizontal',
+            },
+            
         ]
     }
 ];
