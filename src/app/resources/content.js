@@ -24,12 +24,12 @@ const social = [
     {
         name: 'GitHub',
         icon: 'github',
-        link: 'https://github.com/once-ui-system/nextjs-starter',
+        link: 'https://github.com/Texzcorp',
     },
     {
-        name: 'LinkedIn',
-        icon: 'linkedin',
-        link: 'https://www.linkedin.com/company/once-ui/',
+        name: 'Youtube Music',
+        icon: 'youtube',
+        link: 'https://www.youtube.com/@texzmusic9981',
     },
     {
         name: 'X',
@@ -39,7 +39,7 @@ const social = [
     {
         name: 'Email',
         icon: 'email',
-        link: 'mailto:example@gmail.com',
+        link: 'texzcorp@gmail.com',
     },
 ]
 

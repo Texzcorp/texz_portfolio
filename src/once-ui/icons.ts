@@ -25,7 +25,8 @@ import {
     PiUserCircleDuotone,
     PiGridFourDuotone,
     PiBookBookmarkDuotone,
-    PiImageDuotone
+    PiImageDuotone,
+    PiYoutubeLogoDuotone
 } from "react-icons/pi";
 
 import {
@@ -80,7 +81,7 @@ import {
     MdOutlineDescription,
     MdBook,
     MdHome,
-    MdOutlineHome
+    MdOutlineHome,
 } from "react-icons/md"; // Icons for coding, music, arts, writing, narrative design, home
 
 import {
@@ -96,7 +97,8 @@ import {
 
 import {
     FaHome,
-    FaHouseUser
+    FaHouseUser,
+    FaYoutube
 } from "react-icons/fa"; // More home variants
 
 export const iconLibrary: Record<string, IconType> = {
@@ -157,6 +159,7 @@ export const iconLibrary: Record<string, IconType> = {
     musicOff: TbMusicOff,
     musicCode: TbMusicCode,
     notes: TbNotes,
+    youtube: FaYoutube,
 
     // Nouveaux icônes pour les arts visuels
     paintBrush: GiPaintBrush,
