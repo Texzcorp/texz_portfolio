@@ -1,4 +1,4 @@
-import { Flex, Heading } from '@/once-ui/components';
+import { Flex, RevealFx, Heading } from '@/once-ui/components';
 import { Mailchimp } from '@/app/components';
 import { Posts } from '@/app/blog/components/Posts';
 
@@ -61,6 +61,11 @@ export default function Blog() {
 					}),
 				}}
 			/>
+			<RevealFx
+				style={{width: '100%'}}
+				delay={0.25}
+				speed="slow"
+			>
             <Heading
                 marginBottom="l"
                 variant="display-strong-s">
@@ -74,6 +79,7 @@ export default function Blog() {
             {newsletter.display && (
                 <Mailchimp/>
             )}
+			</RevealFx>
         </Flex>
     );
 }

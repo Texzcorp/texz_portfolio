@@ -68,9 +68,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             <Flex onClick={handleImageClick}>
             <RevealFx
                     style={{width: '100%'}}
-                    delay={0.4}
+                    delay={0.1}
                     trigger={isTransitioning}
-                    speed="fast">
+                    speed="slow">
                     <SmartImage
                         tabIndex={0}
                         radius="l"
@@ -110,6 +110,12 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             <Flex
                 mobileDirection="column"
                 fillWidth paddingX="l" paddingTop="xs" paddingBottom="m" gap="l">
+                <RevealFx
+                    style={{width: '100%'}}
+                    translateY="8" 
+                    delay={0.1}
+                    speed="medium"
+                >
                 {title && (
                     <Flex
                         flex={5}>
@@ -152,6 +158,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         )}
                     </Flex>
                 )}
+                </RevealFx>    
                 
                 {/* Section Musique */}
                 {mainMusic && (
