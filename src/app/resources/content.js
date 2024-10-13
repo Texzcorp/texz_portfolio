@@ -223,7 +223,7 @@ const about = {
 }
 
 const blog = {
-    label: 'Writing & Narrative Design',
+    label: 'Writing',
     title: 'Experiences in Narration & Scriptwriting',
     description: `Read what ${person.name} has been up to recently`
     // Create new blog posts by adding a new .mdx file to app/blog/posts
@@ -231,7 +231,7 @@ const blog = {
 }
 
 const work = {
-    label: 'Video Games & Programming',
+    label: 'Dev & Games',
     title: 'My video Games & programming projects',
     description: `Design and dev projects by ${person.name}`
     // Create new project pages by adding a new .mdx file to app/blog/posts
@@ -247,7 +247,7 @@ const experimentalproj = {
 }
 
 const music = {
-    label: 'Music Production',
+    label: 'Music',
     title: 'My musics',
     description: `Design and dev projects by ${person.name}`
     // Create new project pages by adding a new .mdx file to app/blog/posts
