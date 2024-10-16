@@ -1,0 +1,8 @@
+.vantaBackground {
+    opacity: 0;
+    transition: opacity 1s ease-in-out; // Transition de 1 seconde pour un effet de fade-in
+}
+
+.vantaBackgroundVisible {
+    opacity: 0.5; // Opacité cible après le fade-in
+}

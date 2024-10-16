@@ -1,29 +1,43 @@
 "use client";
 
 // BackgroundContext.tsx
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
-type BackgroundContextType = {
+// Définition du contexte avec les types nécessaires
+interface BackgroundContextProps {
     effectActive: boolean;
     setEffectActive: (active: boolean) => void;
-};
+    updateIsPlaying: (id: string, isPlaying: boolean) => void;
+}
 
-const BackgroundContext = createContext<BackgroundContextType | undefined>(undefined);
+const BackgroundContext = createContext<BackgroundContextProps>({
+    effectActive: false,
+    setEffectActive: () => {},
+    updateIsPlaying: () => {},
+});
 
-export const BackgroundProvider = ({ children }: { children: ReactNode }) => {
+interface BackgroundProviderProps {
+    children: ReactNode;
+}
+
+export const BackgroundProvider = ({ children }: BackgroundProviderProps) => {
     const [effectActive, setEffectActive] = useState(false);
+    const [players, setPlayers] = useState<Record<string, boolean>>({});
+
+    const updateIsPlaying = useCallback((id: string, isPlaying: boolean) => {
+        setPlayers((prev) => {
+            const updatedPlayers = { ...prev, [id]: isPlaying };
+            const isAnyPlaying = Object.values(updatedPlayers).some((playing) => playing);
+            setEffectActive(isAnyPlaying);
+            return updatedPlayers;
+        });
+    }, []);
 
     return (
-        <BackgroundContext.Provider value={{ effectActive, setEffectActive }}>
+        <BackgroundContext.Provider value={{ effectActive, setEffectActive, updateIsPlaying }}>
             {children}
         </BackgroundContext.Provider>
     );
 };
 
-export const useBackground = () => {
-    const context = useContext(BackgroundContext);
-    if (!context) {
-        throw new Error('useBackground must be used within a BackgroundProvider');
-    }
-    return context;
-};
+export const useBackground = () => useContext(BackgroundContext);

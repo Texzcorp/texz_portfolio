@@ -1,5 +1,11 @@
 @use 'sass:math';
 
+@media (--m) {
+  .timer {
+    display: none;
+  }
+}
+
 .container {
   display: flex;
   align-items: center;
@@ -23,7 +29,6 @@
     box-shadow: 0 12px 40px rgba(0, 255, 255, 0.4);
   }
 }
-
 
 .button {
   background-color: transparent;

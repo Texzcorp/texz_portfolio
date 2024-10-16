@@ -13,6 +13,7 @@ interface MusicPlayerProps {
 
 const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const { updateIsPlaying } = useBackground();
   const [isPlaying, setIsPlaying] = useState(false);
   const { setEffectActive: setGlobalIsPlaying } = useBackground();
   const [currentTime, setCurrentTime] = useState(0);
@@ -21,105 +22,120 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
   const [muted, setMuted] = useState(false);
 
   useEffect(() => {
-    const audio = audioRef.current;
+      const audio = audioRef.current;
 
-    if (audio) {
-      audio.volume = 0.35;
+      if (audio) {
+          audio.volume = volume;
 
-      const updateTime = () => setCurrentTime(audio.currentTime);
-      const setAudioData = () => setDuration(audio.duration);
+          const updateTime = () => setCurrentTime(audio.currentTime);
+          const setAudioData = () => setDuration(audio.duration);
 
-      audio.addEventListener('timeupdate', updateTime);
-      audio.addEventListener('loadeddata', setAudioData);
+          audio.addEventListener('timeupdate', updateTime);
+          audio.addEventListener('loadeddata', setAudioData);
 
-      return () => {
-        audio.removeEventListener('timeupdate', updateTime);
-        audio.removeEventListener('loadeddata', setAudioData);
-      };
-    }
-  }, []);
+          return () => {
+              audio.removeEventListener('timeupdate', updateTime);
+              audio.removeEventListener('loadeddata', setAudioData);
+          };
+      }
+  }, [volume]);
 
   const togglePlay = () => {
-    const audio = audioRef.current;
-    if (audio) {
-      if (isPlaying) {
-        audio.pause();
-        setGlobalIsPlaying(false);
-      } else {
-        audio.play();
-        setGlobalIsPlaying(true);
+      const audio = audioRef.current;
+      if (audio) {
+          if (isPlaying) {
+              audio.pause();
+              setGlobalIsPlaying(false);
+          } else {
+              audio.play();
+              setGlobalIsPlaying(true);
+          }
+          setIsPlaying(!isPlaying);
+          updateIsPlaying(src, !isPlaying); // Met à jour l'état `isPlaying` pour ce lecteur
       }
-      setIsPlaying(!isPlaying);
-    }
   };
 
   const toggleMute = () => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.muted = !muted;
-      setMuted(!muted);
-    }
+      const audio = audioRef.current;
+      if (audio) {
+          audio.muted = !muted;
+          setMuted(!muted);
+      }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.volume = Number(e.target.value);
-      setVolume(audio.volume);
-    }
+      const audio = audioRef.current;
+      if (audio) {
+          audio.volume = Number(e.target.value);
+          setVolume(audio.volume);
+      }
   };
 
   const playerStyles = compact ? compactPlayerStyles : glassPlayerStyles;
 
   return (
-    <div
-      className={`${styles.container} ${isPlaying ? styles.playing : ''}`}
-      style={playerStyles.container}
-    >
-      {isPlaying && (
-        <div className={styles.waveAnimation}><div className={styles.particle}></div><div className={styles.particle}></div><div className={styles.particle}></div></div>
-      )}
-      <button onClick={togglePlay} style={playerStyles.button}>
-        {isPlaying ? <HiPause size={compact ? 28 : 32} color="#00FFFF" /> : <HiPlay size={compact ? 28 : 32} color="#00FFFF" />}
-      </button>
+      <div
+          className={`${styles.container} ${isPlaying ? styles.playing : ''}`}
+          style={playerStyles.container}
+      >
+          {isPlaying && (
+              <div className={styles.waveAnimation}>
+                  <div className={styles.particle}></div>
+                  <div className={styles.particle}></div>
+                  <div className={styles.particle}></div>
+              </div>
+          )}
+          <button onClick={togglePlay} style={playerStyles.button}>
+              {isPlaying ? (
+                  <HiPause size={compact ? 28 : 32} color="#00FFFF" />
+              ) : (
+                  <HiPlay size={compact ? 28 : 32} color="#00FFFF" />
+              )}
+          </button>
 
-      <input
-        type="range"
-        min="0"
-        max={duration}
-        value={currentTime}
-        onChange={(e) => {
-          if (audioRef.current) {
-            audioRef.current.currentTime = Number(e.target.value);
-          }
-        }}
-        className={styles.progress}
-      />
+          <input
+              type="range"
+              min="0"
+              max={duration}
+              value={currentTime}
+              onChange={(e) => {
+                  if (audioRef.current) {
+                      audioRef.current.currentTime = Number(e.target.value);
+                  }
+              }}
+              className={styles.progress}
+          />
 
-      {!compact && (
-        <span style={playerStyles.time}>
-          {Math.floor(currentTime / 60)}:{Math.floor(currentTime % 60).toString().padStart(2, '0')} /
-          {Math.floor(duration / 60)}:{Math.floor(duration % 60).toString().padStart(2, '0')}
-        </span>
-      )}
+          {!compact && (
+              <span className={`${styles.time} ${styles.timer}`} style={playerStyles.time}>
+                  {Math.floor(currentTime / 60)}:
+                  {Math.floor(currentTime % 60).toString().padStart(2, '0')} / 
+                  {Math.floor(duration / 60)}:
+                  {Math.floor(duration % 60).toString().padStart(2, '0')}
+              </span>
+          )}
 
-      <div style={playerStyles.volumeControl}>
-        <button onClick={toggleMute} style={playerStyles.volumeButton}>
-          {muted || volume === 0 ? <MdVolumeOff size={compact ? 20 : 24} color="#00FFFF" /> : <MdVolumeUp size={compact ? 20 : 24} color="#00FFFF" />}
-        </button>
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          value={volume}
-          onChange={handleVolumeChange}
-          className={styles.volumeSlider}
-        />
+          <div style={playerStyles.volumeControl}>
+              <button onClick={toggleMute} style={playerStyles.volumeButton}>
+                  {muted || volume === 0 ? (
+                      <MdVolumeOff size={compact ? 20 : 24} color="#00FFFF" />
+                  ) : (
+                      <MdVolumeUp size={compact ? 20 : 24} color="#00FFFF" />
+                  )}
+              </button>
+              <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                  className={styles.volumeSlider}
+              />
+          </div>
+
+          <audio ref={audioRef} src={src} style={{ display: 'none' }} />
       </div>
-
-      <audio ref={audioRef} src={src} style={{ display: 'none' }} />
-    </div>
   );
 };
 

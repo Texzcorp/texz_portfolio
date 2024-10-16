@@ -2,69 +2,83 @@ import { getPosts } from '@/app/utils';
 import { Flex } from '@/once-ui/components';
 import { MusicProjects } from '@/app/music/components/Projects';
 import { baseURL, person, music } from '../resources';
+import VantaBackground from '@/app/components/VantaBackground'; // Assurez-vous que le chemin est correct
+import Notification from '@/app/components/Notification'; // Assurez-vous que le chemin est correct pour le composant Notification
+import styles from '@/app/about/about.module.scss';
 
 export function generateMetadata() {
-	const title = music.title;
-	const description = music.description;
-	const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
+    const title = music.title;
+    const description = music.description;
+    const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
 
-	return {
-		title,
-		description,
-		openGraph: {
-			title,
-			description,
-			type: 'website',
-			url: `https://${baseURL}/music`,
-			images: [
-				{
-					url: ogImage,
-					alt: title,
-				},
-			],
-		},
-		twitter: {
-			card: 'summary_large_image',
-			title,
-			description,
-			images: [ogImage],
-		},
-	};
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: 'website',
+            url: `https://${baseURL}/music`,
+            images: [
+                {
+                    url: ogImage,
+                    alt: title,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: [ogImage],
+        },
+    };
 }
 
 export default function Music() {
     let allProjects = getPosts(['src', 'app', 'music', 'projects']);
 
     return (
-        <Flex
-			fillWidth maxWidth="m"
-			direction="column">
-            <script
-                type="application/ld+json"
-                suppressHydrationWarning
-                dangerouslySetInnerHTML={{
-                    __html: JSON.stringify({
-                        '@context': 'https://schema.org',
-                        '@type': 'CollectionPage',
-                        headline: music.title,
-                        description: music.description,
-                        url: `https://${baseURL}/projects`,
-                        image: `${baseURL}/og?title=Design%20Projects`,
-                        author: {
-                            '@type': 'Person',
-                            name: person.name,
-                        },
-                        hasPart: allProjects.map(project => ({
-                            '@type': 'CreativeMusic',
-                            headline: project.metadata.title,
-                            description: project.metadata.summary,
-                            url: `https://${baseURL}/projects/${project.slug}`,
-                            image: `${baseURL}/${project.metadata.image}`,
-                        })),
-                    }),
-                }}
-            />
-            <MusicProjects/>
-        </Flex>
+        <>
+            <VantaBackground />
+            <Flex fillWidth maxWidth="m" direction="column">
+                <script
+                    type="application/ld+json"
+                    suppressHydrationWarning
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            '@context': 'https://schema.org',
+                            '@type': 'CollectionPage',
+                            headline: music.title,
+                            description: music.description,
+                            url: `https://${baseURL}/projects`,
+                            image: `${baseURL}/og?title=Design%20Projects`,
+                            author: {
+                                '@type': 'Person',
+                                name: person.name,
+                            },
+                            hasPart: allProjects.map(project => ({
+                                '@type': 'CreativeMusic',
+                                headline: project.metadata.title,
+                                description: project.metadata.summary,
+                                url: `https://${baseURL}/projects/${project.slug}`,
+                                image: `${baseURL}/${project.metadata.image}`,
+                            })),
+                        }),
+                    }}
+                />
+
+                {/* Utilisation du composant Notification */}
+                <Notification
+                    message="Never miss my latest releases"
+                    link="https://www.youtube.com/@texzmusic9981?sub_confirmation=1" // Remplace "your-channel-link" par le lien de ta chaîne YouTube
+                    linkText="Subscribe"
+                    iconName="youtube"
+                    delay={3000} // Délai d'affichage de 1 seconde (modifiable)
+                />
+
+                <MusicProjects />
+            </Flex>
+        </>
     );
 }

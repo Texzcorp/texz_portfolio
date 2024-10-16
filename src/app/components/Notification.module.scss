@@ -1,0 +1,38 @@
+.notification {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--brand-alpha-medium);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 23px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px); // Position avant l'animation
+
+    &.show {
+        opacity: 1;
+        transform: translateY(0); // Position après l'animation
+    }
+
+    @media (max-width: 1168px) {
+        bottom: 90px; 
+        max-width: 90%; // Limiter la largeur maximale sur mobile
+    }
+}
+
+.notificationLink {
+    text-decoration: none;
+    background-color: rgba(255, 0, 0, 0.5);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    border: 2px solid var(--brand-alpha-medium);
+    display: inline-block;
+}
