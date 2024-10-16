@@ -41,8 +41,8 @@ const VantaBackground = () => {
                     speedLimit: 5.0,
                     separation: 7.0,
                     alignment: 50.0,
-                    cohesion: 80.0,
-                    quantity: 2.0,
+                    cohesion: 90.0,
+                    quantity: 3.0,
                     backgroundAlpha: 0.0,
                 });
 
