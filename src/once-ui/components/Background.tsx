@@ -1,6 +1,9 @@
 "use client";
 
 import React, { CSSProperties, forwardRef, useEffect, useState, useRef } from 'react';
+import * as THREE from 'three';  // Assurez-vous que three.js est installé en tant que dépendance
+import BIRDS from 'vanta/dist/vanta.birds.min'; // Importation de Vanta Birds
+import { useBackground } from "@/app/components/BackgroundContext";
 
 interface BackgroundProps {
     position?: CSSProperties['position'];
@@ -22,7 +25,62 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
     style
 }, ref) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const { effectActive } = useBackground();
+    const vantaRef = useRef<HTMLDivElement>(null); // Référence pour le Vanta background
+    const [vantaEffect, setVantaEffect] = useState<any>(null); // Effet Vanta.js
     const [stars, setStars] = useState<Array<{ id: number, top: string, left: string }>>([]);
+
+    useEffect(() => {
+        let timeoutId: NodeJS.Timeout;
+    
+        if (effectActive && vantaRef.current) {
+            if (vantaEffect) {
+                vantaEffect.destroy();
+                setVantaEffect(null);
+            }
+    
+            // Utiliser un délai avant d'initialiser l'effet
+            timeoutId = setTimeout(() => {
+                const newEffect = BIRDS({
+                    el: vantaRef.current,
+                    THREE,
+                    mouseControls: true,
+                    touchControls: true,
+                    gyroControls: false,
+                    minHeight: 200.00,
+                    minWidth: 200.00,
+                    scale: 1.00,
+                    scaleMobile: 1.00,
+                    color1: 0x4d4229,
+                    color2: 0x69b2ff,
+                    birdSize: 0.70,
+                    wingSpan: 10.00,
+                    speedLimit: 5.00,
+                    separation: 7.00,
+                    alignment: 50.00,
+                    cohesion: 80.00,
+                    quantity: 2.00,
+                    backgroundAlpha: 0.00,
+                });
+                setVantaEffect(newEffect);
+            }, 100); // Délai de 100 ms pour laisser le temps au DOM de se stabiliser
+        }
+    
+        if (!effectActive && vantaEffect) {
+            vantaEffect.destroy();
+            setVantaEffect(null);
+        }
+    
+        // Nettoyage lors du démontage ou lorsque `effectActive` change
+        return () => {
+            clearTimeout(timeoutId);
+            if (vantaEffect) {
+                vantaEffect.destroy();
+                setVantaEffect(null);
+            }
+        };
+    }, [effectActive]);
+    
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -162,6 +220,7 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
 
     return (
         <>
+            <div ref={vantaRef} style={{ position: 'fixed', top: 0, left: 0, zIndex: -2, width: '100%', height: '100%' }}></div>
             {gradient && (
                 <div
                     ref={ref}

@@ -12,6 +12,8 @@ import { Source_Code_Pro } from 'next/font/google';
 
 import { Metadata } from "next";
 
+import { BackgroundProvider } from "@/app/components";
+
 export const metadata: Metadata = {
 	metadataBase: new URL('https://' + baseURL),
 	title: home.title,
@@ -68,47 +70,49 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children } : RootLayoutProps) {
 	return (
-		<Flex
-			as="html" lang="en"
-			background="page"
-			data-neutral={style.neutral} data-brand={style.brand} data-accent={style.accent}
-			data-solid={style.solid} data-solid-style={style.solidStyle}
-			data-theme={style.theme}
-			data-border={style.border}
-			data-surface={style.surface}
-			data-transition={style.transition}
-			className={classNames(
-				primary.variable,
-				secondary ? secondary.variable : '',
-				tertiary ? tertiary.variable : '',
-				code.variable)}>
-			<Flex style={{minHeight: '100vh'}}
-				as="body"
-				fillWidth margin="0" padding="0"
-				direction="column">
-				<Background
-					gradient={effects.gradient}
-					dots={effects.dots}
-					lines={effects.lines}/>
-				<Flex
-					fillWidth
-					minHeight="16">
-				</Flex>
-				<Header/>
-				<Flex
-					zIndex={0}
-					fillWidth paddingY="l" paddingX="l"
-					justifyContent="center" flex={1}>
+		<BackgroundProvider>
+			<Flex
+				as="html" lang="en"
+				background="page"
+				data-neutral={style.neutral} data-brand={style.brand} data-accent={style.accent}
+				data-solid={style.solid} data-solid-style={style.solidStyle}
+				data-theme={style.theme}
+				data-border={style.border}
+				data-surface={style.surface}
+				data-transition={style.transition}
+				className={classNames(
+					primary.variable,
+					secondary ? secondary.variable : '',
+					tertiary ? tertiary.variable : '',
+					code.variable)}>
+				<Flex style={{minHeight: '100vh'}}
+					as="body"
+					fillWidth margin="0" padding="0"
+					direction="column">
+					<Background
+						gradient={effects.gradient}
+						dots={effects.dots}
+						lines={effects.lines}/>
 					<Flex
-						justifyContent="center"
-						fillWidth minHeight="0">
-						<RouteGuard>
-							{children}
-						</RouteGuard>
+						fillWidth
+						minHeight="16">
 					</Flex>
+					<Header/>
+					<Flex
+						zIndex={0}
+						fillWidth paddingY="l" paddingX="l"
+						justifyContent="center" flex={1}>
+						<Flex
+							justifyContent="center"
+							fillWidth minHeight="0">
+							<RouteGuard>
+								{children}
+							</RouteGuard>
+						</Flex>
+					</Flex>
+					<Footer/>
 				</Flex>
-				<Footer/>
 			</Flex>
-		</Flex>
+		</BackgroundProvider>
 	);
 }

@@ -12,6 +12,7 @@
 		"@floating-ui/react-dom": "^2.1.1",
 		"@mdx-js/loader": "^3.0.1",
 		"@next/mdx": "^14.2.5",
+		"@types/three": "^0.169.0",
 		"classnames": "^2.5.1",
 		"cookie": "^0.6.0",
 		"gray-matter": "^4.0.3",
@@ -26,7 +27,9 @@
 		"remark": "^15.0.1",
 		"remark-html": "^16.0.1",
 		"sass": "^1.77.6",
-		"sharp": "^0.33.4"
+		"sharp": "^0.33.4",
+		"three": "^0.121.0",
+		"vanta": "^0.5.24"
 	},
 	"devDependencies": {
 		"@csstools/postcss-global-data": "^2.1.1",

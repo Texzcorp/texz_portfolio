@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MdOutlineMusicNote, MdVolumeUp, MdVolumeOff } from 'react-icons/md';
 import { HiPlay, HiPause } from 'react-icons/hi';
 import styles from './MusicPlayer.module.scss';
+import { useBackground } from "@/app/components/BackgroundContext";
 
 interface MusicPlayerProps {
   src: string;
@@ -13,6 +14,7 @@ interface MusicPlayerProps {
 const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const { setEffectActive: setGlobalIsPlaying } = useBackground();
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.35);
@@ -42,8 +44,10 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
     if (audio) {
       if (isPlaying) {
         audio.pause();
+        setGlobalIsPlaying(false);
       } else {
         audio.play();
+        setGlobalIsPlaying(true);
       }
       setIsPlaying(!isPlaying);
     }
