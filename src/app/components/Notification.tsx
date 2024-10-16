@@ -32,7 +32,7 @@ export default function Notification({ message, link, linkText, iconName, delay 
 
     return (
         <div className={`${styles.notification} ${show ? styles.show : ''}`}>
-            <Icon name={iconName} onBackground="brand-weak" />
+            <Icon name={iconName} className={styles.icon} onBackground="brand-weak" />
             <span>{message}</span>
             <a
                 href={link}

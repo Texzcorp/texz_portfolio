@@ -1,8 +1,14 @@
 .vantaBackground {
     opacity: 0;
-    transition: opacity 1s ease-in-out; // Transition de 1 seconde pour un effet de fade-in
-}
+    transition: opacity 1s; // Par défaut, le fade out est rapide
 
-.vantaBackgroundVisible {
-    opacity: 0.5; // Opacité cible après le fade-in
+    &.vantaBackgroundVisible {
+        opacity: 0.5;
+        transition: opacity 10s; // La durée du fade in est plus longue
+    }
+
+    &.fadeOut {
+        opacity: 0;
+        transition: opacity 1s; // La durée du fade out est plus courte
+    }
 }

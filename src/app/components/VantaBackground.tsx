@@ -8,9 +8,10 @@ import styles from './VantaBackground.module.scss'; // Import du fichier SCSS
 
 const VantaBackground = () => {
     const vantaRef = useRef<HTMLDivElement>(null);
-    const { effectActive, setEffectActive } = useBackground(); // Inclut la fonction pour modifier `effectActive`
+    const { effectActive } = useBackground(); // Inclut la fonction pour modifier `effectActive`
     const [vantaEffect, setVantaEffect] = useState<any>(null);
     const [isVisible, setIsVisible] = useState(false);
+    const [isFadingOut, setIsFadingOut] = useState(false);
 
     useEffect(() => {
         let isComponentMounted = true;
@@ -47,6 +48,7 @@ const VantaBackground = () => {
 
                 setVantaEffect(newEffect);
                 setIsVisible(true);
+                setIsFadingOut(false);
             }
         };
 
@@ -54,11 +56,16 @@ const VantaBackground = () => {
         if (effectActive) {
             initVanta();
         } else {
-            // Si `effectActive` devient false, détruire l'effet immédiatement
+            // Si `effectActive` devient false, lancer le fade out avant de détruire l'effet
             if (vantaEffect) {
-                vantaEffect.destroy();
-                setVantaEffect(null);
-                setIsVisible(false);
+                setIsFadingOut(true);
+                setTimeout(() => {
+                    if (isComponentMounted) {
+                        vantaEffect.destroy();
+                        setVantaEffect(null);
+                        setIsVisible(false);
+                    }
+                }, 1000); // Durée du fade out en millisecondes (ici, 1000ms = 1s)
             }
         }
 
@@ -72,15 +79,10 @@ const VantaBackground = () => {
         };
     }, [effectActive]);
 
-    // Forcer la réinitialisation de `effectActive` lors de chaque montage
-    useEffect(() => {
-        setEffectActive(false);
-    }, [setEffectActive]);
-
     return (
         <div
             ref={vantaRef}
-            className={`${styles.vantaBackground} ${isVisible ? styles.vantaBackgroundVisible : ''}`}
+            className={`${styles.vantaBackground} ${isVisible ? styles.vantaBackgroundVisible : ''} ${isFadingOut ? styles.fadeOut : ''}`}
             style={{
                 position: 'fixed',
                 top: 0,
@@ -88,6 +90,7 @@ const VantaBackground = () => {
                 zIndex: -2,
                 width: '100%',
                 height: '100%',
+                opacity: isVisible && !isFadingOut ? 0.5 : 0, // Réduit l'opacité à 0 pendant le fade out
             }}
         />
     );
