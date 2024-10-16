@@ -24,6 +24,21 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
 
   const isCurrentPlayer = activePlayerSrc === src;
 
+  const handleEnded = useCallback(() => {
+    setActivePlayer(null); // Indique que le lecteur s'est arrêté
+    stopPlaying(); // Désactive l'effet de fond
+  }, [setActivePlayer, stopPlaying]);
+
+  useEffect(() => {
+    const audioElement = audioRef.current;
+    if (audioElement) {
+      audioElement.addEventListener('ended', handleEnded);
+      return () => {
+        audioElement.removeEventListener('ended', handleEnded);
+      };
+    }
+  }, [handleEnded]);
+
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
