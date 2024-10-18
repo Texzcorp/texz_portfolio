@@ -17,7 +17,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.35);
+  const [volume, setVolume] = useState(0.75);
   const [muted, setMuted] = useState(false);
   const { startPlaying, stopPlaying } = useBackground();
   const { activePlayerSrc, setActivePlayer } = useMusicPlayerContext();
@@ -68,6 +68,12 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
       audioRef.current.muted = !muted;
     }
   };
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume; // Applique le volume initial
+    }
+  }, [volume]);
 
   // Attach audio events and handle metadata loading for duration and currentTime
   useEffect(() => {

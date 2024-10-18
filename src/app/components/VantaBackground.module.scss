@@ -1,14 +1,17 @@
 .vantaBackground {
     opacity: 0;
     transition: opacity 1s; // Par défaut, le fade out est rapide
+    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5)) drop-shadow(0 0 20px rgba(0, 255, 255, 0.4)) drop-shadow(0 0 30px rgba(0, 255, 255, 0.3)); // Effet néon de base
 
     &.vantaBackgroundVisible {
         opacity: 0.5;
         transition: opacity 10s; // La durée du fade in est plus longue
+        filter: drop-shadow(0 0 10px rgb(0, 225, 255)) drop-shadow(0 0 50px rgba(0, 162, 255, 0.8)) drop-shadow(0 0 80px rgba(0, 68, 255, 0.6)); // Effet néon visible
     }
 
     &.fadeOut {
         opacity: 0;
         transition: opacity 1s; // La durée du fade out est plus courte
+        filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5)) drop-shadow(0 0 20px rgba(0, 255, 255, 0.4)) drop-shadow(0 0 30px rgba(0, 255, 255, 0.3)); // Retour à l'effet néon plus faible
     }
 }
