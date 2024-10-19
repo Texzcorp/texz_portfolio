@@ -36,10 +36,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
     const handleImageClick = () => {
         if (images.length > 1 && !isFadingOut) {
-            setIsFadingOut(true); // Démarrer le fade-out
-            setIsTransitioning(false); // Désactiver la transition pour la sortie
+            setIsFadingOut(true); // Démarrer la transition
+            setIsTransitioning(false); // Désactiver la transition normale
             const nextIndex = (activeIndex + 1) % images.length;
-            setTimeout(() => handleControlClick(nextIndex), 630); // Délai pour synchroniser avec le fade-out
+            setTimeout(() => handleControlClick(nextIndex), 630); // Synchroniser le changement d'image
         }
     };
 
@@ -51,11 +51,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     };
 
     const handleImageLoad = () => {
-        setIsImageLoaded(true); // Indiquer que l'image est bien chargée
+        setIsImageLoaded(true); // L'image est chargée
         setTimeout(() => {
-            setIsFadingOut(false); // Le fade-out est terminé
-            setIsTransitioning(true); // Démarrer le fade-in
-        }, 100); // Petite latence avant le fade-in
+            setIsFadingOut(false); // Fin de l'effet de flou
+            setIsTransitioning(true); // On peut activer le fade-in avec blur
+        }, 100); // Petite latence avant d'activer le flou
     };
 
     return (
@@ -73,14 +73,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         alt={title}
                         aspectRatio="16 / 9"
                         src={images[activeIndex]}
-                        onLoad={handleImageLoad} // Déclencher une fois que l'image est chargée
+                        onLoad={handleImageLoad} // Image chargée
                         style={{
                             border: '1px solid var(--neutral-alpha-weak)',
-                            ...(images.length > 1 && {
-                                cursor: 'pointer',
-                            }),
-                            opacity: isImageLoaded ? 1 : 0, // Masquer l'image tant qu'elle n'est pas chargée
-                            transition: 'opacity 0.3s ease-in-out',
+                            cursor: images.length > 1 ? 'pointer' : 'default',
+                            opacity: isImageLoaded ? 1 : 0, // Masquer tant que l'image n'est pas chargée
+                            transition: 'opacity 0.3s ease-in-out, filter 0.85s ease-in-out, transform 0.8s ease-in-out', // Ajout de transitions pour le flou et le zoom
+                            filter: isFadingOut ? 'opacity(0.0)' : 'opacity(1.0)', // Effet de flou lors de la transition
+                            transform: isFadingOut ? 'scale(0.95)' : 'scale(1)', // Zoom léger lors de la transition
                         }}
                     />
                 </RevealFx>
