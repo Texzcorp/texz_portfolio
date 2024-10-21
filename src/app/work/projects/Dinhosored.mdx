@@ -1,0 +1,57 @@
+---
+title: "Dinhosored"
+publishedAt: "2024-02-24"
+summary: "A tool for Dishonored speedrunners to simulate a free-scroll mouse wheel for precise bunnyhopping with customizable UI."
+images:
+  - "/images/projects/dinhosored/dinhosored.jpg"
+team:
+  - name: "Texz"
+    role: "Developer and designer"
+    avatar: "/images/avatar.jpg"
+    linkedIn: ""
+  - name: "ZebtyFive"
+    role: "Mouse Support & Concurrency Advisor"
+    avatar: ""
+    linkedIn: ""
+  - name: "Meyriou"
+    role: "System Stability Consultant"
+    avatar: ""
+    linkedIn: ""
+---
+
+## Project Overview
+
+**Dinhosored** is a tool developed to assist speedrunners in **Dishonored** by simulating the function of a free-scroll mouse wheel, which is essential for performing quick and consistent bunnyhops (bhop). The tool was designed to offer this capability to users who don’t have access to a mouse with a free-scroll wheel, allowing them to map custom keys to replicate the same smooth and fast scrolling effect.
+
+<Carousel images={["/images/projects/dinhosored/dinhosored_bhop.mp4"]} />
+
+## Key Components
+
+At the heart of **Dinhosored** is a Python-based script that automates key presses for "scroll up" and "scroll down" with exceptional precision. The UI, inspired by the world of Dishonored, was designed to provide users with the ability to easily assign keys and configure scroll action delays, ensuring a seamless experience that meets the high demands of speedrunning.
+
+## UI Design
+
+The **UI** of **Dinhosored** was crafted to be both aesthetically pleasing and lightweight in performance. Drawing inspiration from the **Dishonored** universe, it adopts a dark and minimalistic style, with gold accents and thematic fonts that enhance immersion while maintaining clarity. Despite its immersive design, the UI remains highly optimized to prevent any negative impact on game performance, which is critical in speedrunning where even the smallest frame drops can affect the run.
+
+A custom logo was also created for **Dinhosored**, inspired by the original **Dishonored** logo but modified to reflect the tool’s unique focus on bunnyhopping. The logo features a playful twist—a dinosaur leaping, representing both the bhop mechanic and the creative spirit behind the project.
+
+<Carousel images={["/images/projects/dinhosored/dinhosored.jpg"]} />
+
+## Methods and Approach
+
+Developing **Dinhosored** required a deep understanding of low-level system interactions to minimize input delay and maximize stability. A key challenge was ensuring that the Python-based script could function with near-zero delay, a requirement for precise bhopping in speedruns. To overcome this, I sought the help of engineers with expertise in low-level programming, who provided insights into how to optimize the script for both speed and stability.
+
+Through their guidance, I was able to fine-tune the system to handle rapid key inputs efficiently, ensuring that the tool could manage concurrency issues (when both scroll directions are pressed simultaneously) without losing performance. This attention to low-level details was crucial to achieving the level of precision required for competitive speedrunning.
+
+The UI was also optimized to minimize its system footprint, allowing it to run in the background without affecting framerates, a critical factor in any speedrunning environment.
+
+## Tools and Resources
+
+- **Python**: Used for scripting the key press automation and ensuring precise control of the scroll inputs.
+- **Custom UI**: Designed to allow for key mapping and interval adjustments, while remaining lightweight to ensure it does not affect the game's performance.
+
+## Challenges and Learnings
+
+One of the main challenges in the development of **Dinhosored** was achieving a balance between precision and system efficiency. Working within Python’s limitations, I had to ensure that the script could handle the speed and accuracy required for competitive bhop sequences. With the help of low-level programming experts, I was able to gain a deeper understanding of how to optimize the script and handle concurrency issues efficiently.
+
+This project also reinforced the importance of UI design in performance-sensitive applications. Creating an interface that was not only visually aligned with the **Dishonored** universe but also lightweight enough to avoid impacting gameplay was a rewarding challenge that helped me further refine my design skills.
