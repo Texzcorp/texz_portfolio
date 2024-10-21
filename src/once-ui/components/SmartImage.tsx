@@ -34,6 +34,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
 }) => {
     const [isEnlarged, setIsEnlarged] = useState(false);
     const imageRef = useRef<HTMLDivElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null); // Ajout d'une référence pour la vidéo
 
     const handleClick = () => {
         if (enlarge) {
@@ -103,6 +104,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
                 )}
                 {!isLoading && isVideo && (
                     <video
+                        ref={videoRef} // Ajout de la référence à l'élément vidéo
                         src={src}
                         autoPlay
                         loop
@@ -152,19 +154,28 @@ const SmartImage: React.FC<SmartImageProps> = ({
                             transform: 'translate(-50%, -50%)',
                         }}
                         onClick={(e) => e.stopPropagation()}>
-                        {isVideo ? (
-                            <video
-                                src={src}
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
-                                style={{ 
+                        {isVideo && videoRef.current ? (
+                            <div
+                                style={{
                                     width: '90vw',
                                     height: 'auto',
-                                    objectFit: 'contain',
-                                }}
-                            />
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}>
+                                <video
+                                    ref={videoRef} // Réutilisation de la même vidéo
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'contain',
+                                    }}
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                />
+                            </div>
                         ) : (
                             <Image
                                 {...props}

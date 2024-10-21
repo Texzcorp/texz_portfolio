@@ -6,6 +6,7 @@ import { HeadingLink } from '@/app/components';
 
 import { TextProps } from '@/once-ui/interfaces';
 import { SmartImageProps } from '@/once-ui/components/SmartImage';
+import { Carousel } from '@/app/components/Carousel';  // Mets ici le bon chemin vers le fichier Carousel.tsx
 import MusicPlayer from '@/app/components/MusicPlayer'; // Assurez-vous que le chemin est correct
 
 
@@ -141,6 +142,7 @@ const components = {
     Table,
     // Nouveau composant pour la musique
     audio: AudioComponent, // Utiliser AudioComponent ici avec les bons types
+    Carousel  // Ajoute le composant Carousel ici
 };
 
 type CustomMDXProps = MDXRemoteProps & {
