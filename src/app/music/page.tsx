@@ -4,7 +4,6 @@ import { MusicProjects } from '@/app/music/components/Projects';
 import { baseURL, person, music } from '../resources';
 import VantaBackground from '@/app/components/VantaBackground';
 import Notification from '@/app/components/Notification';
-import ClientSideCheck from '@/app/components/ClientSideCheck'; // Assurez-vous que le chemin est correct
 import styles from '@/app/about/about.module.scss';
 
 export function generateMetadata() {
@@ -41,9 +40,6 @@ export default function Music() {
 
     return (
         <>
-            {/* Appel côté client pour vérifier les lecteurs actifs */}
-            <ClientSideCheck />
-
             <VantaBackground />
             <Flex fillWidth maxWidth="m" direction="column">
                 <script

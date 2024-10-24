@@ -23,14 +23,14 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
   const [volume, setVolume] = useState(0.75);
   const [muted, setMuted] = useState(false);
   const { startPlaying, stopPlaying } = useBackground();
-  const { activePlayerSrc, setActivePlayer, audioData, setAudioData } = useMusicPlayerContext();
+  const { activePlayerSrc, setActivePlayerSrc, audioData, setAudioData, stopMusic } = useMusicPlayerContext();
 
   const isCurrentPlayer = activePlayerSrc === src;
 
   const handleEnded = useCallback(() => {
-    setActivePlayer(null);
+    setActivePlayerSrc(null);
     stopPlaying();
-  }, [setActivePlayer, stopPlaying]);
+  }, [setActivePlayerSrc, stopPlaying]);
 
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -47,16 +47,16 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
     if (!audio) return;
 
     if (isPlaying) {
-      audio.pause();
-      setIsPlaying(false);
-      stopPlaying();
+        audio.pause();
+        setIsPlaying(false);
+        stopMusic(src);
     } else {
-      setActivePlayer(src);
-      audio.play();
-      setIsPlaying(true);
-      startPlaying();
+        setActivePlayerSrc(src);  // Changed from setActivePlayer
+        audio.play();
+        setIsPlaying(true);
+        startPlaying();
     }
-  }, [isPlaying, setActivePlayer, startPlaying, stopPlaying, src]);
+  }, [isPlaying, setActivePlayerSrc, startPlaying, stopMusic, src]);  // Updated dependency array
 
   const handleVolumeChange = (value: number) => {
     setVolume(value);

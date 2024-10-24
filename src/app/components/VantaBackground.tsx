@@ -4,11 +4,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import BIRDS from 'vanta/dist/vanta.birds.min';
 import { useBackground } from "@/app/components/BackgroundContext";
+import { useMusicPlayerContext } from "@/app/components/MusicPlayerContext";
 import styles from './VantaBackground.module.scss'; // Import du fichier SCSS
 
 const VantaBackground = () => {
     const vantaRef = useRef<HTMLDivElement>(null);
-    const { effectActive } = useBackground(); // Inclut la fonction pour modifier `effectActive`
+    const { effectActive } = useBackground();
+    const { isAnyMusicPlaying } = useMusicPlayerContext();  // Add this
     const [vantaEffect, setVantaEffect] = useState<any>(null);
     const [isVisible, setIsVisible] = useState(false);
     const [isFadingOut, setIsFadingOut] = useState(false);
@@ -52,11 +54,10 @@ const VantaBackground = () => {
             }
         };
 
-        // Activer ou désactiver l'effet en fonction de `effectActive`
-        if (effectActive) {
+        // Only show birds if music is playing
+        if (isAnyMusicPlaying) {
             initVanta();
         } else {
-            // Si `effectActive` devient false, lancer le fade out avant de détruire l'effet
             if (vantaEffect) {
                 setIsFadingOut(true);
                 setTimeout(() => {
@@ -77,7 +78,7 @@ const VantaBackground = () => {
                 setVantaEffect(null);
             }
         };
-    }, [effectActive]);
+    }, [isAnyMusicPlaying]); // Changed from effectActive to isAnyMusicPlaying
 
     return (
         <div

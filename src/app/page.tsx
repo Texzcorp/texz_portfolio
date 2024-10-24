@@ -11,8 +11,6 @@ import { Mailchimp } from '@/app/components';
 import { Posts } from '@/app/blog/components/Posts';
 import TableOfContents from '@/app/about/components/TableOfContents';
 import styles from '@/app/about/about.module.scss'
-
-import ClientSideCheck from '@/app/components/ClientSideCheck'; // Assurez-vous que le chemin est correct
 import VantaBackground from '@/app/components/VantaBackground';
 
 interface Image {
@@ -376,7 +374,6 @@ export default function Home() {
                     </Flex>
                     
                     {/* Exemple de call de projet musique */}
-                    <ClientSideCheck />
 
                     <VantaBackground />
 					<MusicProjects range={[1,1]}/>
