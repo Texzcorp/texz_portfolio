@@ -69,8 +69,8 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
 
             const drawVerticalFluidWaves = () => {
                 const waveCount = 7;
-                const baseFrequency = 0.0005;
-                const waveSpeed = 0.0025;
+                const baseFrequency = 0.0003; // Reduced from 0.0005
+                const waveSpeed = 0.001; // Reduced from 0.0025
 
                 const pageHeight = Math.max(document.body.scrollHeight, window.innerHeight) + 120;
                 targetScrollInfluence = Math.sin(window.scrollY * 0.002) * 100;
@@ -78,7 +78,7 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                 currentScrollInfluence = lerp(currentScrollInfluence, targetScrollInfluence, smoothingFactor);
 
                 for (let i = 0; i < waveCount; i++) {
-                    let frequency = baseFrequency + (i * 0.05) + (mouseX / w) * 0.008;
+                    let frequency = baseFrequency + (i * 0.03) + (mouseX / w) * 0.005; // Adjusted multipliers
                     const color = `hsla(${Math.sin(t * 0.0001 + i) * 180 + 180}, 100%, 70%, ${0.2 + (i * 0.05)})`;
 
                     ctx.beginPath();
@@ -116,12 +116,12 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                         }
                     } else {
                         // Switch to idle animation if no music is playing or no audio data is available
-                        const idleAmplitude = 80 + currentScrollInfluence + i * 4 + (mouseY / h) * 0.2;
+                        const idleAmplitude = 60 + currentScrollInfluence + i * 3 + (mouseY / h) * 0.15; // Reduced amplitude and factors
                         const idleLength = 100;
                         const segmentLength = Math.floor(pageHeight / idleLength);
 
                         for (let y = 0; y < idleLength; y++) {
-                            const mouseEffect = Math.sin((y - mouseY) * 0.01) * (mouseX / w) * 25;
+                            const mouseEffect = Math.sin((y - mouseY) * 0.002) * (mouseX / w) * 60; // Reduced mouse effect
                             const x = w / 2 + Math.sin((y * frequency) + (t * waveSpeed) + (i * Math.PI / 2)) * (idleAmplitude + mouseEffect);
 
                             if (y === 0) {
