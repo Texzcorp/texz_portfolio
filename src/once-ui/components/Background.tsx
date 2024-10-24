@@ -1,6 +1,7 @@
 "use client";
 
 import React, { CSSProperties, forwardRef, useEffect, useRef, useState } from 'react';
+import { useMusicPlayerContext } from '@/app/components/MusicPlayerContext';
 
 interface BackgroundProps {
     position?: CSSProperties['position'];
@@ -22,6 +23,7 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
     style
 }, ref) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const { audioData } = useMusicPlayerContext();
     const [stars, setStars] = useState<Array<{ id: number, top: string, left: string }>>([]);
 
     useEffect(() => {
@@ -103,11 +105,25 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                 ctx.shadowColor = 'transparent';
             };
 
+            const drawAudioWaveform = () => {
+                if (!audioData) return;
+
+                const barWidth = w / audioData.length;
+                const barHeightMultiplier = h / 4 / 128;
+
+                ctx.fillStyle = 'rgba(0, 255, 255, 0.3)';
+                for (let i = 0; i < audioData.length; i++) {
+                    const barHeight = (audioData[i] + 140) * barHeightMultiplier;
+                    ctx.fillRect(i * barWidth, h - barHeight, barWidth, barHeight);
+                }
+            };
+
             const animate = () => {
                 ctx.clearRect(0, 0, w, h);
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
                 ctx.fillRect(0, 0, w, h);
                 drawVerticalFluidWaves();
+                drawAudioWaveform();
                 t++;
                 requestAnimationFrame(animate);
             };
@@ -116,9 +132,10 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
 
             return () => {
                 window.removeEventListener('resize', resizeCanvas);
+                window.removeEventListener('mousemove', () => {});
             };
         }
-    }, []);
+    }, [audioData]);
 
     useEffect(() => {
         if (shootingStars) {
@@ -155,9 +172,10 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                         filter: 'contrast(1.5)',
                         background: 'radial-gradient(circle at 50% 110%, rgba(0, 0, 0, 1) 8%, rgba(0, 0, 0, 0) 25%), radial-gradient(100% 300% at 25.99% 0%, var(--static-transparent) 0%, var(--page-background) 100%), radial-gradient(87.4% 84.04% at 6.82% 16.24%, var(--brand-background-medium) 0%, var(--static-transparent) 100%), radial-gradient(217.89% 86.62% at 68.04% 0%, var(--accent-solid-medium) 0%, var(--static-transparent) 100%)',
                         ...style,
-                    }}></div>
+                    }}
+                />
             )}
-            <canvas ref={canvasRef} style={{ position: 'fixed', top: 0, left: 0, zIndex: -1 }}></canvas>
+            <canvas ref={canvasRef} style={{ position: 'fixed', top: 0, left: 0, zIndex: -1 }} />
             {shootingStars && stars.map((star) => (
                 <div
                     key={star.id}
@@ -172,7 +190,8 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                         animation: 'shooting-star 5s ease-out forwards',
                         perspective: '1000px',
                         ...style,
-                    }} />
+                    }}
+                />
             ))}
             <style jsx>{`
                 @keyframes shooting-star {

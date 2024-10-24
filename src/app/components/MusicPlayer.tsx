@@ -14,19 +14,22 @@ interface MusicPlayerProps {
 
 const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.75);
   const [muted, setMuted] = useState(false);
   const { startPlaying, stopPlaying } = useBackground();
-  const { activePlayerSrc, setActivePlayer } = useMusicPlayerContext();
+  const { activePlayerSrc, setActivePlayer, audioData, setAudioData } = useMusicPlayerContext();
 
   const isCurrentPlayer = activePlayerSrc === src;
 
   const handleEnded = useCallback(() => {
-    setActivePlayer(null); // Indique que le lecteur s'est arrêté
-    stopPlaying(); // Désactive l'effet de fond
+    setActivePlayer(null);
+    stopPlaying();
   }, [setActivePlayer, stopPlaying]);
 
   useEffect(() => {
@@ -123,6 +126,42 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
       stopPlaying();
     }
   }, [isCurrentPlayer, isPlaying, stopPlaying]);
+
+  const initializeAudioContext = useCallback(() => {
+    if (!audioContextRef.current && audioRef.current) {
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      sourceNodeRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      analyserRef.current.fftSize = 256;
+      sourceNodeRef.current.connect(analyserRef.current);
+      analyserRef.current.connect(audioContextRef.current.destination);
+    }
+  }, []);
+
+  const analyzeAudio = useCallback(() => {
+    if (!analyserRef.current) return;
+
+    const bufferLength = analyserRef.current.frequencyBinCount;
+    const dataArray = new Float32Array(bufferLength);
+
+    const updateAudioData = () => {
+      if (!analyserRef.current) return;
+      analyserRef.current.getFloatFrequencyData(dataArray);
+      setAudioData(dataArray);
+      if (isPlaying) {
+        requestAnimationFrame(updateAudioData);
+      }
+    };
+
+    updateAudioData();
+  }, [setAudioData, isPlaying]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      initializeAudioContext();
+      analyzeAudio();
+    }
+  }, [isPlaying, initializeAudioContext, analyzeAudio]);
 
   const playerStyles = compact ? compactPlayerStyles : glassPlayerStyles;
 

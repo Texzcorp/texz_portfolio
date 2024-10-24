@@ -6,11 +6,15 @@ import { useBackground } from "@/app/components/BackgroundContext";
 interface MusicPlayerContextProps {
     activePlayerSrc: string | null;
     setActivePlayer: (src: string | null) => void;
+    audioData: Float32Array | null;
+    setAudioData: (data: Float32Array | null) => void;
 }
 
 const MusicPlayerContext = createContext<MusicPlayerContextProps>({
     activePlayerSrc: null,
     setActivePlayer: () => {},
+    audioData: null,
+    setAudioData: () => {},
 });
 
 interface MusicPlayerProviderProps {
@@ -19,12 +23,15 @@ interface MusicPlayerProviderProps {
 
 export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
     const [activePlayerSrc, setActivePlayerSrc] = useState<string | null>(null);
+    const [audioData, setAudioData] = useState<Float32Array | null>(null);
     const { startPlaying, stopPlaying } = useBackground();
 
     useEffect(() => {
-        // Update the background effect based on the active player state
-        startPlaying(); // Pour activer l'effet quand un lecteur commence
-        stopPlaying(); // Pour désactiver l'effet quand un lecteur s'arrête
+        if (activePlayerSrc) {
+            startPlaying();
+        } else {
+            stopPlaying();
+        }
     }, [activePlayerSrc, stopPlaying, startPlaying]);
 
     const setActivePlayer = (src: string | null) => {
@@ -32,7 +39,7 @@ export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
     };
 
     return (
-        <MusicPlayerContext.Provider value={{ activePlayerSrc, setActivePlayer }}>
+        <MusicPlayerContext.Provider value={{ activePlayerSrc, setActivePlayer, audioData, setAudioData }}>
             {children}
         </MusicPlayerContext.Provider>
     );
