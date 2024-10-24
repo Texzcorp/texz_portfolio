@@ -8,7 +8,6 @@ interface MusicPlayerContextProps {
     setActivePlayer: (src: string | null) => void;
     audioData: Float32Array | null;
     setAudioData: (data: Float32Array | null) => void;
-    stopPlaying: () => void;
 }
 
 const MusicPlayerContext = createContext<MusicPlayerContextProps>({
@@ -16,7 +15,6 @@ const MusicPlayerContext = createContext<MusicPlayerContextProps>({
     setActivePlayer: () => {},
     audioData: null,
     setAudioData: () => {},
-    stopPlaying: () => {},
 });
 
 interface MusicPlayerProviderProps {
@@ -38,13 +36,10 @@ export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
 
     const setActivePlayer = (src: string | null) => {
         setActivePlayerSrc(src);
-        if (src === null) {
-            stopPlaying();
-        }
     };
 
     return (
-        <MusicPlayerContext.Provider value={{ activePlayerSrc, setActivePlayer, audioData, setAudioData, stopPlaying }}>
+        <MusicPlayerContext.Provider value={{ activePlayerSrc, setActivePlayer, audioData, setAudioData }}>
             {children}
         </MusicPlayerContext.Provider>
     );

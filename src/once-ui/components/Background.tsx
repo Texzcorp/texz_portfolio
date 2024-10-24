@@ -23,7 +23,7 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
     style
 }, ref) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const { audioData, activePlayerSrc } = useMusicPlayerContext();
+    const { audioData } = useMusicPlayerContext();
     const [stars, setStars] = useState<Array<{ id: number, top: string, left: string }>>([]);
 
     useEffect(() => {
@@ -67,12 +67,8 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                 const smoothingFactor = 0.05;
                 currentScrollInfluence = lerp(currentScrollInfluence, targetScrollInfluence, smoothingFactor);
 
-                const isPlaying = !!activePlayerSrc;
-                const spacing = w / (waveCount + 1);
-
                 for (let i = 0; i < waveCount; i++) {
-                    const x = spacing * (i + 1);
-                    const amplitude = isPlaying ? 0 : baseAmplitude + currentScrollInfluence + i * 4 + (mouseY / h) * 0.2;
+                    const amplitude = baseAmplitude + currentScrollInfluence + i * 4 + (mouseY / h) * 0.2;
                     const frequency = baseFrequency + (i * 0.05) + (mouseX / w) * 0.008;
                     const color = `hsla(${Math.sin(t * 0.0001 + i) * 180 + 180}, 100%, 70%, ${0.2 + (i * 0.05)})`;
 
@@ -83,24 +79,25 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                     ctx.strokeStyle = color;
                     ctx.globalAlpha = 0.95 + (i * 0.1);
 
-                    if (isPlaying) {
-                        // Draw straight line when playing
-                        ctx.moveTo(x, 0);
-                        ctx.lineTo(x, pageHeight);
-                    } else {
-                        // Draw wavy line when not playing
-                        for (let y = 0; y <= pageHeight; y += pageHeight / 50) {
-                            const mouseEffect = Math.sin((y - mouseY) * 0.01) * (mouseX / w) * 25;
-                            const oscillationFactor = Math.max(0.1, Math.sin(y * frequency + t * waveSpeed + i * Math.PI / 2));
-                            const waveX = x + Math.sin((y * frequency) + (t * waveSpeed) + (i * Math.PI / 2)) * (amplitude + mouseEffect) * oscillationFactor;
-                            
-                            if (y === 0) {
-                                ctx.moveTo(waveX, y);
-                            } else {
-                                ctx.lineTo(waveX, y);
-                            }
+                    let previousY = 0, previousX = w / 2;
+                    const controlPoints = Math.floor(pageHeight / 200);
+
+                    for (let y = 0; y <= pageHeight; y += pageHeight / controlPoints) {
+                        const mouseEffect = Math.sin((y - mouseY) * 0.01) * (mouseX / w) * 25;
+                        const oscillationFactor = Math.max(0.1, Math.sin(y * frequency + t * waveSpeed + i * Math.PI / 2));
+                        const x = w / 2 + Math.sin((y * frequency) + (t * waveSpeed) + (i * Math.PI / 2)) * (amplitude + mouseEffect) * oscillationFactor;
+
+                        if (y === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            const midX = (previousX + x) / 2;
+                            const midY = (previousY + y) / 2;
+                            ctx.quadraticCurveTo(previousX, previousY, midX, midY);
                         }
+                        previousX = x;
+                        previousY = y;
                     }
+                    ctx.lineTo(w / 2, pageHeight);
                     ctx.stroke();
                 }
                 ctx.globalAlpha = 1;
@@ -109,7 +106,7 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
             };
 
             const drawAudioWaveform = () => {
-                if (!audioData || !activePlayerSrc) return;
+                if (!audioData) return;
 
                 const barWidth = w / audioData.length;
                 const barHeightMultiplier = h / 4 / 128;
@@ -117,8 +114,7 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                 ctx.fillStyle = 'rgba(0, 255, 255, 0.3)';
                 for (let i = 0; i < audioData.length; i++) {
                     const barHeight = (audioData[i] + 140) * barHeightMultiplier;
-                    const x = (i * barWidth) + (barWidth / 2);
-                    ctx.fillRect(x - 1, h - barHeight, 2, barHeight);
+                    ctx.fillRect(i * barWidth, h - barHeight, barWidth, barHeight);
                 }
             };
 
@@ -139,7 +135,7 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                 window.removeEventListener('mousemove', () => {});
             };
         }
-    }, [audioData, activePlayerSrc]);
+    }, [audioData]);
 
     useEffect(() => {
         if (shootingStars) {
