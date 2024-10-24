@@ -152,7 +152,7 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                 animationFrameId.current = requestAnimationFrame(animate);
             };
 
-            animate(); // Always animate, switching between idle and music-influenced states
+            animate();
 
             return () => {
                 if (animationFrameId.current !== null) {
@@ -162,7 +162,7 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                 window.removeEventListener('mousemove', () => {});
             };
         }
-    }, [audioData, isAnyMusicPlaying]); // Add audioData and isAnyMusicPlaying to the dependency array
+    }, [audioData, isAnyMusicPlaying]);
 
     useEffect(() => {
         if (shootingStars) {

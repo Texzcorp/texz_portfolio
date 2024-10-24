@@ -9,6 +9,7 @@ interface MusicPlayerContextProps {
     audioData: Float32Array | null;
     setAudioData: (data: Float32Array | null) => void;
     stopMusic: (src: string) => void;
+    stopAllMusic: () => void;
     isAnyMusicPlaying: boolean;
 }
 
@@ -18,6 +19,7 @@ const MusicPlayerContext = createContext<MusicPlayerContextProps>({
     audioData: null,
     setAudioData: () => {},
     stopMusic: () => {},
+    stopAllMusic: () => {},
     isAnyMusicPlaying: false,
 });
 
@@ -31,7 +33,6 @@ export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
     const { startPlaying, stopPlaying } = useBackground();
     const [isAnyMusicPlaying, setIsAnyMusicPlaying] = useState(false);
 
-    // Update when activePlayerSrc changes
     useEffect(() => {
         setIsAnyMusicPlaying(!!activePlayerSrc);
         if (activePlayerSrc) {
@@ -46,8 +47,17 @@ export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
             setActivePlayerSrc(null);
             setAudioData(null);
             stopPlaying();
+            setIsAnyMusicPlaying(false);
         }
     }, [activePlayerSrc, stopPlaying]);
+
+    // Add a new method to stop all music
+    const stopAllMusic = useCallback(() => {
+        setActivePlayerSrc(null);
+        setAudioData(null);
+        stopPlaying();
+        setIsAnyMusicPlaying(false);
+    }, [stopPlaying]);
 
     return (
         <MusicPlayerContext.Provider value={{ 
@@ -56,6 +66,7 @@ export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
             audioData, 
             setAudioData,
             stopMusic,
+            stopAllMusic,
             isAnyMusicPlaying
         }}>
             {children}

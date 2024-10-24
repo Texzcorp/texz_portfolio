@@ -23,7 +23,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
   const [volume, setVolume] = useState(0.75);
   const [muted, setMuted] = useState(false);
   const { startPlaying, stopPlaying } = useBackground();
-  const { activePlayerSrc, setActivePlayerSrc, audioData, setAudioData, stopMusic } = useMusicPlayerContext();
+  const { activePlayerSrc, setActivePlayerSrc, audioData, setAudioData, stopMusic, stopAllMusic } = useMusicPlayerContext();
 
   const isCurrentPlayer = activePlayerSrc === src;
 
@@ -162,6 +162,13 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
       analyzeAudio();
     }
   }, [isPlaying, initializeAudioContext, analyzeAudio]);
+
+  useEffect(() => {
+    return () => {
+      // Stop the music when the component unmounts
+      stopAllMusic();
+    };
+  }, [stopAllMusic]);
 
   const playerStyles = compact ? compactPlayerStyles : glassPlayerStyles;
 
