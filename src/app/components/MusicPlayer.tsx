@@ -42,21 +42,30 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
     }
   }, [handleEnded]);
 
+  const handlePause = useCallback(() => {
+    setIsPlaying(false);
+    setActivePlayer(null); // Ajout de cette ligne
+    stopPlaying();
+  }, [setActivePlayer, stopPlaying]);
+
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     if (isPlaying) {
       audio.pause();
-      setIsPlaying(false);
-      stopPlaying();
+      handlePause();
     } else {
       setActivePlayer(src);
-      audio.play();
-      setIsPlaying(true);
-      startPlaying();
+      audio.play().then(() => {
+        setIsPlaying(true);
+        startPlaying();
+      }).catch((error) => {
+        console.error("Error playing audio:", error);
+        handlePause();
+      });
     }
-  }, [isPlaying, setActivePlayer, startPlaying, stopPlaying, src]);
+  }, [isPlaying, setActivePlayer, startPlaying, src, handlePause]);
 
   const handleVolumeChange = (value: number) => {
     setVolume(value);
@@ -87,14 +96,17 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
         setDuration(audio.duration);
         setCurrentTime(audio.currentTime);
       };
-      const handlePlay = () => setIsPlaying(true);
-      const handlePause = () => setIsPlaying(false);
+      const handlePlay = () => {
+        setIsPlaying(true);
+        startPlaying();
+      };
 
       // Attach events
       audio.addEventListener('timeupdate', updateTime);
       audio.addEventListener('loadeddata', setAudioData);
       audio.addEventListener('play', handlePlay);
       audio.addEventListener('pause', handlePause);
+      audio.addEventListener('ended', handlePause);
 
       // Force metadata to load in case it's already available
       if (audio.readyState >= 2) {
@@ -106,9 +118,10 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
         audio.removeEventListener('loadeddata', setAudioData);
         audio.removeEventListener('play', handlePlay);
         audio.removeEventListener('pause', handlePause);
+        audio.removeEventListener('ended', handlePause);
       };
     }
-  }, [src]); // Re-run when the src changes
+  }, [src, startPlaying, handlePause]); // Add startPlaying and handlePause to the dependency array
 
   // Ensure playback state is correct when the component is mounted
   useEffect(() => {
