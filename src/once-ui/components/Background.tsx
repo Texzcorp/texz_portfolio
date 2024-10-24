@@ -23,8 +23,9 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
     style
 }, ref) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const { audioData } = useMusicPlayerContext();
+    const { audioData, isAnyMusicPlaying } = useMusicPlayerContext();
     const [stars, setStars] = useState<Array<{ id: number, top: string, left: string }>>([]);
+    const animationFrameId = useRef<number | null>(null);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -56,9 +57,18 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
             let targetScrollInfluence = 0;
             let currentScrollInfluence = 0;
 
+            const clampAudioData = (value: number): number => {
+                const minDb = -180;
+                const maxDb = -0;
+                return Math.max(minDb, Math.min(maxDb, value));
+            };
+
+            const dbToLinear = (dbValue: number): number => {
+                return Math.pow(10, dbValue / 20);
+            };
+
             const drawVerticalFluidWaves = () => {
                 const waveCount = 7;
-                const baseAmplitude = 80;
                 const baseFrequency = 0.0005;
                 const waveSpeed = 0.0025;
 
@@ -68,8 +78,7 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                 currentScrollInfluence = lerp(currentScrollInfluence, targetScrollInfluence, smoothingFactor);
 
                 for (let i = 0; i < waveCount; i++) {
-                    const amplitude = baseAmplitude + currentScrollInfluence + i * 4 + (mouseY / h) * 0.2;
-                    const frequency = baseFrequency + (i * 0.05) + (mouseX / w) * 0.008;
+                    let frequency = baseFrequency + (i * 0.05) + (mouseX / w) * 0.008;
                     const color = `hsla(${Math.sin(t * 0.0001 + i) * 180 + 180}, 100%, 70%, ${0.2 + (i * 0.05)})`;
 
                     ctx.beginPath();
@@ -80,22 +89,51 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                     ctx.globalAlpha = 0.95 + (i * 0.1);
 
                     let previousY = 0, previousX = w / 2;
-                    const controlPoints = Math.floor(pageHeight / 200);
 
-                    for (let y = 0; y <= pageHeight; y += pageHeight / controlPoints) {
-                        const mouseEffect = Math.sin((y - mouseY) * 0.01) * (mouseX / w) * 25;
-                        const oscillationFactor = Math.max(0.1, Math.sin(y * frequency + t * waveSpeed + i * Math.PI / 2));
-                        const x = w / 2 + Math.sin((y * frequency) + (t * waveSpeed) + (i * Math.PI / 2)) * (amplitude + mouseEffect) * oscillationFactor;
+                    if (isAnyMusicPlaying && audioData && audioData.length > 0) {
+                        const audioLength = audioData.length;
+                        const segmentLength = Math.floor(pageHeight / audioLength);
 
-                        if (y === 0) {
-                            ctx.moveTo(x, y);
-                        } else {
-                            const midX = (previousX + x) / 2;
-                            const midY = (previousY + y) / 2;
-                            ctx.quadraticCurveTo(previousX, previousY, midX, midY);
+                        // Trouver la valeur minimale dans audioData pour la normalisation
+                        const minAudioValue = Math.min(...audioData);
+
+                        for (let y = 0; y < audioLength; y++) {
+                            // Inverser et normaliser l'amplitude
+                            const invertedValue = minAudioValue - audioData[y];
+                            const normalizedValue = invertedValue / Math.abs(minAudioValue);
+                            const amplitude = normalizedValue * 200; // Ajuster le facteur pour augmenter l'amplitude
+                            const x = w / 2 + Math.sin((y * frequency) + (t * waveSpeed) + (i * Math.PI / 2)) * amplitude;
+
+                            if (y === 0) {
+                                ctx.moveTo(x, y * segmentLength);
+                            } else {
+                                const midX = (previousX + x) / 2;
+                                const midY = (previousY + y * segmentLength) / 2;
+                                ctx.quadraticCurveTo(previousX, previousY, midX, midY);
+                            }
+                            previousX = x;
+                            previousY = y * segmentLength;
                         }
-                        previousX = x;
-                        previousY = y;
+                    } else {
+                        // Switch to idle animation if no music is playing or no audio data is available
+                        const idleAmplitude = 80 + currentScrollInfluence + i * 4 + (mouseY / h) * 0.2;
+                        const idleLength = 100;
+                        const segmentLength = Math.floor(pageHeight / idleLength);
+
+                        for (let y = 0; y < idleLength; y++) {
+                            const mouseEffect = Math.sin((y - mouseY) * 0.01) * (mouseX / w) * 25;
+                            const x = w / 2 + Math.sin((y * frequency) + (t * waveSpeed) + (i * Math.PI / 2)) * (idleAmplitude + mouseEffect);
+
+                            if (y === 0) {
+                                ctx.moveTo(x, y * segmentLength);
+                            } else {
+                                const midX = (previousX + x) / 2;
+                                const midY = (previousY + y * segmentLength) / 2;
+                                ctx.quadraticCurveTo(previousX, previousY, midX, midY);
+                            }
+                            previousX = x;
+                            previousY = y * segmentLength;
+                        }
                     }
                     ctx.lineTo(w / 2, pageHeight);
                     ctx.stroke();
@@ -105,37 +143,26 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                 ctx.shadowColor = 'transparent';
             };
 
-            const drawAudioWaveform = () => {
-                if (!audioData) return;
-
-                const barWidth = w / audioData.length;
-                const barHeightMultiplier = h / 4 / 128;
-
-                ctx.fillStyle = 'rgba(0, 255, 255, 0.3)';
-                for (let i = 0; i < audioData.length; i++) {
-                    const barHeight = (audioData[i] + 140) * barHeightMultiplier;
-                    ctx.fillRect(i * barWidth, h - barHeight, barWidth, barHeight);
-                }
-            };
-
             const animate = () => {
                 ctx.clearRect(0, 0, w, h);
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
                 ctx.fillRect(0, 0, w, h);
                 drawVerticalFluidWaves();
-                drawAudioWaveform();
                 t++;
-                requestAnimationFrame(animate);
+                animationFrameId.current = requestAnimationFrame(animate);
             };
 
-            animate();
+            animate(); // Always animate, switching between idle and music-influenced states
 
             return () => {
+                if (animationFrameId.current !== null) {
+                    cancelAnimationFrame(animationFrameId.current);
+                }
                 window.removeEventListener('resize', resizeCanvas);
                 window.removeEventListener('mousemove', () => {});
             };
         }
-    }, [audioData]);
+    }, [audioData, isAnyMusicPlaying]); // Add audioData and isAnyMusicPlaying to the dependency array
 
     useEffect(() => {
         if (shootingStars) {
