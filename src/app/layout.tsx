@@ -46,6 +46,28 @@ const primary = Inter({
 	display: 'swap',
 })
 
+// Add this new component
+const RemoveLTInstalledScript = () => (
+	<script dangerouslySetInnerHTML={{
+		__html: `
+			(function() {
+				if (typeof window !== 'undefined') {
+					const observer = new MutationObserver(function(mutations) {
+						if (document.documentElement.hasAttribute('data-lt-installed')) {
+							document.documentElement.removeAttribute('data-lt-installed');
+							observer.disconnect();
+						}
+					});
+					observer.observe(document.documentElement, {
+						attributes: true,
+						attributeFilter: ['data-lt-installed']
+					});
+				}
+			})();
+		`
+	}} />
+)
+
 type FontConfig = {
     variable: string;
 };
@@ -89,6 +111,9 @@ export default function RootLayout({ children } : RootLayoutProps) {
 						code.variable
 					)}
 				>
+					<head>
+						<RemoveLTInstalledScript />
+					</head>
 					<Flex style={{ minHeight: '100vh' }}
 						as="body"
 						fillWidth margin="0" padding="0"
