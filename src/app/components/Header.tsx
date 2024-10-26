@@ -68,7 +68,7 @@ export const Header = () => {
     return (
         <>
         <Head>
-            <meta property="og:site_name" content="Texz's Portfolio" />
+            <meta property="og:site_name" content="Terence's Portfolio" />
         </Head>
         <Flex style={{height: 'fit-content'}}
             className={styles.position}

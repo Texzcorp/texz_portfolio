@@ -1,8 +1,8 @@
 import { InlineCode } from "@/once-ui/components";
 
 const person = {
-    firstName: 'Texz',
-    lastName:  '',
+    firstName: 'Terence',
+    lastName:  'Diaz',
     get name() {
         return `${this.firstName} ${this.lastName}`;
     },
