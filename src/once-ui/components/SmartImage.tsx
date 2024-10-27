@@ -35,9 +35,13 @@ const SmartImage: React.FC<SmartImageProps> = ({
     const [isEnlarged, setIsEnlarged] = useState(false);
     const [isVideoLoaded, setIsVideoLoaded] = useState(false);
     const imageRef = useRef<HTMLDivElement>(null);
-    const videoRef = useRef<HTMLVideoElement>(null); // Ajout d'une référence pour la vidéo
+    const videoRef = useRef<HTMLVideoElement>(null);
     const [isInView, setIsInView] = useState(false);
+    const [placeholderSrc, setPlaceholderSrc] = useState<string>('');
 
+    const isVideo = src.endsWith('.mp4');
+
+    // Intersection Observer pour le lazy loading
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
@@ -55,10 +59,39 @@ const SmartImage: React.FC<SmartImageProps> = ({
             observer.observe(imageRef.current);
         }
 
-        return () => {
-            observer.disconnect();
-        };
+        return () => observer.disconnect();
     }, []);
+
+    // Génération du placeholder uniquement pour les images
+    useEffect(() => {
+        if (!isVideo && src) {
+            const img = document.createElement('img');
+            img.crossOrigin = 'anonymous';
+            
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 10;
+                canvas.height = 10;
+                const ctx = canvas.getContext('2d');
+                
+                if (ctx) {
+                    ctx.drawImage(img, 0, 0, 10, 10);
+                    const placeholder = canvas.toDataURL('image/jpeg', 0.1);
+                    setPlaceholderSrc(placeholder);
+                }
+            };
+
+            img.src = src;
+        }
+    }, [src, isVideo]);
+
+    // Gestion des vidéos
+    useEffect(() => {
+        if (isVideo && videoRef.current && isInView) {
+            videoRef.current.src = src;
+            videoRef.current.load();
+        }
+    }, [isVideo, isInView, src]);
 
     const handleClick = () => {
         if (enlarge) {
@@ -102,8 +135,6 @@ const SmartImage: React.FC<SmartImageProps> = ({
         };
     };
 
-    const isVideo = src.endsWith('.mp4');
-
     return (
         <>
             <Flex
@@ -133,7 +164,6 @@ const SmartImage: React.FC<SmartImageProps> = ({
                 {!isLoading && isVideo && isInView && (
                     <video
                         ref={videoRef}
-                        src={src}
                         autoPlay
                         loop
                         muted
@@ -155,15 +185,15 @@ const SmartImage: React.FC<SmartImageProps> = ({
                         src={src}
                         alt={alt}
                         fill
-                        loading={props.priority ? 'eager' : 'lazy'}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-                        quality={95}
-                        priority={props.priority}
-                        style={{ 
+                        placeholder={placeholderSrc ? 'blur' : 'empty'}
+                        blurDataURL={placeholderSrc}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        quality={75}
+                        style={{
                             objectFit: isEnlarged ? 'contain' : objectFit,
                             transform: 'translate3d(0,0,0)',
                             backfaceVisibility: 'hidden',
-                            willChange: 'transform, opacity',
+                            willChange: 'transform',
                         }}
                     />
                 )}

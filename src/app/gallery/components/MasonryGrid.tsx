@@ -3,6 +3,7 @@
 import { SmartImage, RevealFx } from "@/once-ui/components";
 import { gallery } from "@/app/resources";
 import styles from "@/app/gallery/Gallery.module.scss";
+import { useState, useEffect, useRef } from "react";
 
 // Définition du type pour une image
 interface Image {
@@ -44,7 +45,27 @@ const presetSettings: Record<"art3D" | "dessins" | "logo", { columns: string; co
     }
 };
 
-export default function MasonryGrid({ gallery, rowGapAdjustment = 0 }: MasonryGridProps) { // Option de réduction de hauteur
+const MasonryGrid = ({ gallery, rowGapAdjustment = 0 }: MasonryGridProps) => {
+    const [visibleItems, setVisibleItems] = useState<number>(12);
+    const loadMoreRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    setVisibleItems(prev => Math.min(prev + 8, gallery.images.length));
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (loadMoreRef.current) {
+            observer.observe(loadMoreRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [gallery.images.length]);
+
     const { preset = 'art3D' } = gallery;
     const { columns, columnGap, rowGap } = presetSettings[preset as keyof typeof presetSettings];
 
@@ -84,38 +105,43 @@ export default function MasonryGrid({ gallery, rowGapAdjustment = 0 }: MasonryGr
     };
 
     return (
-        <div
-            className={styles.gridContainer}
-            style={{
-                gridTemplateColumns: columns,
-                gap: columnGap,
-                rowGap: `calc(${rowGap} - ${rowGapAdjustment}px)`  // Ajustement de la hauteur entre les lignes
-            }}
-        >
-            {gallery.images.map((image, index) => (
-                <div
-                    key={index}
-                    className={styles.gridItem}
-                    style={{ 
-                        gridColumnEnd: `span ${getGridSpan(preset, image.span)}`, 
-                        gridRowEnd: `span ${getGridRowSpan(preset, image.span)}`  // Ajout de la gestion des lignes
-                    }}
-                >
-                    <RevealFx
-                        style={{width: '100%'}}
-                        delay={0.4}
-                        speed="slow"
+        <>
+            <div
+                className={styles.gridContainer}
+                style={{
+                    gridTemplateColumns: columns,
+                    gap: columnGap,
+                    rowGap: `calc(${rowGap} - ${rowGapAdjustment}px)`  // Ajustement de la hauteur entre les lignes
+                }}
+            >
+                {gallery.images.slice(0, visibleItems).map((image, index) => (
+                    <div
+                        key={index}
+                        className={styles.gridItem}
+                        style={{ 
+                            gridColumnEnd: `span ${getGridSpan(preset, image.span)}`, 
+                            gridRowEnd: `span ${getGridRowSpan(preset, image.span)}`  // Ajout de la gestion des lignes
+                        }}
                     >
-                        <SmartImage
-                            radius="m"
-                            aspectRatio={getAspectRatio(image.orientation)}
-                            src={image.src}
-                            alt={image.alt}
-                            className={styles.gridImage}
-                        />
-                    </RevealFx>
-                </div>
-            ))}
-        </div>
+                        <RevealFx
+                            style={{width: '100%'}}
+                            delay={0.4}
+                            speed="slow"
+                        >
+                            <SmartImage
+                                radius="m"
+                                aspectRatio={getAspectRatio(image.orientation)}
+                                src={image.src}
+                                alt={image.alt}
+                                className={styles.gridImage}
+                            />
+                        </RevealFx>
+                    </div>
+                ))}
+            </div>
+            <div ref={loadMoreRef} style={{ height: '20px' }} />
+        </>
     );
-}
+};
+
+export default MasonryGrid;
