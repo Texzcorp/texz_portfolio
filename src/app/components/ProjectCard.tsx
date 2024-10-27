@@ -71,14 +71,19 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         if (nextIndex !== activeIndex && !transitionTimeoutRef.current) {
             preloadNextImage(nextIndex);
             setIsTransitioning(false);
-            setIsImageLoading(true);
             
+            // Premier timeout pour le fade out
             transitionTimeoutRef.current = setTimeout(() => {
+                setIsImageLoading(true); // Démarrer le loading après le fade out
                 setActiveIndex(nextIndex);
-                setIsTransitioning(true);
-                setIsImageLoading(false);
-                transitionTimeoutRef.current = undefined;
-            }, 630);
+                
+                // Second timeout pour s'assurer que le loading est visible avant de terminer
+                setTimeout(() => {
+                    setIsTransitioning(true);
+                    setIsImageLoading(false);
+                    transitionTimeoutRef.current = undefined;
+                }, 300); // Ajustez ce délai selon vos besoins
+            }, 300); // Délai réduit pour une transition plus fluide
         }
     };
 
@@ -99,9 +104,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                 <RevealFx
                     style={{
                         width: '100%',
-                        willChange: 'transform, opacity' // Optimisation des performances
+                        willChange: 'transform, opacity'
                     }}
-                    delay={0.4}
+                    delay={0.2} // Réduit le délai pour une transition plus rapide
                     trigger={isTransitioning}
                     speed="fast">
                     <SmartImage
@@ -114,8 +119,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         isLoading={isImageLoading}
                         style={{
                             border: '1px solid var(--neutral-alpha-weak)',
-                            transform: `translate3d(0,0,0)`, // Force l'accélération matérielle
+                            transform: `translate3d(0,0,0)`,
                             backfaceVisibility: 'hidden',
+                            transition: 'opacity 0.3s ease-in-out',
                             ...(images.length > 1 && {
                                 cursor: 'pointer',
                             }),
