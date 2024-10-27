@@ -101,6 +101,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
             zIndex: isEnlarged ? 2 : 1,
         };
     };
+    
 
     const isVideo = src.endsWith('.mp4');
 

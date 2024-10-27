@@ -25,6 +25,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     const [preloadedImages, setPreloadedImages] = useState<HTMLImageElement[]>([]);
     const nextImageRef = useRef<HTMLImageElement | null>(null);
     const transitionTimeoutRef = useRef<NodeJS.Timeout>();
+    
 
     // Préchargement initial des images
     useEffect(() => {
