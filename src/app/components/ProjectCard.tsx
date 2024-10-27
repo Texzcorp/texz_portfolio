@@ -71,12 +71,12 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         }
     };
 
-    const handleControlClick = (nextIndex: number) => {
+    const handleControlClick = async (nextIndex: number) => {
         if (nextIndex !== activeIndex && !transitionTimeoutRef.current) {
-            // Précharger l'image suivante pendant la transition
-            preloadNextImage(nextIndex);
-            
             setIsTransitioning(false);
+            
+            // Précharger l'image suivante pendant la transition
+            await preloadNextImage(nextIndex);
             
             transitionTimeoutRef.current = setTimeout(() => {
                 setActiveIndex(nextIndex);
