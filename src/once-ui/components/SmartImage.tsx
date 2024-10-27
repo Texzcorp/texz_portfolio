@@ -120,6 +120,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
 
     const handleVideoLoad = () => {
         setIsVideoLoaded(true);
+        setIsImageLoading(false); // Ajout de cette ligne pour arrêter le loading
     };
 
     useEffect(() => {
@@ -177,7 +178,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
                 }}
                 className={classNames(className)}
                 onClick={handleClick}>
-                {(isLoading || isImageLoading || (isVideo && !isVideoLoaded) || (!isVideo && !placeholderSrc)) && (
+                {(isLoading || isImageLoading || (isVideo && !isVideoLoaded)) && (
                     <>
                         <Skeleton shape="block" />
                         <LoadingAnimation />
