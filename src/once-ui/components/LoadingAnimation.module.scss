@@ -3,18 +3,32 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.glassBox {
     display: flex;
     gap: 8px;
-    z-index: 1;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
 }
 
 .loadingDot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--color-primary, #fff);
-    opacity: 0.5;
+    background: rgba(0, 225, 255, 0.8);
     animation: pulse 1.4s ease-in-out infinite;
+    box-shadow: 
+        0 0 10px rgba(0, 225, 255, 0.5),
+        0 0 20px rgba(0, 162, 255, 0.3),
+        0 0 30px rgba(0, 68, 255, 0.2);
 
     &:nth-child(2) {
         animation-delay: 0.2s;
@@ -25,13 +39,37 @@
     }
 }
 
+.glowEffect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle at center,
+        rgba(0, 225, 255, 0.1) 0%,
+        transparent 70%
+    );
+    animation: glow 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
 @keyframes pulse {
     0%, 100% {
-        opacity: 0.5;
         transform: scale(1);
+        opacity: 0.5;
     }
     50% {
-        opacity: 1;
         transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 0.6;
     }
 }
