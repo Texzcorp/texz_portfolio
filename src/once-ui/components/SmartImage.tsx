@@ -35,6 +35,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
 }) => {
     const [isEnlarged, setIsEnlarged] = useState(false);
     const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+    const [isImageLoading, setIsImageLoading] = useState(true);
     const imageRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isInView, setIsInView] = useState(false);
@@ -93,6 +94,23 @@ const SmartImage: React.FC<SmartImageProps> = ({
             videoRef.current.load();
         }
     }, [isVideo, isInView, src]);
+
+    // Gestion du chargement des images
+    useEffect(() => {
+        if (!isVideo) {
+            setIsImageLoading(true);
+            const img = document.createElement('img'); // Utilisation de createElement au lieu de new Image()
+            img.src = src;
+            
+            img.onload = () => {
+                setIsImageLoading(false);
+            };
+            
+            img.onerror = () => {
+                setIsImageLoading(false);
+            };
+        }
+    }, [src, isVideo]);
 
     const handleClick = () => {
         if (enlarge) {
@@ -159,7 +177,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
                 }}
                 className={classNames(className)}
                 onClick={handleClick}>
-                {(isLoading || (isVideo && !isVideoLoaded) || (!isVideo && !placeholderSrc)) && (
+                {(isLoading || isImageLoading || (isVideo && !isVideoLoaded) || (!isVideo && !placeholderSrc)) && (
                     <>
                         <Skeleton shape="block" />
                         <LoadingAnimation />
@@ -193,12 +211,13 @@ const SmartImage: React.FC<SmartImageProps> = ({
                         blurDataURL={placeholderSrc}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         quality={75}
+                        onLoadingComplete={() => setIsImageLoading(false)}
                         style={{
                             objectFit: isEnlarged ? 'contain' : objectFit,
                             transform: 'translate3d(0,0,0)',
                             backfaceVisibility: 'hidden',
                             willChange: 'transform, opacity',
-                            opacity: placeholderSrc ? 1 : 0,
+                            opacity: !isImageLoading ? 1 : 0,
                             transition: 'opacity 0.3s ease-in-out',
                         }}
                     />

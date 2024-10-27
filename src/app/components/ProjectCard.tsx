@@ -1,6 +1,6 @@
 "use client";
 
-import { AvatarGroup, Flex, Heading, RevealFx, SmartImage, SmartLink, Text } from "@/once-ui/components";
+import { AvatarGroup, Flex, Heading, RevealFx, SmartImage, SmartLink, Text, LoadingAnimation } from "@/once-ui/components";
 import { useEffect, useState, useRef } from "react";
 
 interface ProjectCardProps {
@@ -25,6 +25,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     const [preloadedImages, setPreloadedImages] = useState<HTMLImageElement[]>([]);
     const nextImageRef = useRef<HTMLImageElement | null>(null);
     const transitionTimeoutRef = useRef<NodeJS.Timeout>();
+    const [isImageLoading, setIsImageLoading] = useState(false);
 
     // Préchargement initial des images
     useEffect(() => {
@@ -68,14 +69,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
     const handleControlClick = (nextIndex: number) => {
         if (nextIndex !== activeIndex && !transitionTimeoutRef.current) {
-            // Précharger l'image suivante pendant la transition
             preloadNextImage(nextIndex);
-            
             setIsTransitioning(false);
+            setIsImageLoading(true);
             
             transitionTimeoutRef.current = setTimeout(() => {
                 setActiveIndex(nextIndex);
                 setIsTransitioning(true);
+                setIsImageLoading(false);
                 transitionTimeoutRef.current = undefined;
             }, 630);
         }
@@ -94,7 +95,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         <Flex
             fillWidth gap="m"
             direction="column">
-            <Flex onClick={handleImageClick}>
+            <Flex onClick={handleImageClick} position="relative">
                 <RevealFx
                     style={{
                         width: '100%',
@@ -110,6 +111,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         aspectRatio="16 / 9"
                         src={images[activeIndex]}
                         priority={activeIndex === 0} // Priorité pour la première image
+                        isLoading={isImageLoading}
                         style={{
                             border: '1px solid var(--neutral-alpha-weak)',
                             transform: `translate3d(0,0,0)`, // Force l'accélération matérielle
