@@ -17,6 +17,8 @@ export type SmartImageProps = ImageProps & {
     objectFit?: CSSProperties['objectFit'];
     enlarge?: boolean;
     src: string;
+    videoPreloadStrategy?: 'metadata' | 'auto' | 'none';
+    posterImage?: string;
 };
 
 const SmartImage: React.FC<SmartImageProps> = ({
@@ -30,6 +32,8 @@ const SmartImage: React.FC<SmartImageProps> = ({
     objectFit = 'cover',
     enlarge = false,
     src,
+    videoPreloadStrategy = 'metadata',
+    posterImage,
     ...props
 }) => {
     const [isEnlarged, setIsEnlarged] = useState(false);
@@ -134,11 +138,12 @@ const SmartImage: React.FC<SmartImageProps> = ({
                     <video
                         ref={videoRef}
                         src={src}
+                        poster={posterImage}
                         autoPlay
                         loop
                         muted
                         playsInline
-                        preload="metadata"
+                        preload={videoPreloadStrategy}
                         onLoadedData={handleVideoLoad}
                         style={{
                             width: '100%',
@@ -146,6 +151,8 @@ const SmartImage: React.FC<SmartImageProps> = ({
                             objectFit: isEnlarged ? 'contain' : objectFit,
                             opacity: isVideoLoaded ? 1 : 0,
                             transition: 'opacity 0.3s ease-in-out',
+                            transform: 'translate3d(0,0,0)',
+                            willChange: 'transform, opacity',
                         }}
                     />
                 )}

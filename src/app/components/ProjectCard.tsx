@@ -23,8 +23,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [preloadedImages, setPreloadedImages] = useState<HTMLImageElement[]>([]);
-    const nextImageRef = useRef<HTMLImageElement | null>(null);
+    const nextImageRef = useRef<HTMLImageElement | HTMLVideoElement | null>(null);
     const transitionTimeoutRef = useRef<NodeJS.Timeout>();
+    const [preloadedVideos, setPreloadedVideos] = useState<HTMLVideoElement[]>([]);
 
     // Préchargement initial des images
     useEffect(() => {
@@ -45,6 +46,26 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     }, [images]);
 
     useEffect(() => {
+        const preloadVideos = async () => {
+            const videoUrls = images.filter(src => src.endsWith('.mp4'));
+            
+            const loadedVideos = await Promise.all(
+                videoUrls.map((src) => {
+                    return new Promise<HTMLVideoElement>((resolve) => {
+                        const video = document.createElement('video');
+                        video.preload = "metadata"; // Charge uniquement les métadonnées initialement
+                        video.src = src;
+                        video.onloadedmetadata = () => resolve(video);
+                    });
+                })
+            );
+            setPreloadedVideos(loadedVideos);
+        };
+
+        preloadVideos();
+    }, [images]);
+
+    useEffect(() => {
         const timer = setTimeout(() => {
             setIsTransitioning(true);
         }, 1000);
@@ -54,8 +75,18 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
     const preloadNextImage = (nextIndex: number) => {
         if (nextIndex >= 0 && nextIndex < images.length) {
-            nextImageRef.current = new Image();
-            nextImageRef.current.src = images[nextIndex];
+            const nextSrc = images[nextIndex];
+            
+            if (nextSrc.endsWith('.mp4')) {
+                const videoElement = document.createElement('video');
+                videoElement.preload = "metadata";
+                videoElement.src = nextSrc;
+                nextImageRef.current = videoElement;
+            } else {
+                const imgElement = new Image();
+                imgElement.src = nextSrc;
+                nextImageRef.current = imgElement;
+            }
         }
     };
 
@@ -109,15 +140,18 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         alt={title}
                         aspectRatio="16 / 9"
                         src={images[activeIndex]}
-                        priority={activeIndex === 0} // Priorité pour la première image
+                        priority={activeIndex === 0}
+                        videoPreloadStrategy="metadata"
+                        posterImage={images[activeIndex].replace('.mp4', '-poster.jpg')} // Si vous avez des images poster
                         style={{
                             border: '1px solid var(--neutral-alpha-weak)',
-                            transform: `translate3d(0,0,0)`, // Force l'accélération matérielle
+                            transform: `translate3d(0,0,0)`,
                             backfaceVisibility: 'hidden',
                             ...(images.length > 1 && {
                                 cursor: 'pointer',
                             }),
-                        }}/>
+                        }}
+                    />
                 </RevealFx>
             </Flex>
             
