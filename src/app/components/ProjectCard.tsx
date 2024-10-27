@@ -1,6 +1,6 @@
 "use client";
 
-import { AvatarGroup, Flex, Heading, RevealFx, SmartImage, SmartLink, Text, LoadingAnimation } from "@/once-ui/components";
+import { AvatarGroup, Flex, Heading, RevealFx, SmartImage, SmartLink, Text } from "@/once-ui/components";
 import { useEffect, useState, useRef } from "react";
 
 interface ProjectCardProps {
@@ -25,7 +25,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     const [preloadedImages, setPreloadedImages] = useState<HTMLImageElement[]>([]);
     const nextImageRef = useRef<HTMLImageElement | null>(null);
     const transitionTimeoutRef = useRef<NodeJS.Timeout>();
-    const [isImageLoading, setIsImageLoading] = useState(false);
 
     // Préchargement initial des images
     useEffect(() => {
@@ -69,21 +68,16 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
     const handleControlClick = (nextIndex: number) => {
         if (nextIndex !== activeIndex && !transitionTimeoutRef.current) {
+            // Précharger l'image suivante pendant la transition
             preloadNextImage(nextIndex);
+            
             setIsTransitioning(false);
             
-            // Premier timeout pour le fade out
             transitionTimeoutRef.current = setTimeout(() => {
-                setIsImageLoading(true); // Démarrer le loading après le fade out
                 setActiveIndex(nextIndex);
-                
-                // Second timeout pour s'assurer que le loading est visible avant de terminer
-                setTimeout(() => {
-                    setIsTransitioning(true);
-                    setIsImageLoading(false);
-                    transitionTimeoutRef.current = undefined;
-                }, 300); // Ajustez ce délai selon vos besoins
-            }, 300); // Délai réduit pour une transition plus fluide
+                setIsTransitioning(true);
+                transitionTimeoutRef.current = undefined;
+            }, 630);
         }
     };
 
@@ -100,13 +94,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         <Flex
             fillWidth gap="m"
             direction="column">
-            <Flex onClick={handleImageClick} position="relative">
+            <Flex onClick={handleImageClick}>
                 <RevealFx
                     style={{
                         width: '100%',
-                        willChange: 'transform, opacity'
+                        willChange: 'transform, opacity' // Optimisation des performances
                     }}
-                    delay={0.2} // Réduit le délai pour une transition plus rapide
+                    delay={0.4}
                     trigger={isTransitioning}
                     speed="fast">
                     <SmartImage
@@ -116,12 +110,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         aspectRatio="16 / 9"
                         src={images[activeIndex]}
                         priority={activeIndex === 0} // Priorité pour la première image
-                        isLoading={isImageLoading}
                         style={{
                             border: '1px solid var(--neutral-alpha-weak)',
-                            transform: `translate3d(0,0,0)`,
+                            transform: `translate3d(0,0,0)`, // Force l'accélération matérielle
                             backfaceVisibility: 'hidden',
-                            transition: 'opacity 0.3s ease-in-out',
                             ...(images.length > 1 && {
                                 cursor: 'pointer',
                             }),
