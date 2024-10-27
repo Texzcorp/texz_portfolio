@@ -26,6 +26,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     const nextImageRef = useRef<HTMLImageElement | HTMLVideoElement | null>(null);
     const transitionTimeoutRef = useRef<NodeJS.Timeout>();
     const [preloadedVideos, setPreloadedVideos] = useState<HTMLVideoElement[]>([]);
+    const [preloadedVideoIndexes, setPreloadedVideoIndexes] = useState<Set<number>>(new Set());
 
     // Préchargement initial des images
     useEffect(() => {
@@ -66,6 +67,28 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     }, [images]);
 
     useEffect(() => {
+        const preloadNextVideos = async () => {
+            const videoIndexes = images
+                .map((src, index) => ({ src, index }))
+                .filter(({ src }) => src.endsWith('.mp4'))
+                .map(({ index }) => index);
+
+            // Précharger les 2 premières vidéos immédiatement
+            for (let i = 0; i < Math.min(2, videoIndexes.length); i++) {
+                const index = videoIndexes[i];
+                if (!preloadedVideoIndexes.has(index)) {
+                    const video = document.createElement('video');
+                    video.preload = "auto";
+                    video.src = images[index];
+                    setPreloadedVideoIndexes(prev => new Set([...prev, index]));
+                }
+            }
+        };
+
+        preloadNextVideos();
+    }, [images]);
+
+    useEffect(() => {
         const timer = setTimeout(() => {
             setIsTransitioning(true);
         }, 1000);
@@ -77,12 +100,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         if (nextIndex >= 0 && nextIndex < images.length) {
             const nextSrc = images[nextIndex];
             
-            if (nextSrc.endsWith('.mp4')) {
+            if (nextSrc.endsWith('.mp4') && !preloadedVideoIndexes.has(nextIndex)) {
                 const videoElement = document.createElement('video');
-                videoElement.preload = "metadata";
+                videoElement.preload = "auto";
                 videoElement.src = nextSrc;
                 nextImageRef.current = videoElement;
-            } else {
+                setPreloadedVideoIndexes(prev => new Set([...prev, nextIndex]));
+            } else if (!nextSrc.endsWith('.mp4')) {
                 const imgElement = new Image();
                 imgElement.src = nextSrc;
                 nextImageRef.current = imgElement;
