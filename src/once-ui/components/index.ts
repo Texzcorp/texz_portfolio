@@ -56,3 +56,4 @@ export { Tooltip } from './Tooltip';
 export { User } from './User';
 export type { UserProps } from './User';
 export { UserMenu } from './UserMenu';
+export { LoadingAnimation } from './LoadingAnimation';

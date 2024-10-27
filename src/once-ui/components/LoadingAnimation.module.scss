@@ -5,13 +5,14 @@
     transform: translate(-50%, -50%);
     display: flex;
     gap: 8px;
+    z-index: 1;
 }
 
 .loadingDot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--text-color);
+    background: var(--color-primary, #fff);
     opacity: 0.5;
     animation: pulse 1.4s ease-in-out infinite;
 
