@@ -19,6 +19,8 @@ export type SmartImageProps = ImageProps & {
     src: string;
     videoPreloadStrategy?: 'metadata' | 'auto' | 'none';
     posterImage?: string;
+    carouselImages?: string[];  // Tableau des images du carousel
+    currentIndex?: number;      // Index actuel dans le carousel
 };
 
 const SmartImage: React.FC<SmartImageProps> = ({
@@ -34,6 +36,8 @@ const SmartImage: React.FC<SmartImageProps> = ({
     src,
     videoPreloadStrategy = 'metadata',
     posterImage,
+    carouselImages,
+    currentIndex,
     ...props
 }) => {
     const [isEnlarged, setIsEnlarged] = useState(false);
@@ -41,6 +45,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
     const imageRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null); // Ajout d'une référence pour la vidéo
     const [isInView, setIsInView] = useState(false);
+    const nextImageRef = useRef<HTMLImageElement | HTMLVideoElement | null>(null);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -107,6 +112,34 @@ const SmartImage: React.FC<SmartImageProps> = ({
     };
 
     const isVideo = src.endsWith('.mp4');
+
+    // Ajoutez cette fonction pour précharger la prochaine ressource
+    const preloadNextResource = (nextIndex: number) => {
+        if (!carouselImages || nextIndex >= carouselImages.length) return;
+        
+        const nextSrc = carouselImages[nextIndex];
+        const isNextVideo = nextSrc.endsWith('.mp4');
+
+        if (isNextVideo) {
+            const video = document.createElement('video');
+            video.preload = 'metadata';
+            video.src = nextSrc;
+            nextImageRef.current = video;
+        } else {
+            // Correction ici : utiliser HTMLImageElement au lieu de Image
+            const img = document.createElement('img');
+            img.src = nextSrc;
+            nextImageRef.current = img;
+        }
+    };
+
+    // Effet pour précharger la prochaine ressource quand l'élément est visible
+    useEffect(() => {
+        if (isInView && carouselImages && typeof currentIndex === 'number') {
+            const nextIndex = (currentIndex + 1) % carouselImages.length;
+            preloadNextResource(nextIndex);
+        }
+    }, [isInView, currentIndex, carouselImages]);
 
     return (
         <>

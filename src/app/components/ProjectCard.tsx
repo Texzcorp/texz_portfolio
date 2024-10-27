@@ -140,6 +140,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         alt={title}
                         aspectRatio="16 / 9"
                         src={images[activeIndex]}
+                        carouselImages={images}
+                        currentIndex={activeIndex}
                         priority={activeIndex === 0}
                         videoPreloadStrategy="metadata"
                         posterImage={images[activeIndex].replace('.mp4', '-poster.jpg')} // Si vous avez des images poster
