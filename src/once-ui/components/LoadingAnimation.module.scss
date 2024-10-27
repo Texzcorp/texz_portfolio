@@ -1,75 +1,110 @@
 .loadingContainer {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     z-index: 1;
+    background: transparent;
 }
 
 .glassBox {
-    display: flex;
-    gap: 8px;
-    padding: 12px 20px;
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(5px);
-    border-radius: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
-}
-
-.loadingDot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(0, 225, 255, 0.8);
-    animation: pulse 1.4s ease-in-out infinite;
-    box-shadow: 
-        0 0 10px rgba(0, 225, 255, 0.5),
-        0 0 20px rgba(0, 162, 255, 0.3),
-        0 0 30px rgba(0, 68, 255, 0.2);
-
-    &:nth-child(2) {
-        animation-delay: 0.2s;
-    }
-
-    &:nth-child(3) {
-        animation-delay: 0.4s;
-    }
-}
-
-.glowEffect {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+}
+
+.orb {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: rgba(0, 225, 255, 0.8);
+    border-radius: 50%;
+    filter: drop-shadow(0 0 10px rgba(0, 225, 255, 0.8));
+    animation: orbRotate 2s linear infinite;
+}
+
+.orbTrail {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    animation: trailPulse 2s ease-in-out infinite;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        border-radius: 50%;
+        border: 2px solid rgba(0, 225, 255, 0.2);
+        animation: trailGlow 2s linear infinite;
+    }
+}
+
+.glowRing {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
     background: radial-gradient(
         circle at center,
         rgba(0, 225, 255, 0.1) 0%,
         transparent 70%
     );
-    animation: glow 2s ease-in-out infinite;
-    pointer-events: none;
+    animation: ringPulse 4s ease-in-out infinite;
+    filter: blur(5px);
 }
 
-@keyframes pulse {
+@keyframes orbRotate {
+    0% {
+        transform: rotate(0deg) translateX(40px) rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg) translateX(40px) rotate(-360deg);
+    }
+}
+
+@keyframes trailPulse {
     0%, 100% {
         transform: scale(1);
-        opacity: 0.5;
-    }
-    50% {
-        transform: scale(1.2);
-        opacity: 1;
-    }
-}
-
-@keyframes glow {
-    0%, 100% {
         opacity: 0.3;
     }
     50% {
+        transform: scale(1.1);
         opacity: 0.6;
+    }
+}
+
+@keyframes trailGlow {
+    0% {
+        border-color: rgba(0, 225, 255, 0.2);
+    }
+    50% {
+        border-color: rgba(0, 225, 255, 0.5);
+    }
+    100% {
+        border-color: rgba(0, 225, 255, 0.2);
+    }
+}
+
+@keyframes ringPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.2;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.4;
     }
 }
