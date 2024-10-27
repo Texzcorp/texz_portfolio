@@ -5,6 +5,7 @@ import Image, { ImageProps } from 'next/image';
 import classNames from 'classnames';
 
 import { Flex, Skeleton } from '@/once-ui/components';
+import { LoadingAnimation } from './LoadingAnimation';
 
 export type SmartImageProps = ImageProps & {
     className?: string;
@@ -158,8 +159,11 @@ const SmartImage: React.FC<SmartImageProps> = ({
                 }}
                 className={classNames(className)}
                 onClick={handleClick}>
-                {(isLoading || (isVideo && !isVideoLoaded)) && (
-                    <Skeleton shape="block" />
+                {(isLoading || (isVideo && !isVideoLoaded) || (!isVideo && !placeholderSrc)) && (
+                    <>
+                        <Skeleton shape="block" />
+                        <LoadingAnimation />
+                    </>
                 )}
                 {!isLoading && isVideo && isInView && (
                     <video
@@ -193,7 +197,9 @@ const SmartImage: React.FC<SmartImageProps> = ({
                             objectFit: isEnlarged ? 'contain' : objectFit,
                             transform: 'translate3d(0,0,0)',
                             backfaceVisibility: 'hidden',
-                            willChange: 'transform',
+                            willChange: 'transform, opacity',
+                            opacity: placeholderSrc ? 1 : 0,
+                            transition: 'opacity 0.3s ease-in-out',
                         }}
                     />
                 )}
