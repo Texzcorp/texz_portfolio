@@ -71,11 +71,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             // Précharger l'image suivante pendant la transition
             preloadNextImage(nextIndex);
             
-            setIsTransitioning(false); // Fade out
+            setIsTransitioning(false);
             
             transitionTimeoutRef.current = setTimeout(() => {
                 setActiveIndex(nextIndex);
-                setIsTransitioning(true); // Fade in
+                setIsTransitioning(true);
                 transitionTimeoutRef.current = undefined;
             }, 630);
         }
@@ -98,7 +98,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                 <RevealFx
                     style={{
                         width: '100%',
-                        willChange: 'transform, opacity'
+                        willChange: 'transform, opacity' // Optimisation des performances
                     }}
                     delay={0.4}
                     trigger={isTransitioning}
@@ -109,7 +109,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         alt={title}
                         aspectRatio="16 / 9"
                         src={images[activeIndex]}
-                        isLoading={!isTransitioning} // Ajout : afficher le loading pendant le fade in
                         priority={activeIndex === 0} // Priorité pour la première image
                         style={{
                             border: '1px solid var(--neutral-alpha-weak)',

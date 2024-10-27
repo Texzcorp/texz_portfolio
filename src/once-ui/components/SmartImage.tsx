@@ -39,7 +39,6 @@ const SmartImage: React.FC<SmartImageProps> = ({
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isInView, setIsInView] = useState(false);
     const [placeholderSrc, setPlaceholderSrc] = useState<string>('');
-    const [isImageLoaded, setIsImageLoaded] = useState(false);
 
     const isVideo = src.endsWith('.mp4');
 
@@ -137,10 +136,6 @@ const SmartImage: React.FC<SmartImageProps> = ({
         };
     };
 
-    const handleImageLoad = () => {
-        setIsImageLoaded(true);
-    };
-
     return (
         <>
             <Flex
@@ -164,7 +159,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
                 }}
                 className={classNames(className)}
                 onClick={handleClick}>
-                {(!isImageLoaded || isLoading || (isVideo && !isVideoLoaded)) && (
+                {(isLoading || (isVideo && !isVideoLoaded) || (!isVideo && !placeholderSrc)) && (
                     <>
                         <Skeleton shape="block" />
                         <LoadingAnimation />
@@ -193,8 +188,9 @@ const SmartImage: React.FC<SmartImageProps> = ({
                         {...props}
                         src={src}
                         alt={alt}
-                        onLoad={handleImageLoad}
                         fill
+                        placeholder={placeholderSrc ? 'blur' : 'empty'}
+                        blurDataURL={placeholderSrc}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         quality={75}
                         style={{
@@ -202,7 +198,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
                             transform: 'translate3d(0,0,0)',
                             backfaceVisibility: 'hidden',
                             willChange: 'transform, opacity',
-                            opacity: isImageLoaded ? 1 : 0,
+                            opacity: placeholderSrc ? 1 : 0,
                             transition: 'opacity 0.3s ease-in-out',
                         }}
                     />
