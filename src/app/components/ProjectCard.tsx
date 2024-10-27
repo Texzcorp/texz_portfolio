@@ -52,11 +52,16 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         return () => clearTimeout(timer);
     }, []);
 
-    const preloadNextImage = (nextIndex: number) => {
-        if (nextIndex >= 0 && nextIndex < images.length) {
-            nextImageRef.current = new Image();
-            nextImageRef.current.src = images[nextIndex];
-        }
+    const preloadNextImage = (nextIndex: number): Promise<void> => {
+        return new Promise((resolve) => {
+            if (nextIndex >= 0 && nextIndex < images.length) {
+                nextImageRef.current = new Image();
+                nextImageRef.current.onload = () => resolve();
+                nextImageRef.current.src = images[nextIndex];
+            } else {
+                resolve();
+            }
+        });
     };
 
     const handleImageClick = () => {
