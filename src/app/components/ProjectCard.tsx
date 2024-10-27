@@ -1,7 +1,7 @@
 "use client";
 
 import { AvatarGroup, Flex, Heading, RevealFx, SmartImage, SmartLink, Text } from "@/once-ui/components";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 interface ProjectCardProps {
     href: string;
@@ -22,6 +22,27 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
+    const [preloadedImages, setPreloadedImages] = useState<HTMLImageElement[]>([]);
+    const nextImageRef = useRef<HTMLImageElement | null>(null);
+    const transitionTimeoutRef = useRef<NodeJS.Timeout>();
+
+    // Préchargement initial des images
+    useEffect(() => {
+        const preloadImages = async () => {
+            const loadedImages = await Promise.all(
+                images.map((src) => {
+                    return new Promise<HTMLImageElement>((resolve) => {
+                        const img = new Image();
+                        img.src = src;
+                        img.onload = () => resolve(img);
+                    });
+                })
+            );
+            setPreloadedImages(loadedImages);
+        };
+
+        preloadImages(); // Correction ici : appel de la fonction preloadImages au lieu de loadedImages
+    }, [images]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -31,31 +52,54 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         return () => clearTimeout(timer);
     }, []);
 
+    const preloadNextImage = (nextIndex: number) => {
+        if (nextIndex >= 0 && nextIndex < images.length) {
+            nextImageRef.current = new Image();
+            nextImageRef.current.src = images[nextIndex];
+        }
+    };
+
     const handleImageClick = () => {
-        if(images.length > 1) {
-            setIsTransitioning(false);
+        if (images.length > 1) {
             const nextIndex = (activeIndex + 1) % images.length;
             handleControlClick(nextIndex);
         }
     };
-    
-    const handleControlClick = (index: number) => {
-        if (index !== activeIndex) {
+
+    const handleControlClick = (nextIndex: number) => {
+        if (nextIndex !== activeIndex && !transitionTimeoutRef.current) {
+            // Précharger l'image suivante pendant la transition
+            preloadNextImage(nextIndex);
+            
             setIsTransitioning(false);
-            setTimeout(() => {
-                setActiveIndex(index);
+            
+            transitionTimeoutRef.current = setTimeout(() => {
+                setActiveIndex(nextIndex);
                 setIsTransitioning(true);
+                transitionTimeoutRef.current = undefined;
             }, 630);
         }
     };
+
+    // Nettoyage des timeouts
+    useEffect(() => {
+        return () => {
+            if (transitionTimeoutRef.current) {
+                clearTimeout(transitionTimeoutRef.current);
+            }
+        };
+    }, []);
 
     return (
         <Flex
             fillWidth gap="m"
             direction="column">
             <Flex onClick={handleImageClick}>
-            <RevealFx
-                    style={{width: '100%'}}
+                <RevealFx
+                    style={{
+                        width: '100%',
+                        willChange: 'transform, opacity' // Optimisation des performances
+                    }}
                     delay={0.4}
                     trigger={isTransitioning}
                     speed="fast">
@@ -65,14 +109,18 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         alt={title}
                         aspectRatio="16 / 9"
                         src={images[activeIndex]}
+                        priority={activeIndex === 0} // Priorité pour la première image
                         style={{
                             border: '1px solid var(--neutral-alpha-weak)',
+                            transform: `translate3d(0,0,0)`, // Force l'accélération matérielle
+                            backfaceVisibility: 'hidden',
                             ...(images.length > 1 && {
                                 cursor: 'pointer',
                             }),
                         }}/>
                 </RevealFx>
             </Flex>
+            
             {images.length > 1 && (
                 <Flex
                     gap="4" paddingX="s"

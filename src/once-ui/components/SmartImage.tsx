@@ -33,13 +33,41 @@ const SmartImage: React.FC<SmartImageProps> = ({
     ...props
 }) => {
     const [isEnlarged, setIsEnlarged] = useState(false);
+    const [isVideoLoaded, setIsVideoLoaded] = useState(false);
     const imageRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null); // Ajout d'une référence pour la vidéo
+    const [isInView, setIsInView] = useState(false);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setIsInView(true);
+                        observer.disconnect();
+                    }
+                });
+            },
+            { threshold: 0.1 }
+        );
+
+        if (imageRef.current) {
+            observer.observe(imageRef.current);
+        }
+
+        return () => {
+            observer.disconnect();
+        };
+    }, []);
 
     const handleClick = () => {
         if (enlarge) {
             setIsEnlarged(!isEnlarged);
         }
+    };
+
+    const handleVideoLoad = () => {
+        setIsVideoLoaded(true);
     };
 
     useEffect(() => {
@@ -99,21 +127,25 @@ const SmartImage: React.FC<SmartImageProps> = ({
                 }}
                 className={classNames(className)}
                 onClick={handleClick}>
-                {isLoading && (
+                {(isLoading || (isVideo && !isVideoLoaded)) && (
                     <Skeleton shape="block" />
                 )}
-                {!isLoading && isVideo && (
+                {!isLoading && isVideo && isInView && (
                     <video
-                        ref={videoRef} // Ajout de la référence à l'élément vidéo
+                        ref={videoRef}
                         src={src}
                         autoPlay
                         loop
                         muted
                         playsInline
+                        preload="metadata"
+                        onLoadedData={handleVideoLoad}
                         style={{
                             width: '100%',
                             height: '100%',
                             objectFit: isEnlarged ? 'contain' : objectFit,
+                            opacity: isVideoLoaded ? 1 : 0,
+                            transition: 'opacity 0.3s ease-in-out',
                         }}
                     />
                 )}
@@ -123,8 +155,15 @@ const SmartImage: React.FC<SmartImageProps> = ({
                         src={src}
                         alt={alt}
                         fill
+                        loading={props.priority ? 'eager' : 'lazy'}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                        quality={95}
+                        priority={props.priority}
                         style={{ 
                             objectFit: isEnlarged ? 'contain' : objectFit,
+                            transform: 'translate3d(0,0,0)',
+                            backfaceVisibility: 'hidden',
+                            willChange: 'transform, opacity',
                         }}
                     />
                 )}
@@ -164,7 +203,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
                                     alignItems: 'center',
                                 }}>
                                 <video
-                                    ref={videoRef} // Réutilisation de la même vidéo
+                                    ref={videoRef}
                                     style={{
                                         width: '100%',
                                         height: '100%',
