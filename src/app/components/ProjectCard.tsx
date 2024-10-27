@@ -22,7 +22,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
-    const [isImageLoading, setIsImageLoading] = useState(true); // Nouvel état pour le loading
     const [preloadedImages, setPreloadedImages] = useState<HTMLImageElement[]>([]);
     const nextImageRef = useRef<HTMLImageElement | null>(null);
     const transitionTimeoutRef = useRef<NodeJS.Timeout>();
@@ -69,17 +68,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
     const handleControlClick = (nextIndex: number) => {
         if (nextIndex !== activeIndex && !transitionTimeoutRef.current) {
-            setIsImageLoading(true); // Démarre le loading
+            // Précharger l'image suivante pendant la transition
             preloadNextImage(nextIndex);
+            
             setIsTransitioning(false);
             
             transitionTimeoutRef.current = setTimeout(() => {
                 setActiveIndex(nextIndex);
                 setIsTransitioning(true);
-                // On attend un peu avant de cacher le loading pour une transition plus fluide
-                setTimeout(() => {
-                    setIsImageLoading(false);
-                }, 300);
                 transitionTimeoutRef.current = undefined;
             }, 630);
         }
@@ -102,8 +98,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                 <RevealFx
                     style={{
                         width: '100%',
-                        willChange: 'transform, opacity',
-                        position: 'relative' // Ajout pour le positionnement du loading
+                        willChange: 'transform, opacity' // Optimisation des performances
                     }}
                     delay={0.4}
                     trigger={isTransitioning}
@@ -114,7 +109,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         alt={title}
                         aspectRatio="16 / 9"
                         src={images[activeIndex]}
-                        isLoading={isImageLoading} // Ajout de la prop isLoading
                         priority={activeIndex === 0} // Priorité pour la première image
                         style={{
                             border: '1px solid var(--neutral-alpha-weak)',
