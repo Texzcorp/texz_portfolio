@@ -17,10 +17,6 @@ export type SmartImageProps = ImageProps & {
     objectFit?: CSSProperties['objectFit'];
     enlarge?: boolean;
     src: string;
-    videoPreloadStrategy?: 'metadata' | 'auto' | 'none';
-    posterImage?: string;
-    carouselImages?: string[];  // Tableau des images du carousel
-    currentIndex?: number;      // Index actuel dans le carousel
 };
 
 const SmartImage: React.FC<SmartImageProps> = ({
@@ -34,10 +30,6 @@ const SmartImage: React.FC<SmartImageProps> = ({
     objectFit = 'cover',
     enlarge = false,
     src,
-    videoPreloadStrategy = 'metadata',
-    posterImage,
-    carouselImages,
-    currentIndex,
     ...props
 }) => {
     const [isEnlarged, setIsEnlarged] = useState(false);
@@ -45,22 +37,6 @@ const SmartImage: React.FC<SmartImageProps> = ({
     const imageRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null); // Ajout d'une référence pour la vidéo
     const [isInView, setIsInView] = useState(false);
-    const nextImageRef = useRef<HTMLImageElement | HTMLVideoElement | null>(null);
-
-    // Ajout d'un state pour gérer le buffer
-    const [isBuffering, setIsBuffering] = useState(true);
-    const bufferCheckInterval = useRef<NodeJS.Timeout>();
-
-    // Fonction pour vérifier le buffer de la vidéo
-    const checkBuffer = (video: HTMLVideoElement) => {
-        if (video.readyState >= 3) { // ENOUGH_DATA
-            setIsBuffering(false);
-            setIsVideoLoaded(true);
-            if (bufferCheckInterval.current) {
-                clearInterval(bufferCheckInterval.current);
-            }
-        }
-    };
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -90,23 +66,8 @@ const SmartImage: React.FC<SmartImageProps> = ({
         }
     };
 
-    // Gestionnaire amélioré du chargement vidéo
-    const handleVideoLoad = (event: React.SyntheticEvent<HTMLVideoElement>) => {
-        const video = event.currentTarget;
-        
-        // Démarrer la vérification du buffer
-        bufferCheckInterval.current = setInterval(() => {
-            if (videoRef.current) {  // Vérification de l'existence de videoRef.current
-                checkBuffer(videoRef.current);
-            }
-        }, 100);
-        
-        // Précharger la vidéo en arrière-plan
-        if ('requestVideoFrameCallback' in video) {
-            (video as any).requestVideoFrameCallback(() => {
-                setIsVideoLoaded(true);
-            });
-        }
+    const handleVideoLoad = () => {
+        setIsVideoLoaded(true);
     };
 
     useEffect(() => {
@@ -140,39 +101,9 @@ const SmartImage: React.FC<SmartImageProps> = ({
             zIndex: isEnlarged ? 2 : 1,
         };
     };
-    
 
     const isVideo = src.endsWith('.mp4');
 
-    // Ajoutez cette fonction pour précharger la prochaine ressource
-    const preloadNextResource = (nextIndex: number) => {
-        if (!carouselImages || nextIndex >= carouselImages.length) return;
-        
-        const nextSrc = carouselImages[nextIndex];
-        const isNextVideo = nextSrc.endsWith('.mp4');
-
-        if (isNextVideo) {
-            const video = document.createElement('video');
-            video.preload = 'metadata';
-            video.src = nextSrc;
-            nextImageRef.current = video;
-        } else {
-            // Correction ici : utiliser HTMLImageElement au lieu de Image
-            const img = document.createElement('img');
-            img.src = nextSrc;
-            nextImageRef.current = img;
-        }
-    };
-
-    // Effet pour précharger la prochaine ressource quand l'élément est visible
-    useEffect(() => {
-        if (isInView && carouselImages && typeof currentIndex === 'number') {
-            const nextIndex = (currentIndex + 1) % carouselImages.length;
-            preloadNextResource(nextIndex);
-        }
-    }, [isInView, currentIndex, carouselImages]);
-
-    // Modification de la partie vidéo dans le rendu
     return (
         <>
             <Flex
@@ -203,26 +134,18 @@ const SmartImage: React.FC<SmartImageProps> = ({
                     <video
                         ref={videoRef}
                         src={src}
-                        poster={posterImage}
                         autoPlay
                         loop
                         muted
                         playsInline
-                        preload="auto"
+                        preload="metadata"
                         onLoadedData={handleVideoLoad}
-                        onProgress={() => {
-                            if (videoRef.current && videoRef.current.readyState >= 3) {  // Ajout de la vérification
-                                setIsBuffering(false);
-                            }
-                        }}
                         style={{
                             width: '100%',
                             height: '100%',
                             objectFit: isEnlarged ? 'contain' : objectFit,
                             opacity: isVideoLoaded ? 1 : 0,
                             transition: 'opacity 0.3s ease-in-out',
-                            transform: 'translate3d(0,0,0)',
-                            willChange: 'transform, opacity',
                         }}
                     />
                 )}
@@ -304,19 +227,6 @@ const SmartImage: React.FC<SmartImageProps> = ({
                         )}
                     </Flex>
                 </Flex>
-            )}
-            {/* Afficher un skeleton pendant le buffering */}
-            {isBuffering && isVideo && (
-                <Skeleton 
-                    shape="block" 
-                    style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                    }}
-                />
             )}
         </>
     );
