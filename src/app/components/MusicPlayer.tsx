@@ -9,6 +9,7 @@ import { useMusicPlayerContext } from "@/app/components/MusicPlayerContext";
 
 interface MusicPlayerProps {
   src: string;
+  title?: string;
   compact?: boolean;
 }
 

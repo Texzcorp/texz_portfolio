@@ -6,3 +6,213 @@
         display: inline-block;  /* Afficher l'icône à gauche du titre */
     }
 }
+
+.cardContainer {
+    display: flex;
+    gap: 2rem;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    margin: 2rem 0;
+    overflow: visible;
+}
+
+.mainSection {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    padding: 1.5rem;
+    overflow: visible;
+}
+
+.imageWrapper {
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    margin: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-origin: center center;
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
+.coverImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
+.mainContent {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    width: 100%;
+    max-width: 400px;
+    align-items: center;
+}
+
+.description {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+.playlistSection {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 0.8rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: visible;
+}
+
+.playlistHeader {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.playlist {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.playlistItem {
+    padding: 1.2rem;
+    background: rgba(0, 255, 255, 0.05);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem;
+
+    &:hover {
+        background: rgba(0, 255, 255, 0.1);
+        transform: translateX(5px);
+    }
+
+    &.active {
+        background: rgba(0, 255, 255, 0.15);
+        border-color: rgba(0, 255, 255, 0.3);
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+    }
+}
+
+.trackTitle {
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &::before {
+        content: '♪';
+        color: rgba(0, 255, 255, 0.7);
+    }
+}
+
+.titleSection {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    width: 100%;
+}
+
+.styleText {
+    color: rgba(0, 255, 255, 0.8);
+    font-size: 0.9rem;
+    margin-top: -0.5rem;
+}
+
+.trackStyle {
+    font-size: 0.8rem;
+    color: rgba(0, 255, 255, 0.7);
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .cardContainer {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .playlistSection {
+        width: 100%;
+    }
+}
+
+.miniCover {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.miniCoverImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.playlistItemContent {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.trackInfo {
+    flex-grow: 1;
+}
+
+.playlistItem {
+    padding: 0.8rem;
+    
+    &:hover {
+        .miniCoverImage {
+            transform: scale(1.05);
+        }
+    }
+}
+
+.coverImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
+.mainPlayer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}

@@ -1,5 +1,7 @@
 .hover {
     transition: var(--transition-property) var(--transition-duration-micro-medium) var(--transition-timing-function);
+    padding: 0 1rem;
+    margin-left: 2rem;
 
     &:hover {
         transform: translateX(var(--static-space-8));
