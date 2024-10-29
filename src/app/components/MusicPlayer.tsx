@@ -250,7 +250,11 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
         </div>
       </div>
 
-      {isPlaying && <div className={styles.waveAnimation} />}
+      {isPlaying && (
+        <div className={styles.waveContainer}>
+          <div className={styles.waveAnimation} />
+        </div>
+      )}
     </div>
   );
 };

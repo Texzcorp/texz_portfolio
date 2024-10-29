@@ -20,6 +20,9 @@
   max-width: 700px;
   transition: all 0.3s ease;
   position: relative;
+  overflow: hidden;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: radial-gradient(white, black);
 
   &:hover {
     background-color: rgba(0, 255, 255, 0.08);
@@ -148,39 +151,44 @@
   }
 }
 
+.waveContainer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -2;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: radial-gradient(white, black);
+}
+
 .waveAnimation {
-    will-change: transform, opacity;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.25) 10%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0.2) 100%);
-    border-radius: 30%;
-    filter: blur(10px) saturate(120%);
-    animation: floating 8s ease-in-out infinite, fadeInOut 8s infinite;
-    pointer-events: none;
-    opacity: 0.5;
-    transition: opacity 1.5s ease-in-out;
-    z-index: -2; // Place la vague en dessous
-  }
-  
-  @keyframes floating {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.25) 10%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0.2) 100%);
+  border-radius: inherit;
+  filter: blur(10px) saturate(120%);
+  animation: floating 8s ease-in-out infinite, fadeInOut 8s infinite;
+  opacity: 0.5;
+  transition: opacity 1.5s ease-in-out;
+  transform-origin: center center;
+}
+
+@keyframes floating {
     0%, 100% {
-      transform: translate(-50%, -50%) scale(1);
+      transform: scale(0.98);
     }
     50% {
-      transform: translate(-50%, -50%) scale(1.01); // Scale réduit
+      transform: scale(1.02);
     }
-  }  
-  
-  @keyframes fadeInOut {
+}
+
+@keyframes fadeInOut {
     10%, 90% {
-      opacity: 0.3; /* Opacité minimale de 0.1 */
+      opacity: 0.3;
     }
     50% {
       opacity: 0.6;
     }
-  }
+}
 
