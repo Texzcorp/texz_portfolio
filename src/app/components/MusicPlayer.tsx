@@ -44,20 +44,12 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
   }, [handleEnded]);
 
   const togglePlay = useCallback(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
     if (isPlaying) {
-        audio.pause();
-        setIsPlaying(false);
-        stopMusic(src);
+      stopMusic(src);
     } else {
-        setActivePlayerSrc(src);  // Changed from setActivePlayer
-        audio.play();
-        setIsPlaying(true);
-        startPlaying();
+      setActivePlayerSrc(src);
     }
-  }, [isPlaying, setActivePlayerSrc, startPlaying, stopMusic, src]);  // Updated dependency array
+  }, [isPlaying, src, stopMusic, setActivePlayerSrc]);
 
   const handleVolumeChange = (value: number) => {
     setVolume(value);
@@ -170,6 +162,46 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
       stopAllMusic();
     };
   }, [stopAllMusic]);
+
+  // Effet pour gérer la lecture automatique
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    const handleEnded = () => {
+      setIsPlaying(false);
+      stopMusic(src);
+    };
+
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
+    audio.addEventListener('ended', handleEnded);
+
+    // Gestion de l'état actif
+    if (isCurrentPlayer) {
+      audio.currentTime = 0; // Reset la position
+      audio.play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch(err => {
+          console.error('Erreur de lecture:', err);
+          setIsPlaying(false);
+          stopMusic(src);
+        });
+    } else {
+      audio.pause();
+      setIsPlaying(false);
+    }
+
+    return () => {
+      audio.removeEventListener('play', handlePlay);
+      audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, [isCurrentPlayer, src, stopMusic]);
 
   const playerStyles = compact ? compactPlayerStyles : glassPlayerStyles;
 

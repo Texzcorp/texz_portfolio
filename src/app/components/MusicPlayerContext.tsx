@@ -33,37 +33,47 @@ export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
     const { startPlaying, stopPlaying } = useBackground();
     const [isAnyMusicPlaying, setIsAnyMusicPlaying] = useState(false);
 
-    useEffect(() => {
-        setIsAnyMusicPlaying(!!activePlayerSrc);
-        if (activePlayerSrc) {
-            startPlaying();
-        } else {
-            stopPlaying();
-        }
-    }, [activePlayerSrc, startPlaying, stopPlaying]);
-
     const stopMusic = useCallback((src: string) => {
         if (activePlayerSrc === src) {
             setActivePlayerSrc(null);
             setAudioData(null);
-            stopPlaying();
             setIsAnyMusicPlaying(false);
+            stopPlaying();
         }
     }, [activePlayerSrc, stopPlaying]);
 
-    // Add a new method to stop all music
     const stopAllMusic = useCallback(() => {
         setActivePlayerSrc(null);
         setAudioData(null);
-        stopPlaying();
         setIsAnyMusicPlaying(false);
+        stopPlaying();
     }, [stopPlaying]);
 
+    const handleActivePlayerChange = useCallback((newSrc: string | null) => {
+        if (newSrc) {
+            setActivePlayerSrc(newSrc);
+            setIsAnyMusicPlaying(true);
+            startPlaying();
+        } else {
+            stopAllMusic();
+        }
+    }, [startPlaying, stopAllMusic]);
+
+    useEffect(() => {
+        if (activePlayerSrc) {
+            setIsAnyMusicPlaying(true);
+            startPlaying();
+        } else {
+            setIsAnyMusicPlaying(false);
+            stopPlaying();
+        }
+    }, [activePlayerSrc, startPlaying, stopPlaying]);
+
     return (
-        <MusicPlayerContext.Provider value={{ 
-            activePlayerSrc, 
-            setActivePlayerSrc,
-            audioData, 
+        <MusicPlayerContext.Provider value={{
+            activePlayerSrc,
+            setActivePlayerSrc: handleActivePlayerChange,
+            audioData,
             setAudioData,
             stopMusic,
             stopAllMusic,
@@ -75,3 +85,4 @@ export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
 };
 
 export const useMusicPlayerContext = () => useContext(MusicPlayerContext);
+

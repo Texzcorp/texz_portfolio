@@ -3,7 +3,8 @@
 import { Flex, Heading, Text, RevealFx } from '@/once-ui/components';
 import MusicPlayer from './MusicPlayer';
 import styles from './MusicProjectCard.module.scss';
-import { useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useMusicPlayerContext } from './MusicPlayerContext';
 
 interface Music {
     src: string;
@@ -23,7 +24,24 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
     extraMusics,
 }) => {
     const [currentMusic, setCurrentMusic] = useState(mainMusic);
+    const { activePlayerSrc, setActivePlayerSrc } = useMusicPlayerContext();
     const allMusics = mainMusic ? [mainMusic, ...(extraMusics || [])] : extraMusics || [];
+
+    const handleMusicSelect = useCallback((music: Music) => {
+        if (activePlayerSrc === music.src) {
+            setActivePlayerSrc(null);
+        } else {
+            setCurrentMusic(music);
+            setActivePlayerSrc(music.src);
+        }
+    }, [activePlayerSrc, setActivePlayerSrc]);
+
+    useEffect(() => {
+        const currentlyPlayingMusic = allMusics.find(music => music.src === activePlayerSrc);
+        if (currentlyPlayingMusic) {
+            setCurrentMusic(currentlyPlayingMusic);
+        }
+    }, [activePlayerSrc, allMusics]);
 
     return (
         <div className={styles.cardContainer}>
@@ -69,10 +87,8 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
                             {allMusics.map((music, index) => (
                                 <div 
                                     key={index} 
-                                    className={`${styles.playlistItem} ${
-                                        currentMusic?.src === music.src ? styles.active : ''
-                                    }`}
-                                    onClick={() => setCurrentMusic(music)}
+                                    className={`${styles.playlistItem} ${music.src === activePlayerSrc ? styles.active : ''}`}
+                                    onClick={() => handleMusicSelect(music)}
                                 >
                                     <div className={styles.playlistItemContent}>
                                         <div className={styles.miniCover}>
