@@ -7,6 +7,14 @@ interface ProjectsProps {
     range?: [number, number?];
 }
 
+// Définir l'interface Music ici en attendant
+interface Music {
+    src: string;
+    title: string;
+    style: string;
+    cover: string;
+}
+
 export function MusicProjects({ range }: ProjectsProps) {
     let allProjects = getPosts(['src', 'app', 'music', 'projects']);
 
@@ -19,24 +27,25 @@ export function MusicProjects({ range }: ProjectsProps) {
         : sortedProjects;
 
     return (
-        <Flex fillWidth gap="l" marginBottom="40" paddingX="l" direction="column">
+        <Flex 
+            fillWidth 
+            gap="l" 
+            marginBottom="40" 
+            direction="column"
+            paddingX="l"
+        >
             {displayedProjects.map((post) => {
-                // Si le projet contient de la musique, utiliser MusicProjectCard
                 if (post.metadata.mainMusic || post.metadata.extraMusics) {
                     return (
                         <MusicProjectCard
                             key={post.slug}
                             href={`/work/${post.slug}`}
-                            image={post.metadata.images[0]} // Utiliser la première image
-                            title={post.metadata.title}
-                            description={post.metadata.summary}
                             mainMusic={post.metadata.mainMusic}
                             extraMusics={post.metadata.extraMusics}
                         />
                     );
                 }
 
-                // Sinon, utiliser ProjectCard pour les autres projets
                 return (
                     <ProjectCard
                         key={post.slug}

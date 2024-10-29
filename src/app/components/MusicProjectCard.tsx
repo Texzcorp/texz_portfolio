@@ -6,6 +6,7 @@ import styles from './MusicProjectCard.module.scss';
 import { useState, useCallback, useEffect } from 'react';
 import { useMusicPlayerContext } from './MusicPlayerContext';
 
+// Définir l'interface Music ici en attendant
 interface Music {
     src: string;
     title: string;
@@ -17,6 +18,7 @@ interface MusicProjectCardProps {
     href: string;
     mainMusic?: Music;
     extraMusics?: Music[];
+    // Supprimé les props non utilisées (image, title, description)
 }
 
 export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
@@ -27,14 +29,28 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
     const { activePlayerSrc, setActivePlayerSrc } = useMusicPlayerContext();
     const allMusics = mainMusic ? [mainMusic, ...(extraMusics || [])] : extraMusics || [];
 
+    const currentIndex = allMusics.findIndex(music => music.src === currentMusic?.src);
+    
     const handleMusicSelect = useCallback((music: Music) => {
-        if (activePlayerSrc === music.src) {
-            setActivePlayerSrc(null);
-        } else {
-            setCurrentMusic(music);
-            setActivePlayerSrc(music.src);
+        setCurrentMusic(music);
+        setActivePlayerSrc(music.src);
+    }, [setActivePlayerSrc]);
+
+    const handlePrevious = useCallback(() => {
+        if (currentIndex > 0) {
+            const prevMusic = allMusics[currentIndex - 1];
+            setCurrentMusic(prevMusic);
+            setActivePlayerSrc(prevMusic.src);
         }
-    }, [activePlayerSrc, setActivePlayerSrc]);
+    }, [currentIndex, allMusics, setActivePlayerSrc]);
+
+    const handleNext = useCallback(() => {
+        if (currentIndex < allMusics.length - 1) {
+            const nextMusic = allMusics[currentIndex + 1];
+            setCurrentMusic(nextMusic);
+            setActivePlayerSrc(nextMusic.src);
+        }
+    }, [currentIndex, allMusics, setActivePlayerSrc]);
 
     useEffect(() => {
         const currentlyPlayingMusic = allMusics.find(music => music.src === activePlayerSrc);
@@ -68,8 +84,11 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
                         {currentMusic && (
                             <div className={styles.mainPlayer}>
                                 <MusicPlayer 
-                                    src={currentMusic.src} 
-                                    title={currentMusic.title}
+                                    src={currentMusic.src}
+                                    onPrevious={handlePrevious}
+                                    onNext={handleNext}
+                                    hasPrevious={currentIndex > 0}
+                                    hasNext={currentIndex < allMusics.length - 1}
                                 />
                             </div>
                         )}

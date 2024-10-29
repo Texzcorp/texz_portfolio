@@ -1,9 +1,9 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { useBackground } from "@/app/components/BackgroundContext";
+import React, { createContext, useContext, useState, useCallback } from 'react';
+import { useBackground } from './BackgroundContext';
 
-interface MusicPlayerContextProps {
+interface MusicPlayerContextType {
     activePlayerSrc: string | null;
     setActivePlayerSrc: (src: string | null) => void;
     audioData: Float32Array | null;
@@ -13,19 +13,11 @@ interface MusicPlayerContextProps {
     isAnyMusicPlaying: boolean;
 }
 
-const MusicPlayerContext = createContext<MusicPlayerContextProps>({
-    activePlayerSrc: null,
-    setActivePlayerSrc: () => {},
-    audioData: null,
-    setAudioData: () => {},
-    stopMusic: () => {},
-    stopAllMusic: () => {},
-    isAnyMusicPlaying: false,
-});
-
 interface MusicPlayerProviderProps {
-    children: ReactNode;
+    children: React.ReactNode;
 }
+
+const MusicPlayerContext = createContext<MusicPlayerContextType | undefined>(undefined);
 
 export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
     const [activePlayerSrc, setActivePlayerSrc] = useState<string | null>(null);
@@ -50,24 +42,17 @@ export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
     }, [stopPlaying]);
 
     const handleActivePlayerChange = useCallback((newSrc: string | null) => {
-        if (newSrc) {
+        if (newSrc && newSrc !== activePlayerSrc) {
+            if (activePlayerSrc) {
+                stopMusic(activePlayerSrc);
+            }
             setActivePlayerSrc(newSrc);
             setIsAnyMusicPlaying(true);
             startPlaying();
-        } else {
-            stopAllMusic();
+        } else if (!newSrc) {
+            stopMusic(activePlayerSrc!);
         }
-    }, [startPlaying, stopAllMusic]);
-
-    useEffect(() => {
-        if (activePlayerSrc) {
-            setIsAnyMusicPlaying(true);
-            startPlaying();
-        } else {
-            setIsAnyMusicPlaying(false);
-            stopPlaying();
-        }
-    }, [activePlayerSrc, startPlaying, stopPlaying]);
+    }, [activePlayerSrc, startPlaying, stopMusic]);
 
     return (
         <MusicPlayerContext.Provider value={{
@@ -84,5 +69,11 @@ export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
     );
 };
 
-export const useMusicPlayerContext = () => useContext(MusicPlayerContext);
+export const useMusicPlayerContext = () => {
+    const context = useContext(MusicPlayerContext);
+    if (context === undefined) {
+        throw new Error('useMusicPlayerContext must be used within a MusicPlayerProvider');
+    }
+    return context;
+};
 

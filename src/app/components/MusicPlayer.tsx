@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { MdOutlineMusicNote, MdVolumeUp, MdVolumeOff } from 'react-icons/md';
-import { HiPlay, HiPause } from 'react-icons/hi';
+import { HiPlay, HiPause, HiRewind, HiFastForward } from 'react-icons/hi';
 import styles from './MusicPlayer.module.scss';
 import { useBackground } from "@/app/components/BackgroundContext";
 import { useMusicPlayerContext } from "@/app/components/MusicPlayerContext";
@@ -11,39 +11,85 @@ interface MusicPlayerProps {
   src: string;
   title?: string;
   compact?: boolean;
+  onPrevious?: () => void;
+  onNext?: () => void;
+  hasPrevious?: boolean;
+  hasNext?: boolean;
 }
 
-const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
+const MusicPlayer: React.FC<MusicPlayerProps> = ({ 
+  src, 
+  compact = false,
+  onPrevious,
+  onNext,
+  hasPrevious = false,
+  hasNext = false
+}) => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.75);
   const [muted, setMuted] = useState(false);
-  const { startPlaying, stopPlaying } = useBackground();
-  const { activePlayerSrc, setActivePlayerSrc, audioData, setAudioData, stopMusic, stopAllMusic } = useMusicPlayerContext();
+  const { activePlayerSrc, setActivePlayerSrc, stopMusic } = useMusicPlayerContext();
 
   const isCurrentPlayer = activePlayerSrc === src;
 
-  const handleEnded = useCallback(() => {
-    setActivePlayerSrc(null);
-    stopPlaying();
-  }, [setActivePlayerSrc, stopPlaying]);
-
+  // Effet pour gérer la lecture automatique
   useEffect(() => {
-    const audioElement = audioRef.current;
-    if (audioElement) {
-      audioElement.addEventListener('ended', handleEnded);
-      return () => {
-        audioElement.removeEventListener('ended', handleEnded);
-      };
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isCurrentPlayer) {
+      audio.currentTime = 0;
+      audio.play().then(() => {
+        setIsPlaying(true);
+      }).catch(error => {
+        console.error('Error playing audio:', error);
+        setIsPlaying(false);
+      });
+    } else {
+      audio.pause();
+      setIsPlaying(false);
     }
-  }, [handleEnded]);
+  }, [isCurrentPlayer, src]);
+
+  // Gestion des événements audio
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const updateTime = () => setCurrentTime(audio.currentTime);
+    const setAudioData = () => {
+      setDuration(audio.duration);
+      setCurrentTime(audio.currentTime);
+    };
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    const handleEnded = () => {
+      setIsPlaying(false);
+      stopMusic(src);
+    };
+
+    audio.addEventListener('timeupdate', updateTime);
+    audio.addEventListener('loadeddata', setAudioData);
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.removeEventListener('timeupdate', updateTime);
+      audio.removeEventListener('loadeddata', setAudioData);
+      audio.removeEventListener('play', handlePlay);
+      audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, [src, stopMusic]);
 
   const togglePlay = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
     if (isPlaying) {
       stopMusic(src);
     } else {
@@ -71,357 +117,89 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ src, compact = false }) => {
     }
   }, [volume]);
 
-  // Attach audio events and handle metadata loading for duration and currentTime
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (audio) {
-      const updateTime = () => setCurrentTime(audio.currentTime);
-      const setAudioData = () => {
-        setDuration(audio.duration);
-        setCurrentTime(audio.currentTime);
-      };
-      const handlePlay = () => setIsPlaying(true);
-      const handlePause = () => setIsPlaying(false);
+  const formatTime = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
-      // Attach events
-      audio.addEventListener('timeupdate', updateTime);
-      audio.addEventListener('loadeddata', setAudioData);
-      audio.addEventListener('play', handlePlay);
-      audio.addEventListener('pause', handlePause);
-
-      // Force metadata to load in case it's already available
-      if (audio.readyState >= 2) {
-        setAudioData();
-      }
-
-      return () => {
-        audio.removeEventListener('timeupdate', updateTime);
-        audio.removeEventListener('loadeddata', setAudioData);
-        audio.removeEventListener('play', handlePlay);
-        audio.removeEventListener('pause', handlePause);
-      };
+  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = Number(e.target.value);
+    setCurrentTime(newTime);
+    if (audioRef.current) {
+      audioRef.current.currentTime = newTime;
     }
-  }, [src]); // Re-run when the src changes
-
-  // Ensure playback state is correct when the component is mounted
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (audio && isPlaying) {
-      audio.play().catch(() => setIsPlaying(false));
-    }
-  }, [isPlaying]);
-
-  // Handle the case where the user navigates away and returns
-  useEffect(() => {
-    if (!isCurrentPlayer && isPlaying) {
-      audioRef.current?.pause();
-      setIsPlaying(false);
-      stopPlaying();
-    }
-  }, [isCurrentPlayer, isPlaying, stopPlaying]);
-
-  const initializeAudioContext = useCallback(() => {
-    if (!audioContextRef.current && audioRef.current) {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      sourceNodeRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
-      analyserRef.current = audioContextRef.current.createAnalyser();
-      analyserRef.current.fftSize = 256;
-      sourceNodeRef.current.connect(analyserRef.current);
-      analyserRef.current.connect(audioContextRef.current.destination);
-    }
-  }, []);
-
-  const analyzeAudio = useCallback(() => {
-    if (!analyserRef.current) return;
-
-    const bufferLength = analyserRef.current.frequencyBinCount;
-    const dataArray = new Float32Array(bufferLength);
-
-    const updateAudioData = () => {
-      if (!analyserRef.current) return;
-      analyserRef.current.getFloatFrequencyData(dataArray);
-      setAudioData(dataArray);
-      if (isPlaying) {
-        requestAnimationFrame(updateAudioData);
-      }
-    };
-
-    updateAudioData();
-  }, [setAudioData, isPlaying]);
-
-  useEffect(() => {
-    if (isPlaying) {
-      initializeAudioContext();
-      analyzeAudio();
-    }
-  }, [isPlaying, initializeAudioContext, analyzeAudio]);
-
-  useEffect(() => {
-    return () => {
-      // Stop the music when the component unmounts
-      stopAllMusic();
-    };
-  }, [stopAllMusic]);
-
-  // Effet pour gérer la lecture automatique
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
-    const handleEnded = () => {
-      setIsPlaying(false);
-      stopMusic(src);
-    };
-
-    audio.addEventListener('play', handlePlay);
-    audio.addEventListener('pause', handlePause);
-    audio.addEventListener('ended', handleEnded);
-
-    // Gestion de l'état actif
-    if (isCurrentPlayer) {
-      audio.currentTime = 0; // Reset la position
-      audio.play()
-        .then(() => {
-          setIsPlaying(true);
-        })
-        .catch(err => {
-          console.error('Erreur de lecture:', err);
-          setIsPlaying(false);
-          stopMusic(src);
-        });
-    } else {
-      audio.pause();
-      setIsPlaying(false);
-    }
-
-    return () => {
-      audio.removeEventListener('play', handlePlay);
-      audio.removeEventListener('pause', handlePause);
-      audio.removeEventListener('ended', handleEnded);
-    };
-  }, [isCurrentPlayer, src, stopMusic]);
-
-  const playerStyles = compact ? compactPlayerStyles : glassPlayerStyles;
+  };
 
   return (
-    <div
-      className={`${styles.container} ${isPlaying ? styles.playing : ''}`}
-      style={playerStyles.container}
-    >
-      {isPlaying && (
-        <div className={styles.waveAnimation}>
-          <div className={styles.particle}></div>
-          <div className={styles.particle}></div>
-          <div className={styles.particle}></div>
-        </div>
-      )}
-      <button onClick={togglePlay} style={playerStyles.button}>
-        {isPlaying ? (
-          <HiPause size={compact ? 28 : 32} color="#00FFFF" />
-        ) : (
-          <HiPlay size={compact ? 28 : 32} color="#00FFFF" />
-        )}
-      </button>
-
-      <input
-        type="range"
-        min="0"
-        max={duration || 0}
-        value={currentTime}
-        onChange={(e) => {
-          const newTime = Number(e.target.value);
-          setCurrentTime(newTime);
-          if (audioRef.current) {
-            audioRef.current.currentTime = newTime;
-          }
-        }}
-        className={styles.progress}
-        disabled={duration === 0} // Disable slider if duration is not set
-      />
-
-      {!compact && (
-        <span className={`${styles.time} ${styles.timer}`} style={playerStyles.time}>
-          {Math.floor(currentTime / 60)}:
-          {Math.floor(currentTime % 60).toString().padStart(2, '0')} / 
-          {Math.floor(duration / 60)}:
-          {Math.floor(duration % 60).toString().padStart(2, '0')}
-        </span>
-      )}
-
-      <div style={playerStyles.volumeControl}>
-        <button onClick={handleMuteToggle} style={playerStyles.volumeButton}>
-          {muted || volume === 0 ? (
-            <MdVolumeOff size={compact ? 20 : 24} color="#00FFFF" />
-          ) : (
-            <MdVolumeUp size={compact ? 20 : 24} color="#00FFFF" />
-          )}
-        </button>
+    <div className={`${styles.container} ${isPlaying ? styles.playing : ''}`}>
+      <audio ref={audioRef} src={src} preload="metadata" />
+      
+      {/* Progress bar en haut */}
+      <div className={styles.progressContainer}>
         <input
           type="range"
           min="0"
-          max="1"
-          step="0.01"
-          value={volume}
-          onChange={(e) => handleVolumeChange(Number(e.target.value))}
-          className={styles.volumeSlider}
+          max={duration || 0}
+          value={currentTime}
+          className={styles.progress}
+          onChange={handleTimeChange}
         />
+        <div className={styles.timeInfo}>
+          <span>{formatTime(currentTime)}</span>
+          <span>{formatTime(duration)}</span>
+        </div>
       </div>
 
-      <audio ref={audioRef} src={src} style={{ display: 'none' }} />
+      {/* Controls en dessous */}
+      <div className={styles.controlsWrapper}>
+        <div className={styles.controlsGroup}>
+          {!compact && (
+            <button 
+              onClick={onPrevious}
+              className={`${styles.button} ${styles.skipButton}`}
+              disabled={!hasPrevious}
+              style={{ opacity: hasPrevious ? 1 : 0.3 }}
+            >
+              <HiRewind size={24} />
+            </button>
+          )}
+          
+          <button onClick={togglePlay} className={styles.button}>
+            {isPlaying ? <HiPause size={28} /> : <HiPlay size={28} />}
+          </button>
+
+          {!compact && (
+            <button 
+              onClick={onNext}
+              className={`${styles.button} ${styles.skipButton}`}
+              disabled={!hasNext}
+              style={{ opacity: hasNext ? 1 : 0.3 }}
+            >
+              <HiFastForward size={24} />
+            </button>
+          )}
+        </div>
+
+        <div className={styles.volumeControl}>
+          <button onClick={handleMuteToggle} className={styles.button}>
+            {muted || volume === 0 ? <MdVolumeOff size={24} /> : <MdVolumeUp size={24} />}
+          </button>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            className={styles.volumeSlider}
+            onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
+          />
+        </div>
+      </div>
+
+      {isPlaying && <div className={styles.waveAnimation} />}
     </div>
   );
-};
-
-const glassPlayerStyles = {
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '15px',
-    padding: '10px',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)', // Fond plus léger
-    backdropFilter: 'blur(10px)', // Glassmorphism effect
-    borderRadius: '20px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)', 
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    width: '98%',
-    maxWidth: '620px',
-    marginLeft: '8px'
-  },
-  button: {
-    backgroundColor: 'rgba(0, 0, 0, 0.0)', // Fond noir translucide pour le bouton play
-    border: 'none',
-    color: '#00FFFF', 
-    padding: '0px',
-    paddingLeft: '15px',
-    borderRadius: '50%',
-    cursor: 'pointer',
-    fontSize: '19px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '80px',
-    height: '40px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.0)', 
-  },
-  progress: {
-    width: '100%',
-    margin: '0 10px',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)', // Barre translucide
-    borderRadius: '10px',
-    outline: 'none',
-    cursor: 'pointer',
-    height: '8px',
-    appearance: 'none' as React.CSSProperties['appearance'], // Utilisation du type correct
-    boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.2)', // Ombre intérieure
-  },
-  progressThumb: {
-    width: '12px', // Taille du curseur
-    height: '12px',
-    borderRadius: '50%',
-    backgroundColor: '#00FFFF',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', // Ombre autour du curseur
-    cursor: 'pointer',
-  },
-  time: {
-    fontSize: '12px',
-    color: '#ffffff',
-    minWidth: '60px',
-    textAlign: 'right',
-  },
-  volumeControl: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  volumeButton: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    color: 'white',
-    cursor: 'pointer',
-  },
-  volumeSlider: {
-    width: '80px',
-    marginLeft: '10px',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)', // Fond transparent
-    borderRadius: '10px',
-    outline: 'none',
-    height: '8px',
-    appearance: 'none' as React.CSSProperties['appearance'], // Utilisation du type correct
-    boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.2)', // Ombre intérieure
-  },
-  volumeThumb: {
-    width: '12px', // Taille du curseur
-    height: '12px',
-    borderRadius: '50%',
-    backgroundColor: '#00FFFF',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', // Ombre autour du curseur
-    cursor: 'pointer',
-  },
-};
-
-const compactPlayerStyles = {
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    padding: '7px',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Fond un peu plus sombre
-    backdropFilter: 'blur(10px)', // Toujours le glassmorphism
-    borderRadius: '16px',
-    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    width: '100%',
-    maxWidth: '500px', // Version plus petite
-  },
-  button: {
-    backgroundColor: 'rgba(0, 0, 0, 0.0)',
-    border: 'none',
-    color: '#00FFFF',
-    padding: '0px',
-    paddingLeft: '13px',
-    borderRadius: '50%',
-    cursor: 'pointer',
-    fontSize: '19px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '35px',
-    height: '30px',
-  },
-  progress: {
-    width: '70%', // Barre de progression plus courte
-    margin: '0 5px',
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    borderRadius: '5px',
-    outline: 'none',
-    cursor: 'pointer',
-    height: '8px',
-    appearance: 'none' as React.CSSProperties['appearance'], // Utilisation du type correct
-  },
-  time: {
-    fontSize: '10px', // Ajout de la propriété time pour la version compacte
-    color: '#ffffff',
-  },
-  volumeControl: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  volumeButton: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    color: 'white',
-    cursor: 'pointer',
-  },
-  volumeSlider: {
-    width: '60px',
-    marginLeft: '5px',
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    borderRadius: '5px',
-    outline: 'none',
-    height: '8px',
-    appearance: 'none' as React.CSSProperties['appearance'], // Utilisation du type correct
-  },
 };
 
 export default MusicPlayer;
