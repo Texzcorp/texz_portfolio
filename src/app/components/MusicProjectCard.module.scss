@@ -11,34 +11,33 @@
     display: flex;
     gap: 3rem;
     background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(0px);
     border-radius: 1.5rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 2.5rem;
     margin: 2rem -4rem;
     overflow: hidden;
-    min-height: 400px;
+    height: auto;
     width: calc(100% + 8rem);
     max-width: 1600px;
     box-sizing: border-box;
-    position: relative;
 }
 
 .mainSection {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.2rem;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 1.5rem;
-    min-width: 0;
     width: 50%;
+    min-width: 0;
 }
 
 .imageWrapper {
     width: 100%;
-    max-width: 350px;
+    max-width: 300px;
     aspect-ratio: 1;
     border-radius: 1.5rem;
     overflow: hidden;
@@ -80,8 +79,8 @@
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    max-height: 350px;
+    max-height: 450px;
+    overflow-y: auto;
 }
 
 .playlistHeader {
@@ -93,14 +92,13 @@
 .playlist {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.5rem;
     width: 100%;
     overflow-y: auto;
-    max-height: 600px;
 }
 
 .playlistItem {
-    padding: 0.6rem;
+    padding: 0.5rem;
     background: rgba(0, 255, 255, 0.05);
     border-radius: 0.8rem;
     transition: all 0.3s ease;
@@ -108,7 +106,7 @@
     border: 1px solid transparent;
     display: flex;
     flex-direction: column;
-    margin: 0.5rem;
+    margin: 0.3rem;
 
     &:hover {
         background: rgba(0, 255, 255, 0.1);
@@ -142,7 +140,8 @@
     gap: 0.3rem;
     align-items: center;
     width: 100%;
-    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .styleText {
@@ -243,10 +242,11 @@
 @media (max-width: 1200px) {
     .cardContainer {
         flex-direction: column;
+        height: auto;
         margin: 2rem 0;
         width: 100%;
         padding: 1.5rem;
-        gap: 2rem;
+        gap: 1.5rem;
     }
 
     .mainSection,
@@ -255,7 +255,7 @@
         padding: 1rem;
     }
 
-    .imageWrapper {
-        max-width: 300px;
+    .playlistSection {
+        max-height: 350px;
     }
 }

@@ -26,12 +26,14 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
   hasNext = false
 }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.75);
   const [muted, setMuted] = useState(false);
-  const { activePlayerSrc, setActivePlayerSrc, stopMusic } = useMusicPlayerContext();
+  const { activePlayerSrc, setActivePlayerSrc, stopMusic, setAudioData } = useMusicPlayerContext();
 
   const isCurrentPlayer = activePlayerSrc === src;
 
@@ -41,18 +43,22 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
     if (!audio) return;
 
     if (isCurrentPlayer) {
+      audio.volume = volume;
       audio.currentTime = 0;
-      audio.play().then(() => {
-        setIsPlaying(true);
-      }).catch(error => {
-        console.error('Error playing audio:', error);
-        setIsPlaying(false);
-      });
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          setIsPlaying(true);
+        }).catch(error => {
+          console.error('Error playing audio:', error);
+          setIsPlaying(false);
+        });
+      }
     } else {
       audio.pause();
       setIsPlaying(false);
     }
-  }, [isCurrentPlayer, src]);
+  }, [isCurrentPlayer, src, volume]);
 
   // Gestion des événements audio
   useEffect(() => {
@@ -85,6 +91,54 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
       audio.removeEventListener('ended', handleEnded);
     };
   }, [src, stopMusic]);
+
+  // Effet pour gérer l'analyseur audio
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !isPlaying) return;
+
+    try {
+      // Réutiliser le contexte existant ou en créer un nouveau
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+
+      const analyser = audioContextRef.current.createAnalyser();
+      
+      // Créer une nouvelle source seulement si nécessaire
+      if (!sourceRef.current) {
+        sourceRef.current = audioContextRef.current.createMediaElementSource(audio);
+      }
+
+      analyser.fftSize = 256;
+      sourceRef.current.connect(analyser);
+      analyser.connect(audioContextRef.current.destination);
+
+      const dataArray = new Float32Array(analyser.frequencyBinCount);
+      
+      const updateData = () => {
+        analyser.getFloatFrequencyData(dataArray);
+        setAudioData(dataArray);
+        if (isPlaying) {
+          requestAnimationFrame(updateData);
+        }
+      };
+
+      updateData();
+
+      return () => {
+        analyser.disconnect();
+        if (!isPlaying) {
+          sourceRef.current?.disconnect();
+          sourceRef.current = null;
+          audioContextRef.current?.close();
+          audioContextRef.current = null;
+        }
+      };
+    } catch (error) {
+      console.error('Error setting up audio analysis:', error);
+    }
+  }, [isPlaying, setAudioData]);
 
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
@@ -132,7 +186,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
   };
 
   return (
-    <div className={`${styles.container} ${isPlaying ? styles.playing : ''}`}>
+    <div className={`${styles.container} ${isCurrentPlayer && isPlaying ? styles.playing : ''}`}>
       <audio ref={audioRef} src={src} preload="metadata" />
       
       {/* Progress bar en haut */}

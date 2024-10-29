@@ -43,16 +43,15 @@ export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
 
     const handleActivePlayerChange = useCallback((newSrc: string | null) => {
         if (newSrc && newSrc !== activePlayerSrc) {
-            if (activePlayerSrc) {
-                stopMusic(activePlayerSrc);
-            }
             setActivePlayerSrc(newSrc);
             setIsAnyMusicPlaying(true);
             startPlaying();
         } else if (!newSrc) {
-            stopMusic(activePlayerSrc!);
+            setActivePlayerSrc(null);
+            setIsAnyMusicPlaying(false);
+            stopPlaying();
         }
-    }, [activePlayerSrc, startPlaying, stopMusic]);
+    }, [activePlayerSrc, startPlaying, stopPlaying]);
 
     return (
         <MusicPlayerContext.Provider value={{

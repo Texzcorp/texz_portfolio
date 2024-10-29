@@ -5,6 +5,7 @@ import MusicPlayer from './MusicPlayer';
 import styles from './MusicProjectCard.module.scss';
 import { useState, useCallback, useEffect } from 'react';
 import { useMusicPlayerContext } from './MusicPlayerContext';
+import { useBackground } from './BackgroundContext';
 
 // Définir l'interface Music ici en attendant
 interface Music {
@@ -26,7 +27,8 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
     extraMusics,
 }) => {
     const [currentMusic, setCurrentMusic] = useState(mainMusic);
-    const { activePlayerSrc, setActivePlayerSrc } = useMusicPlayerContext();
+    const { activePlayerSrc, setActivePlayerSrc, stopMusic } = useMusicPlayerContext();
+    const { startPlaying, stopPlaying } = useBackground();
     const allMusics = mainMusic ? [mainMusic, ...(extraMusics || [])] : extraMusics || [];
 
     const currentIndex = allMusics.findIndex(music => music.src === currentMusic?.src);
@@ -58,6 +60,16 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
             setCurrentMusic(currentlyPlayingMusic);
         }
     }, [activePlayerSrc, allMusics]);
+
+    const handlePlay = useCallback((src: string) => {
+        setActivePlayerSrc(src);
+        startPlaying();
+    }, [setActivePlayerSrc, startPlaying]);
+
+    const handleStop = useCallback((src: string) => {
+        stopMusic(src);
+        stopPlaying();
+    }, [stopMusic, stopPlaying]);
 
     return (
         <div className={styles.cardContainer}>
