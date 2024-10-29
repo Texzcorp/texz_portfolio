@@ -43,7 +43,6 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
     if (!audio) return;
 
     if (isCurrentPlayer) {
-      audio.volume = volume;
       audio.currentTime = 0;
       const playPromise = audio.play();
       if (playPromise !== undefined) {
@@ -58,7 +57,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
       audio.pause();
       setIsPlaying(false);
     }
-  }, [isCurrentPlayer, src, volume]);
+  }, [isCurrentPlayer, src]);
 
   // Gestion des événements audio
   useEffect(() => {
@@ -166,9 +165,9 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
   };
 
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume; // Applique le volume initial
-    }
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.volume = volume;
   }, [volume]);
 
   const formatTime = (seconds: number): string => {
