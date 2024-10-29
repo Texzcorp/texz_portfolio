@@ -1,9 +1,10 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
-import { useBackground } from './BackgroundContext';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { useBackground } from "@/app/components/BackgroundContext";
+import { useRouter, usePathname } from 'next/navigation';
 
-interface MusicPlayerContextType {
+interface MusicPlayerContextProps {
     activePlayerSrc: string | null;
     setActivePlayerSrc: (src: string | null) => void;
     audioData: Float32Array | null;
@@ -13,17 +14,78 @@ interface MusicPlayerContextType {
     isAnyMusicPlaying: boolean;
 }
 
-interface MusicPlayerProviderProps {
-    children: React.ReactNode;
-}
+const MusicPlayerContext = createContext<MusicPlayerContextProps>({
+    activePlayerSrc: null,
+    setActivePlayerSrc: () => {},
+    audioData: null,
+    setAudioData: () => {},
+    stopMusic: () => {},
+    stopAllMusic: () => {},
+    isAnyMusicPlaying: false,
+});
 
-const MusicPlayerContext = createContext<MusicPlayerContextType | undefined>(undefined);
+interface MusicPlayerProviderProps {
+    children: ReactNode;
+}
 
 export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
     const [activePlayerSrc, setActivePlayerSrc] = useState<string | null>(null);
     const [audioData, setAudioData] = useState<Float32Array | null>(null);
     const { startPlaying, stopPlaying } = useBackground();
     const [isAnyMusicPlaying, setIsAnyMusicPlaying] = useState(false);
+    const pathname = usePathname();
+
+    // Effet pour gérer le changement de route
+    useEffect(() => {
+        stopAllMusic();
+    }, [pathname]); // Se déclenche à chaque changement de route
+
+    const stopAllMusic = useCallback(() => {
+        setActivePlayerSrc(null);
+        setAudioData(null);
+        setIsAnyMusicPlaying(false);
+        stopPlaying();
+        
+        // Arrêter tous les éléments audio de la page
+        const audioElements = document.getElementsByTagName('audio');
+        Array.from(audioElements).forEach(audio => {
+            audio.pause();
+            audio.currentTime = 0;
+        });
+    }, [stopPlaying]);
+
+    // Effet pour gérer le nettoyage lors de la navigation
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            stopAllMusic();
+        };
+
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                stopAllMusic();
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            stopAllMusic();
+        };
+    }, [stopAllMusic]);
+
+    // Effet pour gérer l'état de lecture
+    useEffect(() => {
+        if (activePlayerSrc) {
+            setIsAnyMusicPlaying(true);
+            startPlaying();
+        } else {
+            setIsAnyMusicPlaying(false);
+            stopPlaying();
+        }
+    }, [activePlayerSrc, startPlaying, stopPlaying]);
 
     const stopMusic = useCallback((src: string) => {
         if (activePlayerSrc === src) {
@@ -33,13 +95,6 @@ export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
             stopPlaying();
         }
     }, [activePlayerSrc, stopPlaying]);
-
-    const stopAllMusic = useCallback(() => {
-        setActivePlayerSrc(null);
-        setAudioData(null);
-        setIsAnyMusicPlaying(false);
-        stopPlaying();
-    }, [stopPlaying]);
 
     const handleActivePlayerChange = useCallback((newSrc: string | null) => {
         if (newSrc && newSrc !== activePlayerSrc) {
