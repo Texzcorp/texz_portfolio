@@ -15,43 +15,35 @@
     border-radius: 1.5rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 2.5rem;
-    margin: 3rem -4rem;
+    margin: 2rem -4rem;
     overflow: hidden;
     min-height: 400px;
     width: calc(100% + 8rem);
     max-width: 1600px;
     box-sizing: border-box;
+    position: relative;
 }
 
 .mainSection {
-    flex: 2.5;
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     align-items: center;
-    text-align: center;
     justify-content: center;
     padding: 1.5rem;
     min-width: 0;
+    width: 50%;
 }
 
 .imageWrapper {
     width: 100%;
-    max-width: 400px;
+    max-width: 350px;
     aspect-ratio: 1;
     border-radius: 1.5rem;
     overflow: hidden;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-    margin: 0.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform-origin: center center;
-    transition: transform 0.3s ease;
-
-    &:hover {
-        transform: scale(1.05);
-    }
+    margin: 0 auto;
 }
 
 .coverImage {
@@ -84,15 +76,12 @@
 
 .playlistSection {
     flex: 1;
-    width: 100%;
-    max-width: 500px;
-    min-width: 400px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 1.5rem;
+    width: 50%;
     padding: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    overflow: hidden;
-    max-height: 700px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-height: 350px;
 }
 
 .playlistHeader {
@@ -170,12 +159,16 @@
 
 @media (max-width: 768px) {
     .cardContainer {
-        flex-direction: column;
         padding: 1rem;
     }
 
+    .mainSection,
     .playlistSection {
-        width: 100%;
+        padding: 0.5rem;
+    }
+
+    .imageWrapper {
+        max-width: 250px;
     }
 }
 
@@ -234,36 +227,35 @@
 
 @media (max-width: 1800px) {
     .cardContainer {
-        margin: 3rem -2rem;
+        margin: 2rem -2rem;
         width: calc(100% + 4rem);
     }
 }
 
 @media (max-width: 1400px) {
     .cardContainer {
-        margin: 3rem -1rem;
+        margin: 2rem -1rem;
         width: calc(100% + 2rem);
-        padding: 2.5rem;
+        padding: 2rem;
     }
 }
 
 @media (max-width: 1200px) {
     .cardContainer {
+        flex-direction: column;
         margin: 2rem 0;
         width: 100%;
-        padding: 2rem;
+        padding: 1.5rem;
+        gap: 2rem;
     }
 
+    .mainSection,
     .playlistSection {
-        max-width: 100%;
         width: 100%;
-    }
-
-    .mainSection {
-        width: 100%;
+        padding: 1rem;
     }
 
     .imageWrapper {
-        max-width: 600px;
+        max-width: 300px;
     }
 }
