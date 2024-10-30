@@ -227,7 +227,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
                         placeholder={placeholderSrc ? 'blur' : 'empty'}
                         blurDataURL={placeholderSrc}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        quality={75}
+                        quality={95}
                         style={{
                             objectFit: isEnlarged ? 'contain' : objectFit,
                             transform: 'translate3d(0,0,0)',
