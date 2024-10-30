@@ -26,6 +26,7 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
     const { audioData, isAnyMusicPlaying } = useMusicPlayerContext();
     const [stars, setStars] = useState<Array<{ id: number, top: string, left: string }>>([]);
     const animationFrameId = useRef<number | null>(null);
+    const accumulatedBassRef = useRef<number>(0);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -81,11 +82,19 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                     
                     const normalizedBass = bassRange.map(db => {
                         const clampedDb = Math.max(-80, Math.min(0, db));
-                        return Math.pow(10, clampedDb / 10);
+                        return Math.pow(10, clampedDb / 6);
                     });
                     
                     const bassValue = normalizedBass.reduce((acc, val) => acc + val, 0) / normalizedBass.length;
-                    bassInfluence = Math.pow(bassValue, 1.5) * 8000;
+                    const currentBassInfluence = Math.pow(bassValue, 1.8) * 20000;
+                    
+                    accumulatedBassRef.current = Math.max(
+                        accumulatedBassRef.current + (currentBassInfluence * 0.1),
+                        currentBassInfluence
+                    );
+                    accumulatedBassRef.current *= 0.99995;
+                    
+                    bassInfluence = accumulatedBassRef.current;
                     
                     const normalizedVolume = audioData.map(db => {
                         const clampedDb = Math.max(-80, Math.min(0, db));
@@ -93,9 +102,9 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                     });
                     
                     const volumeValue = normalizedVolume.reduce((acc, val) => acc + val, 0) / normalizedVolume.length;
-                    volumeInfluence = Math.pow(volumeValue, 0.7) * 4000;
+                    volumeInfluence = Math.pow(volumeValue, 0.7) * 3000;
                     
-                    bassSpeedMultiplier = 1 + (bassInfluence / 600);
+                    bassSpeedMultiplier = 1 + (currentBassInfluence / 1000);
                 }
 
                 const waveSpeed = baseWaveSpeed * bassSpeedMultiplier;
@@ -129,7 +138,7 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                             
                             const baseAmplitude = volumeInfluence;
                             const bassEffect = bassInfluence * (0.5 + i * 0.3);
-                            const amplitude = Math.min(300, baseAmplitude + bassEffect);
+                            const amplitude = Math.min(1000, baseAmplitude + bassEffect);
                             
                             const verticalOffset = (t * waveSpeed * bassSpeedMultiplier);
                             const mainWave = Math.sin((y * frequency) + verticalOffset + (i * Math.PI / 2)) * amplitude;
