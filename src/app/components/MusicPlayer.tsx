@@ -43,7 +43,6 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
     if (!audio) return;
 
     if (isCurrentPlayer) {
-      audio.currentTime = 0;
       const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.then(() => {
