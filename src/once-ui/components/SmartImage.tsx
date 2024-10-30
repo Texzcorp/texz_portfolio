@@ -20,6 +20,12 @@ export type SmartImageProps = ImageProps & {
     src: string;
 };
 
+// Ajout de l'interface pour le NetworkInformation
+interface NetworkInformation {
+    downlink: number;
+    saveData: boolean;
+}
+
 const SmartImage: React.FC<SmartImageProps> = ({
     className,
     style,
@@ -39,6 +45,8 @@ const SmartImage: React.FC<SmartImageProps> = ({
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isInView, setIsInView] = useState(false);
     const [placeholderSrc, setPlaceholderSrc] = useState<string>('');
+    const [isBuffering, setIsBuffering] = useState(false);
+    const [hasError, setHasError] = useState(false);
 
     const isVideo = src.endsWith('.mp4');
 
@@ -86,11 +94,38 @@ const SmartImage: React.FC<SmartImageProps> = ({
         }
     }, [src, isVideo]);
 
-    // Gestion des vidéos
+    // Gestion optimisée des vidéos
     useEffect(() => {
         if (isVideo && videoRef.current && isInView) {
-            videoRef.current.src = src;
-            videoRef.current.load();
+            const video = videoRef.current;
+            video.src = src;
+            video.preload = "metadata";
+
+            const handleWaiting = () => setIsBuffering(true);
+            const handlePlaying = () => setIsBuffering(false);
+            const handleError = () => setHasError(true);
+
+            video.addEventListener('waiting', handleWaiting);
+            video.addEventListener('playing', handlePlaying);
+            video.addEventListener('error', handleError);
+
+            // Qualité adaptative basique
+            video.addEventListener('loadedmetadata', () => {
+                if (video.videoHeight > 720) {
+                    // Typage sécurisé de l'API Connection
+                    const connection = (navigator as any).connection as NetworkInformation | undefined;
+                    if (connection && (connection.downlink < 2 || connection.saveData)) {
+                        // Réduire la qualité pour les connexions lentes
+                        video.style.maxHeight = '480px';
+                    }
+                }
+            });
+
+            return () => {
+                video.removeEventListener('waiting', handleWaiting);
+                video.removeEventListener('playing', handlePlaying);
+                video.removeEventListener('error', handleError);
+            };
         }
     }, [isVideo, isInView, src]);
 
@@ -159,7 +194,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
                 }}
                 className={classNames(className)}
                 onClick={handleClick}>
-                {(isLoading || (isVideo && !isVideoLoaded) || (!isVideo && !placeholderSrc)) && (
+                {(isLoading || (isVideo && !isVideoLoaded) || (!isVideo && !placeholderSrc) || isBuffering) && (
                     <>
                         <Skeleton shape="block" />
                         <LoadingAnimation />
@@ -178,7 +213,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
                             width: '100%',
                             height: '100%',
                             objectFit: isEnlarged ? 'contain' : objectFit,
-                            opacity: isVideoLoaded ? 1 : 0,
+                            opacity: isVideoLoaded && !isBuffering ? 1 : 0,
                             transition: 'opacity 0.3s ease-in-out',
                         }}
                     />
