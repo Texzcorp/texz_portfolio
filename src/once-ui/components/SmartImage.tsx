@@ -74,23 +74,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
     // Génération du placeholder uniquement pour les images
     useEffect(() => {
         if (!isVideo && src) {
-            const img = document.createElement('img');
-            img.crossOrigin = 'anonymous';
-            
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = 10;
-                canvas.height = 10;
-                const ctx = canvas.getContext('2d');
-                
-                if (ctx) {
-                    ctx.drawImage(img, 0, 0, 10, 10);
-                    const placeholder = canvas.toDataURL('image/jpeg', 0.1);
-                    setPlaceholderSrc(placeholder);
-                }
-            };
-
-            img.src = src;
+            setPlaceholderSrc(src);
         }
     }, [src, isVideo]);
 
@@ -224,16 +208,16 @@ const SmartImage: React.FC<SmartImageProps> = ({
                         src={src}
                         alt={alt}
                         fill
-                        placeholder={placeholderSrc ? 'blur' : 'empty'}
-                        blurDataURL={placeholderSrc}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        quality={95}
+                        placeholder="empty"
+                        sizes="100vw"
+                        quality={50}
+                        unoptimized={false}
                         style={{
                             objectFit: isEnlarged ? 'contain' : objectFit,
                             transform: 'translate3d(0,0,0)',
                             backfaceVisibility: 'hidden',
                             willChange: 'transform, opacity',
-                            opacity: placeholderSrc ? 1 : 0,
+                            opacity: 1,
                             transition: 'opacity 0.3s ease-in-out',
                         }}
                     />
@@ -292,7 +276,9 @@ const SmartImage: React.FC<SmartImageProps> = ({
                                 src={src}
                                 alt={alt}
                                 fill
-                                sizes="90vw"
+                                sizes="100vw"
+                                quality={100}
+                                unoptimized={true}
                                 style={{ objectFit: 'contain' }}
                             />
                         )}
