@@ -218,7 +218,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
           )}
           
           <button onClick={togglePlay} className={styles.button}>
-            {isPlaying ? <HiPause size={28} /> : <HiPlay size={28} />}
+            {isPlaying ? <HiPause size={38} /> : <HiPlay size={38} />}
           </button>
 
           {!compact && (

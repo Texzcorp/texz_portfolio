@@ -77,15 +77,21 @@
 
 .controlsWrapper {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 100%;
+  padding: 0 16px;
+  gap: 34px;
 }
 
 .controlsGroup {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 1px;
+
+  &:last-child {
+    margin-left: 0;
+  }
 }
 
 .button {
@@ -117,15 +123,15 @@
   }
 
   svg {
-    width: 28px;
-    height: 28px;
+    width: auto;
+    height: auto;
   }
 }
 
 .volumeControl {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .volumeSlider {
