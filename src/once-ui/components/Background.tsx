@@ -69,8 +69,36 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
 
             const drawVerticalFluidWaves = () => {
                 const waveCount = 7;
-                const baseFrequency = 0.0003; // Reduced from 0.0005
-                const waveSpeed = 0.001; // Reduced from 0.0025
+                const baseFrequency = 0.0003;
+                const baseWaveSpeed = 0.001;
+
+                let bassInfluence = 0;
+                let volumeInfluence = 0;
+                let bassSpeedMultiplier = 1;
+
+                if (isAnyMusicPlaying && audioData && audioData.length > 0) {
+                    const bassRange = audioData.slice(0, 10);
+                    
+                    const normalizedBass = bassRange.map(db => {
+                        const clampedDb = Math.max(-80, Math.min(0, db));
+                        return Math.pow(10, clampedDb / 10);
+                    });
+                    
+                    const bassValue = normalizedBass.reduce((acc, val) => acc + val, 0) / normalizedBass.length;
+                    bassInfluence = Math.pow(bassValue, 1.5) * 8000;
+                    
+                    const normalizedVolume = audioData.map(db => {
+                        const clampedDb = Math.max(-80, Math.min(0, db));
+                        return Math.log10(1 + Math.pow(10, clampedDb / 20)) * 2;
+                    });
+                    
+                    const volumeValue = normalizedVolume.reduce((acc, val) => acc + val, 0) / normalizedVolume.length;
+                    volumeInfluence = Math.pow(volumeValue, 0.7) * 4000;
+                    
+                    bassSpeedMultiplier = 1 + (bassInfluence / 600);
+                }
+
+                const waveSpeed = baseWaveSpeed * bassSpeedMultiplier;
 
                 const pageHeight = Math.max(document.body.scrollHeight, window.innerHeight) + 120;
                 targetScrollInfluence = Math.sin(window.scrollY * 0.002) * 100;
@@ -78,7 +106,7 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                 currentScrollInfluence = lerp(currentScrollInfluence, targetScrollInfluence, smoothingFactor);
 
                 for (let i = 0; i < waveCount; i++) {
-                    let frequency = baseFrequency + (i * 0.03) + (mouseX / w) * 0.005; // Adjusted multipliers
+                    let frequency = baseFrequency + (i * 0.03) + (mouseX / w) * 0.005;
                     const color = `hsla(${Math.sin(t * 0.0001 + i) * 180 + 180}, 100%, 70%, ${0.2 + (i * 0.05)})`;
 
                     ctx.beginPath();
@@ -94,15 +122,20 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                         const audioLength = audioData.length;
                         const segmentLength = Math.floor(pageHeight / audioLength);
 
-                        // Trouver la valeur minimale dans audioData pour la normalisation
-                        const minAudioValue = Math.min(...audioData);
-
                         for (let y = 0; y < audioLength; y++) {
-                            // Inverser et normaliser l'amplitude
-                            const invertedValue = minAudioValue - audioData[y];
-                            const normalizedValue = invertedValue / Math.abs(minAudioValue);
-                            const amplitude = normalizedValue * 200; // Ajuster le facteur pour augmenter l'amplitude
-                            const x = w / 2 + Math.sin((y * frequency) + (t * waveSpeed) + (i * Math.PI / 2)) * amplitude;
+                            const audioIndex = Math.floor((y / audioLength) * audioData.length);
+                            const audioValue = audioData[audioIndex];
+                            const normalizedValue = Math.pow(10, audioValue / 20);
+                            
+                            const baseAmplitude = volumeInfluence;
+                            const bassEffect = bassInfluence * (0.5 + i * 0.3);
+                            const amplitude = Math.min(300, baseAmplitude + bassEffect);
+                            
+                            const verticalOffset = (t * waveSpeed * bassSpeedMultiplier);
+                            const mainWave = Math.sin((y * frequency) + verticalOffset + (i * Math.PI / 2)) * amplitude;
+                            const audioInfluence = normalizedValue * 150;
+                            
+                            const x = w / 2 + mainWave + audioInfluence;
 
                             if (y === 0) {
                                 ctx.moveTo(x, y * segmentLength);
@@ -115,14 +148,16 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                             previousY = y * segmentLength;
                         }
                     } else {
-                        // Switch to idle animation if no music is playing or no audio data is available
-                        const idleAmplitude = 60 + currentScrollInfluence + i * 3 + (mouseY / h) * 0.15; // Reduced amplitude and factors
+                        const baseAmplitude = 30 + currentScrollInfluence + i * 3 + (mouseY / h) * 0.15;
+                        const bassEffect = bassInfluence * 1.5;
+                        const idleAmplitude = Math.min(300, baseAmplitude + bassEffect);
                         const idleLength = 100;
                         const segmentLength = Math.floor(pageHeight / idleLength);
 
                         for (let y = 0; y < idleLength; y++) {
-                            const mouseEffect = Math.sin((y - mouseY) * 0.002) * (mouseX / w) * 60; // Reduced mouse effect
-                            const x = w / 2 + Math.sin((y * frequency) + (t * waveSpeed) + (i * Math.PI / 2)) * (idleAmplitude + mouseEffect);
+                            const mouseEffect = Math.sin((y - mouseY) * 0.002) * (mouseX / w) * 60;
+                            const verticalOffset = (t * waveSpeed * bassSpeedMultiplier);
+                            const x = w / 2 + Math.sin((y * frequency) + verticalOffset + (i * Math.PI / 2)) * (idleAmplitude + mouseEffect);
 
                             if (y === 0) {
                                 ctx.moveTo(x, y * segmentLength);
