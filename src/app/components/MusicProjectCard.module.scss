@@ -7,20 +7,28 @@
     }
 }
 
-.cardContainer {
-    display: flex;
-    gap: 3rem;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(0px);
-    border-radius: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 2.5rem;
+.outerReveal {
     margin: 2rem -4rem;
-    overflow: hidden;
-    height: auto;
     width: calc(100% + 8rem);
     max-width: 1600px;
-    box-sizing: border-box;
+    display: flex;
+}
+
+.innerReveal {
+    width: 100%;
+    display: flex;
+}
+
+.cardContainer {
+    width: 100%;
+    display: flex;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(0px);
+    border-radius: var(--radius-l);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2.5rem;
+    overflow: hidden;
+    height: auto;
 }
 
 .mainSection {
@@ -170,6 +178,20 @@
     .imageWrapper {
         max-width: 250px;
     }
+
+    .mainContent {
+        max-width: 350px;
+        gap: 0.5rem;
+    }
+
+    .titleSection {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .mainPlayer {
+        margin-top: 0;
+    }
 }
 
 .miniCover {
@@ -226,26 +248,33 @@
 }
 
 @media (max-width: 1800px) {
-    .cardContainer {
+    .outerReveal {
         margin: 2rem -2rem;
         width: calc(100% + 4rem);
     }
 }
 
 @media (max-width: 1400px) {
-    .cardContainer {
+    .outerReveal {
         margin: 2rem -1rem;
         width: calc(100% + 2rem);
-        padding: 2rem;
     }
 }
 
 @media (max-width: 1200px) {
-    .cardContainer {
-        flex-direction: column;
-        height: auto;
+    .outerReveal {
         margin: 2rem 0;
         width: 100%;
+        display: block;
+    }
+    
+    .innerReveal {
+        width: 100%;
+        display: block;
+    }
+
+    .cardContainer {
+        flex-direction: column;
         padding: 1.5rem;
         gap: 1.5rem;
     }
@@ -253,10 +282,5 @@
     .mainSection,
     .playlistSection {
         width: 100%;
-        padding: 1rem;
-    }
-
-    .playlistSection {
-        max-height: 350px;
     }
 }
