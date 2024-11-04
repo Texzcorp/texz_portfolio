@@ -12,6 +12,7 @@ interface RevealFxProps extends React.HTMLAttributes<HTMLSpanElement> {
 	trigger?: boolean;
 	style?: React.CSSProperties;
 	className?: string;
+	skipInitialAnimation?: boolean;
 }
 
 const RevealFx = forwardRef<HTMLSpanElement, RevealFxProps>(({
@@ -22,17 +23,20 @@ const RevealFx = forwardRef<HTMLSpanElement, RevealFxProps>(({
 	trigger,
 	style,
 	className,
+	skipInitialAnimation = false,
 	...rest
 }, ref) => {
-	const [isRevealed, setIsRevealed] = useState(false);
+	const [isRevealed, setIsRevealed] = useState(skipInitialAnimation);
 
 	useEffect(() => {
-		const timer = setTimeout(() => {
-			setIsRevealed(true);
-		}, delay * 1000);
+		if (!skipInitialAnimation) {
+			const timer = setTimeout(() => {
+				setIsRevealed(true);
+			}, delay * 1000);
 
-		return () => clearTimeout(timer);
-	}, [delay]);
+			return () => clearTimeout(timer);
+		}
+	}, [delay, skipInitialAnimation]);
 
 	useEffect(() => {
 		if (trigger !== undefined) {

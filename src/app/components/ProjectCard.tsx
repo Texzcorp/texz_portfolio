@@ -21,7 +21,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     avatars
 }) => {
     const [activeIndex, setActiveIndex] = useState(0);
-    const [isTransitioning, setIsTransitioning] = useState(false);
+    const [isTransitioning, setIsTransitioning] = useState(true);
     const [preloadedImages, setPreloadedImages] = useState<HTMLImageElement[]>([]);
     const nextImageRef = useRef<HTMLImageElement | null>(null);
     const transitionTimeoutRef = useRef<NodeJS.Timeout>();
@@ -44,14 +44,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         preloadImages(); // Correction ici : appel de la fonction preloadImages au lieu de loadedImages
     }, [images]);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsTransitioning(true);
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    }, []);
-
     const preloadNextImage = (nextIndex: number) => {
         if (nextIndex >= 0 && nextIndex < images.length) {
             nextImageRef.current = new Image();
@@ -73,11 +65,17 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             
             setIsTransitioning(false);
             
+            // Premier timeout pour le fade out
             transitionTimeoutRef.current = setTimeout(() => {
                 setActiveIndex(nextIndex);
-                setIsTransitioning(true);
-                transitionTimeoutRef.current = undefined;
-            }, 630);
+                
+                // Deuxième timeout pour le fade in (ajout d'une pause de 200ms)
+                setTimeout(() => {
+                    setIsTransitioning(true);
+                    transitionTimeoutRef.current = undefined;
+                }, 200); // Pause entre fade out et fade in
+                
+            }, 630); // Durée du fade out
         }
     };
 
@@ -95,23 +93,31 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             fillWidth gap="m"
             direction="column">
             <Flex onClick={handleImageClick}>
-                <SmartImage
-                    tabIndex={0}
-                    radius="l"
-                    alt={title}
-                    aspectRatio="16 / 9"
-                    src={images[activeIndex]}
-                    priority={activeIndex === 0} // Priorité pour la première image
+                <RevealFx
                     style={{
                         width: '100%',
-                        willChange: 'transform, opacity', // Optimisation des performances
-                        border: '1px solid var(--neutral-alpha-weak)',
-                        transform: `translate3d(0,0,0)`, // Force l'accélération matérielle
-                        backfaceVisibility: 'hidden',
-                        ...(images.length > 1 && {
-                            cursor: 'pointer',
-                        }),
-                    }}/>
+                        willChange: 'transform, opacity' // Optimisation des performances
+                    }}
+                    delay={0.4}
+                    trigger={isTransitioning}
+                    speed="fast"
+                    skipInitialAnimation={true}>
+                    <SmartImage
+                        tabIndex={0}
+                        radius="l"
+                        alt={title}
+                        aspectRatio="16 / 9"
+                        src={images[activeIndex]}
+                        priority={activeIndex === 0} // Priorité pour la première image
+                        style={{
+                            border: '1px solid var(--neutral-alpha-weak)',
+                            transform: `translate3d(0,0,0)`, // Force l'accélération matérielle
+                            backfaceVisibility: 'hidden',
+                            ...(images.length > 1 && {
+                                cursor: 'pointer',
+                            }),
+                        }}/>
+                </RevealFx>
             </Flex>
             
             {images.length > 1 && (
