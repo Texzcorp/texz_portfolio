@@ -304,55 +304,48 @@ export default function Home() {
                     </Flex>
                     
                     {/* Exemple de call de ma gallerie de projet virtual production */}
-                    <Flex fillWidth direction="column" className={styles.galleryContainer}> 
-                        {/* Filtrer pour ne récupérer que la galerie "art3D" */}
-                        {galleries
-                            .filter((g) => g.preset === 'art3D') // Filtrage basé sur le titre 'art3D'
-                            .map((g, index) => {
-                                const gallery = g as Gallery; // Cast pour s'assurer du bon typage
+                    <RevealFx translateY="16" delay={1.0} speed="slow">
+                        <Flex fillWidth direction="column" className={styles.galleryContainer}> 
+                            {galleries
+                                .filter((g) => g.preset === 'art3D')
+                                .map((g, index) => {
+                                    const gallery = g as Gallery;
 
-                                return (
-                                    <div key={index}>
-                                        {/* <RevealFx
-                                            style={{ width: '100%' }}
-                                            delay={0.4}
-                                        >
-                                            <h2 className={styles.galleryTitle}>{gallery.title}</h2>
-                                            <p className={styles.galleryDescription}>{gallery.description}</p>
-                                        </RevealFx> */}
-
-                                        <script
-                                            type="application/ld+json"
-                                            suppressHydrationWarning
-                                            dangerouslySetInnerHTML={{
-                                                __html: JSON.stringify({
-                                                    '@context': 'https://schema.org',
-                                                    '@type': 'ImageGallery',
-                                                    name: gallery.title,
-                                                    description: gallery.description,
-                                                    url: `https://${baseURL}/gallery`,
-                                                    image: gallery.images.map((image) => ({
-                                                        '@type': 'ImageObject',
-                                                        url: `${baseURL}${image.src}`,
-                                                        description: image.alt,
-                                                    })),
-                                                    author: {
-                                                        '@type': 'Person',
-                                                        name: person.name,
-                                                        image: {
+                                    return (
+                                        <div key={index}>
+                                            <script
+                                                type="application/ld+json"
+                                                suppressHydrationWarning
+                                                dangerouslySetInnerHTML={{
+                                                    __html: JSON.stringify({
+                                                        '@context': 'https://schema.org',
+                                                        '@type': 'ImageGallery',
+                                                        name: gallery.title,
+                                                        description: gallery.description,
+                                                        url: `https://${baseURL}/gallery`,
+                                                        image: gallery.images.map((image) => ({
                                                             '@type': 'ImageObject',
-                                                            url: `${baseURL}${person.avatar}`,
+                                                            url: `${baseURL}${image.src}`,
+                                                            description: image.alt,
+                                                        })),
+                                                        author: {
+                                                            '@type': 'Person',
+                                                            name: person.name,
+                                                            image: {
+                                                                '@type': 'ImageObject',
+                                                                url: `${baseURL}${person.avatar}`,
+                                                            },
                                                         },
-                                                    },
-                                                }),
-                                            }}
-                                        />
+                                                    }),
+                                                }}
+                                            />
 
-                                        <MasonryGrid gallery={gallery} /> {/* Pass the typed gallery */}
-                                    </div>
-                                );
-                            })}
-                    </Flex>
+                                            <MasonryGrid gallery={gallery} />
+                                        </div>
+                                    );
+                                })}
+                        </Flex>
+                    </RevealFx>
 
                     <Heading
                         as="h2"
