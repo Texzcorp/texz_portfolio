@@ -58,11 +58,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
-
-    &:hover {
-        transform: scale(1.05);
-    }
 }
 
 .mainContent {
@@ -220,23 +215,12 @@
 
 .playlistItem {
     padding: 0.8rem;
-    
-    &:hover {
-        .miniCoverImage {
-            transform: scale(1.05);
-        }
-    }
 }
 
 .coverImage {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
-
-    &:hover {
-        transform: scale(1.05);
-    }
 }
 
 .mainPlayer {

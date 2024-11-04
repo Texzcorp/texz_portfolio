@@ -123,11 +123,7 @@ const MasonryGrid = ({ gallery, rowGapAdjustment = 0 }: MasonryGridProps) => {
                             gridRowEnd: `span ${getGridRowSpan(preset, image.span)}`  // Ajout de la gestion des lignes
                         }}
                     >
-                        <RevealFx
-                            style={{width: '100%'}}
-                            delay={0.4}
-                            speed="slow"
-                        >
+                        <div>
                             <SmartImage
                                 radius="m"
                                 aspectRatio={getAspectRatio(image.orientation)}
@@ -135,7 +131,7 @@ const MasonryGrid = ({ gallery, rowGapAdjustment = 0 }: MasonryGridProps) => {
                                 alt={image.alt}
                                 className={styles.gridImage}
                             />
-                        </RevealFx>
+                        </div>
                     </div>
                 ))}
             </div>

@@ -92,7 +92,13 @@ export default function Gallery() {
                             }}
                         />
 
-                        <MasonryGrid gallery={gallery} /> {/* Pass the typed gallery */}
+                        <RevealFx
+                            style={{width: '100%'}}
+                            delay={0.4}
+                            speed="slow"
+                        >
+                            <MasonryGrid gallery={gallery} /> {/* Pass the typed gallery */}
+                        </RevealFx>
                     </div>
                 );
             })}
