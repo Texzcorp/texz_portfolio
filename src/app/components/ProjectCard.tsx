@@ -95,30 +95,23 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             fillWidth gap="m"
             direction="column">
             <Flex onClick={handleImageClick}>
-                <RevealFx
+                <SmartImage
+                    tabIndex={0}
+                    radius="l"
+                    alt={title}
+                    aspectRatio="16 / 9"
+                    src={images[activeIndex]}
+                    priority={activeIndex === 0} // Priorité pour la première image
                     style={{
                         width: '100%',
-                        willChange: 'transform, opacity' // Optimisation des performances
-                    }}
-                    delay={0.4}
-                    trigger={isTransitioning}
-                    speed="fast">
-                    <SmartImage
-                        tabIndex={0}
-                        radius="l"
-                        alt={title}
-                        aspectRatio="16 / 9"
-                        src={images[activeIndex]}
-                        priority={activeIndex === 0} // Priorité pour la première image
-                        style={{
-                            border: '1px solid var(--neutral-alpha-weak)',
-                            transform: `translate3d(0,0,0)`, // Force l'accélération matérielle
-                            backfaceVisibility: 'hidden',
-                            ...(images.length > 1 && {
-                                cursor: 'pointer',
-                            }),
-                        }}/>
-                </RevealFx>
+                        willChange: 'transform, opacity', // Optimisation des performances
+                        border: '1px solid var(--neutral-alpha-weak)',
+                        transform: `translate3d(0,0,0)`, // Force l'accélération matérielle
+                        backfaceVisibility: 'hidden',
+                        ...(images.length > 1 && {
+                            cursor: 'pointer',
+                        }),
+                    }}/>
             </Flex>
             
             {images.length > 1 && (

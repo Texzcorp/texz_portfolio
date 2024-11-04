@@ -61,25 +61,21 @@ export default function Blog() {
 					}),
 				}}
 			/>
-			<RevealFx
-				style={{width: '100%'}}
-				delay={0.25}
-				speed="slow"
-			>
-            <Heading
-                marginBottom="l"
-                variant="display-strong-s">
-                {blog.title}
-            </Heading>
-			<Flex
-				fillWidth flex={1}>
-				<Posts range={[1,3]}/>
-				<Posts range={[4]} columns="2"/>
-			</Flex>
-            {newsletter.display && (
-                <Mailchimp/>
-            )}
-			</RevealFx>
+			<div>
+				<Heading
+					marginBottom="l"
+					variant="display-strong-s">
+					{blog.title}
+				</Heading>
+				<Flex
+					fillWidth flex={1}>
+					<Posts range={[1,3]}/>
+					<Posts range={[4]} columns="2"/>
+				</Flex>
+				{newsletter.display && (
+					<Mailchimp/>
+				)}
+			</div>
         </Flex>
     );
 }
