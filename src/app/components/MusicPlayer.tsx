@@ -204,8 +204,8 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
       </div>
 
       {/* Controls en dessous */}
-      <div className={styles.controlsWrapper}>
-        <div className={styles.controlsGroup}>
+      <div className={`${styles.controlsWrapper} ${compact ? styles.compact : ''}`}>
+        <div className={`${styles.controlsGroup} ${compact ? styles.compact : ''}`}>
           {!compact && (
             <button 
               onClick={onPrevious}
@@ -213,12 +213,12 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
               disabled={!hasPrevious}
               style={{ opacity: hasPrevious ? 1 : 0.3 }}
             >
-              <HiRewind size={24} />
+              <HiRewind size={28} />
             </button>
           )}
           
-          <button onClick={togglePlay} className={styles.button}>
-            {isPlaying ? <HiPause size={38} /> : <HiPlay size={38} />}
+          <button onClick={togglePlay} className={`${styles.button} ${compact ? styles.compact : ''}`}>
+            {isPlaying ? <HiPause size={compact ? 38 : 38} /> : <HiPlay size={compact ? 38 : 38} />}
           </button>
 
           {!compact && (
@@ -233,8 +233,8 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
           )}
         </div>
 
-        <div className={styles.volumeControl}>
-          <button onClick={handleMuteToggle} className={styles.button}>
+        <div className={`${styles.volumeControl} ${compact ? styles.compact : ''}`}>
+          <button onClick={handleMuteToggle} className={`${styles.button} ${compact ? styles.compact : ''}`}>
             {muted || volume === 0 ? <MdVolumeOff size={24} /> : <MdVolumeUp size={24} />}
           </button>
           <input
