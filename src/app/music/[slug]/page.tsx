@@ -85,7 +85,7 @@ export default function Project({ params }: musicParams) {
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify({
 						'@context': 'https://schema.org',
-						'@type': 'BlogPosting',
+						'@type': 'WritingPosting',
 						headline: post.metadata.title,
 						datePublished: post.metadata.publishedAt,
 						dateModified: post.metadata.publishedAt,

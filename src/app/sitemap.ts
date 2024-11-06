@@ -2,13 +2,13 @@ import { getPosts } from '@/app/utils'
 import { baseURL } from '@/app/resources'
 
 export default async function sitemap() {
-    let blogs = getPosts(['src', 'app', 'blog', 'posts']).map((post) => ({
-        url: `${baseURL}/blog/${post.slug}`,
+    let writings = getPosts(['src', 'app', 'writing', 'posts']).map((post) => ({
+        url: `${baseURL}/writing/${post.slug}`,
         lastModified: post.metadata.publishedAt,
     }))
 
-    let works = getPosts(['src', 'app', 'work', 'projects']).map((post) => ({
-        url: `${baseURL}/work/${post.slug}`,
+    let programmations = getPosts(['src', 'app', 'programmation', 'projects']).map((post) => ({
+        url: `${baseURL}/programmation/${post.slug}`,
         lastModified: post.metadata.publishedAt,
     }))
 
@@ -17,10 +17,10 @@ export default async function sitemap() {
         lastModified: post.metadata.publishedAt,
     }))
 
-    let routes = ['', '/blog', '/work', '/music', '/experimentalproj'].map((route) => ({
+    let routes = ['', '/writing', '/programmation', '/music', '/experimentalproj'].map((route) => ({
         url: `${baseURL}${route}`,
         lastModified: new Date().toISOString().split('T')[0],
     }))
 
-    return [...routes, ...blogs, ...works, ...experimentalprojs]
+    return [...routes, ...writings, ...programmations, ...experimentalprojs]
 }

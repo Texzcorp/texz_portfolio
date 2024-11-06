@@ -3,9 +3,9 @@ const baseURL = 'nextjs-portfolio.up.railway.app'
 const routes = {
     '/':        true,
     '/about':   false,
-    '/work':    true,
+    '/programmation':    true,
     '/music':   true,
-    '/blog':    true,
+    '/writing':    true,
     '/gallery': true,
     '/experimentalproj':    true,
 }
@@ -13,7 +13,7 @@ const routes = {
 // Enable password protection on selected routes
 // Set password in pages/api/authenticate.ts
 const protectedRoutes = {
-    '/work/automate-design-handovers-with-a-figma-to-code-pipeline': true
+    '/programmation/automate-design-handovers-with-a-figma-to-code-pipeline': true
 }
 
 const effects = {

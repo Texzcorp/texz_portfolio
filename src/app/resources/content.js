@@ -71,7 +71,7 @@ const about = {
         title: 'Introduction',
         description: <>A multidisciplinary creator with deep technical expertise, seamlessly blending game development, software engineering, music production, and digital art. Driven by a relentless curiosity for mastering diverse tools and technologies, each project is an exploration of pushing boundaries and reimagining what’s achievable across multiple creative realms. </>
     },
-    work: {
+    programmation: {
         display: true, // set to false to hide this section
         title: 'Virtual production',
         experiences: [
@@ -222,15 +222,15 @@ const about = {
     },
 }
 
-const blog = {
+const writing = {
     label: 'Writing',
     title: 'Experiences in Narration & Scriptwriting',
     description: `Read what ${person.name} has been up to recently`
-    // Create new blog posts by adding a new .mdx file to app/blog/posts
-    // All posts will be listed on the /blog route
+    // Create new writing posts by adding a new .mdx file to app/writing/posts
+    // All posts will be listed on the /writing route
 }
 
-const work = {
+const programmation = {
     label: 'Dev & Games',
     title: 'My video Games & programming projects',
     description: `Design and dev projects by ${person.name}`
@@ -456,4 +456,4 @@ const gallery = [
 ];
 
 
-export { person, social, newsletter, home, about, blog, work, music, gallery, experimentalproj };
+export { person, social, newsletter, home, about, writing, programmation, music, gallery, experimentalproj };

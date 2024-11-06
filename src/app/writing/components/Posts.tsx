@@ -1,6 +1,6 @@
 import { formatDate, getPosts } from '@/app/utils';
 import { Flex, Grid, Heading, SmartLink, Text } from '@/once-ui/components';
-import styles from '@/app/blog/components/Posts.module.scss';
+import styles from '@/app/writing/components/Posts.module.scss';
 
 interface PostsProps {
     range?: [number] | [number, number];
@@ -11,26 +11,26 @@ export function Posts({
     range,
     columns = '1'
 }: PostsProps) {
-    let allBlogs = getPosts(['src', 'app', 'blog', 'posts']);
+    let allWritings = getPosts(['src', 'app', 'writing', 'posts']);
 
-    const sortedBlogs = allBlogs.sort((a, b) => {
+    const sortedWritings = allWritings.sort((a, b) => {
         return new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime();
     });
 
-    const displayedBlogs = range
-        ? sortedBlogs.slice(
+    const displayedWritings = range
+        ? sortedWritings.slice(
               range[0] - 1,
-              range.length === 2 ? range[1] : sortedBlogs.length 
+              range.length === 2 ? range[1] : sortedWritings.length 
           )
-        : sortedBlogs;
+        : sortedWritings;
 
     return (
         <>
-            { displayedBlogs.length > 0 && (
+            { displayedWritings.length > 0 && (
                 <Grid
                     columns={`repeat(${columns}, 1fr)`} mobileColumns="1col"
                     fillWidth marginBottom="40" gap="m" paddingX="l">
-                    {displayedBlogs.map((post) => (
+                    {displayedWritings.map((post) => (
                         <SmartLink
                             style={{
                                 textDecoration: 'none',
@@ -39,7 +39,7 @@ export function Posts({
                             }}
                             className={styles.hover}
                             key={post.slug}
-                            href={`/blog/${post.slug}`}>
+                            href={`/writing/${post.slug}`}>
                             <Flex
                                 position="relative"
                                 paddingX="16" paddingY="12" gap="8"

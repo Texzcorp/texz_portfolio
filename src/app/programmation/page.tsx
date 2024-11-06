@@ -1,11 +1,11 @@
 import { getPosts } from '@/app/utils';
 import { Flex } from '@/once-ui/components';
-import { Projects } from '@/app/work/components/Projects';
-import { baseURL, person, work } from '../resources';
+import { Projects } from '@/app/programmation/components/Projects';
+import { baseURL, person, programmation } from '../resources';
 
 export function generateMetadata() {
-	const title = work.title;
-	const description = work.description;
+	const title = programmation.title;
+	const description = programmation.description;
 	const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
 
 	return {
@@ -15,7 +15,7 @@ export function generateMetadata() {
 			title,
 			description,
 			type: 'website',
-			url: `https://${baseURL}/work`,
+			url: `https://${baseURL}/programmation`,
 			images: [
 				{
 					url: ogImage,
@@ -32,8 +32,8 @@ export function generateMetadata() {
 	};
 }
 
-export default function Work() {
-    let allProjects = getPosts(['src', 'app', 'work', 'projects']);
+export default function Programmation() {
+    let allProjects = getPosts(['src', 'app', 'programmation', 'projects']);
 
     return (
         <Flex
@@ -46,8 +46,8 @@ export default function Work() {
                     __html: JSON.stringify({
                         '@context': 'https://schema.org',
                         '@type': 'CollectionPage',
-                        headline: work.title,
-                        description: work.description,
+                        headline: programmation.title,
+                        description: programmation.description,
                         url: `https://${baseURL}/projects`,
                         image: `${baseURL}/og?title=Design%20Projects`,
                         author: {

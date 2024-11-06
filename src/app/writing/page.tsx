@@ -1,13 +1,13 @@
 import { Flex, RevealFx, Heading } from '@/once-ui/components';
 import { Mailchimp } from '@/app/components';
-import { Posts } from '@/app/blog/components/Posts';
+import { Posts } from '@/app/writing/components/Posts';
 
-import { blog, newsletter, person } from '@/app/resources'
+import { writing, newsletter, person } from '@/app/resources'
 import { baseURL, mailchimp } from '@/app/resources'
 
 export function generateMetadata() {
-	const title = blog.title;
-	const description = blog.description;
+	const title = writing.title;
+	const description = writing.description;
 	const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
 
 	return {
@@ -17,7 +17,7 @@ export function generateMetadata() {
 			title,
 			description,
 			type: 'website',
-			url: `https://${baseURL}/blog`,
+			url: `https://${baseURL}/writing`,
 			images: [
 				{
 					url: ogImage,
@@ -34,7 +34,7 @@ export function generateMetadata() {
 	};
 }
 
-export default function Blog() {
+export default function Writing() {
     return (
         <Flex
 			fillWidth maxWidth="s"
@@ -45,11 +45,11 @@ export default function Blog() {
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify({
 						'@context': 'https://schema.org',
-						'@type': 'Blog',
-						headline: blog.title,
-						description: blog.description,
-						url: `https://${baseURL}/blog`,
-						image: `${baseURL}/og?title=${encodeURIComponent(blog.title)}`,
+						'@type': 'Writing',
+						headline: writing.title,
+						description: writing.description,
+						url: `https://${baseURL}/writing`,
+						image: `${baseURL}/og?title=${encodeURIComponent(writing.title)}`,
 						author: {
 							'@type': 'Person',
 							name: person.name,
@@ -65,7 +65,7 @@ export default function Blog() {
 				<Heading
 					marginBottom="l"
 					variant="display-strong-s">
-					{blog.title}
+					{writing.title}
 				</Heading>
 				<Flex
 					fillWidth flex={1}>

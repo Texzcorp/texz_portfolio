@@ -5,22 +5,22 @@ import { Avatar, Button, Flex, Heading, Text } from '@/once-ui/components'
 
 import { person, baseURL } from '@/app/resources'
 
-interface BlogParams {
+interface WritingParams {
     params: { 
         slug: string;
     };
 }
 
 export async function generateStaticParams() {
-	let posts = getPosts(['src', 'app', 'blog', 'posts'])
+	let posts = getPosts(['src', 'app', 'writing', 'posts'])
 
 	return posts.map((post) => ({
 		slug: post.slug,
 	}))
 }
 
-export function generateMetadata({ params }: BlogParams) {
-	let post = getPosts(['src', 'app', 'blog', 'posts']).find((post) => post.slug === params.slug)
+export function generateMetadata({ params }: WritingParams) {
+	let post = getPosts(['src', 'app', 'writing', 'posts']).find((post) => post.slug === params.slug)
 
 	if (!post) {
 		return
@@ -44,7 +44,7 @@ export function generateMetadata({ params }: BlogParams) {
 			description,
 			type: 'article',
 			publishedTime,
-			url: `https://${baseURL}/blog/${post.slug}`,
+			url: `https://${baseURL}/writing/${post.slug}`,
 			images: [
 				{
 					url: ogImage,
@@ -60,8 +60,8 @@ export function generateMetadata({ params }: BlogParams) {
 	}
 }
 
-export default function Blog({ params }: BlogParams) {
-	let post = getPosts(['src', 'app', 'blog', 'posts']).find((post) => post.slug === params.slug)
+export default function Writing({ params }: WritingParams) {
+	let post = getPosts(['src', 'app', 'writing', 'posts']).find((post) => post.slug === params.slug)
 
 	if (!post) {
 		notFound()
@@ -78,7 +78,7 @@ export default function Blog({ params }: BlogParams) {
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify({
 						'@context': 'https://schema.org',
-						'@type': 'BlogPosting',
+						'@type': 'WritingPosting',
 						headline: post.metadata.title,
 						datePublished: post.metadata.publishedAt,
 						dateModified: post.metadata.publishedAt,
@@ -86,7 +86,7 @@ export default function Blog({ params }: BlogParams) {
 						image: post.metadata.image
 							? `https://${baseURL}${post.metadata.image}`
 							: `https://${baseURL}/og?title=${post.metadata.title}`,
-							url: `https://${baseURL}/blog/${post.slug}`,
+							url: `https://${baseURL}/writing/${post.slug}`,
 						author: {
 							'@type': 'Person',
 							name: person.name,
@@ -95,7 +95,7 @@ export default function Blog({ params }: BlogParams) {
 				}}
 			/>
 			<Button
-				href="/blog"
+				href="/writing"
 				variant="tertiary"
 				size="s"
 				prefixIcon="chevronLeft">

@@ -8,7 +8,7 @@ import styles from '@/app/components/Header.module.scss'
 import Head from 'next/head'; // Import du composant Head
 
 import { routes, display } from '@/app/resources'
-import { person, home, about, blog, work, music, gallery, experimentalproj } from '@/app/resources'
+import { person, home, about, writing, programmation, music, gallery, experimentalproj } from '@/app/resources'
 
 type TimeDisplayProps = {
     timeZone: string;
@@ -108,12 +108,12 @@ export const Header = () => {
                             <Flex paddingX="2" hide="s">{about.label}</Flex>
                         </ToggleButton>
                     )}
-                    { routes['/work'] && (
+                    { routes['/programmation'] && (
                         <ToggleButton
                             prefixIcon="unreal"
-                            href="/work"
-                            selected={pathname.startsWith('/work')}>
-                            <Flex paddingX="2" hide="s">{work.label}</Flex>
+                            href="/programmation"
+                            selected={pathname.startsWith('/programmation')}>
+                            <Flex paddingX="2" hide="s">{programmation.label}</Flex>
                         </ToggleButton>
                     )}
                     { routes['/music'] && (
@@ -132,12 +132,12 @@ export const Header = () => {
                             <Flex paddingX="2" hide="s">{gallery[0].label}</Flex> {/* Utilisation de gallery.label */}
                         </ToggleButton>
                     )}
-                    { routes['/blog'] && (
+                    { routes['/writing'] && (
                         <ToggleButton
                             prefixIcon="feather"
-                            href="/blog"
-                            selected={pathname.startsWith('/blog')}>
-                            <Flex paddingX="2" hide="s">{blog.label}</Flex>
+                            href="/writing"
+                            selected={pathname.startsWith('/writing')}>
+                            <Flex paddingX="2" hide="s">{writing.label}</Flex>
                         </ToggleButton>
                     )}
                     { routes['/experimentalproj'] && (

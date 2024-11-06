@@ -39,7 +39,7 @@ export function MusicProjects({ range }: ProjectsProps) {
                     return (
                         <MusicProjectCard
                             key={post.slug}
-                            href={`/work/${post.slug}`}
+                            href={`/programmation/${post.slug}`}
                             mainMusic={post.metadata.mainMusic}
                             extraMusics={post.metadata.extraMusics}
                         />
@@ -49,7 +49,7 @@ export function MusicProjects({ range }: ProjectsProps) {
                 return (
                     <ProjectCard
                         key={post.slug}
-                        href={`/work/${post.slug}`}
+                        href={`/programmation/${post.slug}`}
                         images={post.metadata.images}
                         title={post.metadata.title}
                         description={post.metadata.summary}

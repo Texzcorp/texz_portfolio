@@ -1,14 +1,14 @@
 import React from 'react';
 
 import { Heading, Icon, IconButton, SmartImage, Flex, Tag, Text, Button,  Avatar, RevealFx } from '@/once-ui/components';
-import { Projects } from '@/app/work/components/Projects';
+import { Projects } from '@/app/programmation/components/Projects';
 import { MusicProjects } from '@/app/music/components/Projects';
 import MasonryGrid from '@/app/gallery/components/MasonryGrid';
 import { gallery as galleries } from '@/app/resources'; // Renommer pour éviter confusion
 
 import { about, baseURL, social, home, newsletter, person, routes } from '@/app/resources'
 import { Mailchimp } from '@/app/components';
-import { Posts } from '@/app/blog/components/Posts';
+import { Posts } from '@/app/writing/components/Posts';
 import TableOfContents from '@/app/about/components/TableOfContents';
 import styles from '@/app/about/about.module.scss'
 import VantaBackground from '@/app/components/VantaBackground';
@@ -35,9 +35,9 @@ const structure = [
         items: []
     },
     { 
-        title: about.work.title,
-        display: about.work.display,
-        items: about.work.experiences.map(experience => experience.company)
+        title: about.programmation.title,
+        display: about.programmation.display,
+        items: about.programmation.experiences.map(experience => experience.company)
     },
     { 
         title: about.studies.title,
@@ -132,9 +132,9 @@ export default function Home() {
                         sameAs: social
                             .filter((item) => item.link && !item.link.startsWith('mailto:')) // Filter out empty links and email links
                             .map((item) => item.link),
-                        worksFor: {
+                        programmationsFor: {
                             '@type': 'Organization',
-                            name: about.work.experiences[0].company || ''
+                            name: about.programmation.experiences[0].company || ''
                         },
                     }),
                 }}
@@ -285,7 +285,7 @@ export default function Home() {
                     <RevealFx translateY="16" delay={0.8} speed="slow">
                         <Heading
                             as="h2"
-                            id={about.work.title}
+                            id={about.programmation.title}
                             variant="display-strong-s" marginBottom="8">
                             Virtual production
                         </Heading>
@@ -391,12 +391,12 @@ export default function Home() {
                     </Flex>
 
                     {/* Exemple de call de projet d'écriture */}
-					{routes['/blog'] && (
+					{routes['/writing'] && (
 						<Flex fillWidth paddingX="20">
 							<Posts range={[3,3]} columns="1"/>
 						</Flex>
 					)}
-                    {routes['/blog'] && (
+                    {routes['/writing'] && (
 						<Flex fillWidth paddingX="20">
 							<Posts range={[1,1]} columns="1"/>
 						</Flex>

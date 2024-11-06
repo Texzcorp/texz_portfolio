@@ -11,7 +11,7 @@ interface WorkParams {
 }
 
 export async function generateStaticParams() {
-	let posts = getPosts(['src', 'app', 'work', 'projects']);
+	let posts = getPosts(['src', 'app', 'programmation', 'projects']);
 
 	return posts.map((post) => ({
 		slug: post.slug,
@@ -19,7 +19,7 @@ export async function generateStaticParams() {
 }
 
 export function generateMetadata({ params }: WorkParams) {
-	let post = getPosts(['src', 'app', 'work', 'projects']).find((post) => post.slug === params.slug)
+	let post = getPosts(['src', 'app', 'programmation', 'projects']).find((post) => post.slug === params.slug)
 	
 	if (!post) {
 		return
@@ -47,7 +47,7 @@ export function generateMetadata({ params }: WorkParams) {
 			description,
 			type: 'article',
 			publishedTime,
-			url: `https://${baseURL}/work/${post.slug}`,
+			url: `https://${baseURL}/programmation/${post.slug}`,
 			images: [
 				{
 					url: ogImage,
@@ -64,7 +64,7 @@ export function generateMetadata({ params }: WorkParams) {
 }
 
 export default function Project({ params }: WorkParams) {
-	let post = getPosts(['src', 'app', 'work', 'projects']).find((post) => post.slug === params.slug)
+	let post = getPosts(['src', 'app', 'programmation', 'projects']).find((post) => post.slug === params.slug)
 
 	if (!post) {
 		notFound()
@@ -85,7 +85,7 @@ export default function Project({ params }: WorkParams) {
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify({
 						'@context': 'https://schema.org',
-						'@type': 'BlogPosting',
+						'@type': 'WritingPosting',
 						headline: post.metadata.title,
 						datePublished: post.metadata.publishedAt,
 						dateModified: post.metadata.publishedAt,
@@ -93,7 +93,7 @@ export default function Project({ params }: WorkParams) {
 						image: post.metadata.image
 							? `https://${baseURL}${post.metadata.image}`
 							: `https://${baseURL}/og?title=${post.metadata.title}`,
-							url: `https://${baseURL}/work/${post.slug}`,
+							url: `https://${baseURL}/programmation/${post.slug}`,
 						author: {
 							'@type': 'Person',
 							name: person.name,
@@ -105,7 +105,7 @@ export default function Project({ params }: WorkParams) {
 				fillWidth maxWidth="xs" gap="16"
 				direction="column">
 				<Button
-					href="/work"
+					href="/programmation"
 					variant="tertiary"
 					size="s"
 					prefixIcon="chevronLeft">

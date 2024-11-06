@@ -1,11 +1,11 @@
 import React from 'react';
 
 import { Heading, Icon, IconButton, SmartImage, Flex, Tag, Text, Button,  Avatar, RevealFx } from '@/once-ui/components';
-import { Projects } from '@/app/work/components/Projects';
+import { Projects } from '@/app/programmation/components/Projects';
 
 import { about, baseURL, social, home, newsletter, person, routes } from '@/app/resources'
 import { Mailchimp } from '@/app/components';
-import { Posts } from '@/app/blog/components/Posts';
+import { Posts } from '@/app/writing/components/Posts';
 import TableOfContents from '@/app/about/components/TableOfContents';
 import styles from '@/app/about/about.module.scss'
 
@@ -16,9 +16,9 @@ const structure = [
         items: []
     },
     { 
-        title: about.work.title,
-        display: about.work.display,
-        items: about.work.experiences.map(experience => experience.company)
+        title: about.programmation.title,
+        display: about.programmation.display,
+        items: about.programmation.experiences.map(experience => experience.company)
     },
     { 
         title: about.studies.title,
@@ -103,9 +103,9 @@ export default function Home() {
                         sameAs: social
                             .filter((item) => item.link && !item.link.startsWith('mailto:')) // Filter out empty links and email links
                             .map((item) => item.link),
-                        worksFor: {
+                        programmationsFor: {
                             '@type': 'Organization',
-                            name: about.work.experiences[0].company || ''
+                            name: about.programmation.experiences[0].company || ''
                         },
                     }),
                 }}
@@ -303,19 +303,19 @@ export default function Home() {
 						<Projects range={[1,1]}/>
 					</RevealFx>
 
-                    { about.work.display && (
+                    { about.programmation.display && (
                         <>
                             <Heading
                                 as="h2"
-                                id={about.work.title}
+                                id={about.programmation.title}
                                 variant="display-strong-s"
                                 marginBottom="m">
-                                {about.work.title}
+                                {about.programmation.title}
                             </Heading>
                             <Flex
                                 direction="column"
                                 fillWidth gap="l" marginBottom="40">
-                                {about.work.experiences.map((experience, index) => (
+                                {about.programmation.experiences.map((experience, index) => (
                                     <Flex
                                         key={`${experience.company}-${experience.role}-${index}`}
                                         fillWidth

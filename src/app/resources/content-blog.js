@@ -160,12 +160,12 @@ const about = {
     }
 }
 
-const blog = {
+const writing = {
     label: 'Blog',
     title: 'Writing about design and tech...',
     description: `Read what ${person.name} has been up to recently`
-    // Create new blog posts by adding a new .mdx file to app/blog/posts
-    // All posts will be listed on the /blog route
+    // Create new writing posts by adding a new .mdx file to app/writing/posts
+    // All posts will be listed on the /writing route
 }
 
 const work = {
