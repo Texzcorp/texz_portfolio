@@ -1,5 +1,26 @@
-.videoPlayer {
+.videoWrapper {
+    position: relative;
+    width: 350px;
+    height: 350px;
+    overflow: hidden;
+    transform: translateZ(0);
+}
+
+.video {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    opacity: 0;
+    transform: translateZ(0);
+    will-change: transform;
+    
+    &.loaded {
+        opacity: 1;
+    }
+}
+
+.placeholder {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.1);
 } 

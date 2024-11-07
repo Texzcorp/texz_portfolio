@@ -4,7 +4,7 @@ import { Flex, Heading, Text, RevealFx } from '@/once-ui/components';
 import MusicPlayer from './MusicPlayer';
 import VideoPlayer from './VideoPlayer';
 import styles from './MusicProjectCard.module.scss';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useMusicPlayerContext } from './MusicPlayerContext';
 import { useBackground } from './BackgroundContext';
 
@@ -84,20 +84,89 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
         setIsCurrentlyPlaying(playing);
     };
 
+    const [isVideoVisible, setIsVideoVisible] = useState(false);
+    const videoWrapperRef = useRef<HTMLDivElement>(null);
+
+    // Ajouter un useEffect pour le debug
+    useEffect(() => {
+        console.log('Debug:', {
+            currentMusic,
+            isVideoVisible,
+            isCurrentlyPlaying,
+            currentAudioTime
+        });
+    }, [currentMusic, isVideoVisible, isCurrentlyPlaying, currentAudioTime]);
+
+    // Observer d'intersection pour charger la vidéo uniquement quand elle est visible
+    useEffect(() => {
+        if (!videoWrapperRef.current) return;
+
+        console.log('Setting up IntersectionObserver');
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    console.log('Intersection:', entry.isIntersecting);
+                    setIsVideoVisible(entry.isIntersecting);
+                });
+            },
+            {
+                rootMargin: '50px',
+                threshold: 0.1
+            }
+        );
+
+        observer.observe(videoWrapperRef.current);
+
+        return () => observer.disconnect();
+    }, []);
+
+    const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+
+    // Charger la vidéo uniquement quand nécessaire
+    useEffect(() => {
+        if (!videoWrapperRef.current) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setShouldLoadVideo(true);
+                        observer.disconnect();
+                    }
+                });
+            },
+            {
+                rootMargin: '100px',
+                threshold: 0.1
+            }
+        );
+
+        observer.observe(videoWrapperRef.current);
+        return () => observer.disconnect();
+    }, []);
+
     return (
         <div className={styles.outerReveal}>
             <div className={styles.innerReveal}>
                 <div className={styles.cardContainer}>
                     <div className={styles.mainSection}>
-                        <div className={styles.imageWrapper}>
-                            {currentMusic?.cover && (
+                        <div className={styles.imageWrapper} ref={videoWrapperRef}>
+                            {currentMusic && currentMusic.cover && (
                                 currentMusic.isVideo ? (
-                                    <VideoPlayer
-                                        src={currentMusic.cover}
-                                        isPlaying={isCurrentlyPlaying}
-                                        audioTime={currentAudioTime}
-                                        className={styles.coverImage}
-                                    />
+                                    shouldLoadVideo ? (
+                                        <VideoPlayer
+                                            src={currentMusic.cover}
+                                            isPlaying={isCurrentlyPlaying}
+                                            audioTime={currentAudioTime}
+                                            className={styles.coverImage}
+                                        />
+                                    ) : (
+                                        <img 
+                                            src={currentMusic.cover.replace('.mp4', '.jpg')}
+                                            alt={currentMusic.title}
+                                            className={styles.coverImage}
+                                        />
+                                    )
                                 ) : (
                                     <img 
                                         src={currentMusic.cover} 
@@ -124,8 +193,8 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
                                         onNext={handleNext}
                                         hasPrevious={currentIndex > 0}
                                         hasNext={currentIndex < allMusics.length - 1}
-                                        onTimeUpdate={handleTimeUpdate}
-                                        onPlayingStateChange={handlePlayingStateChange}
+                                        onTimeUpdate={(time) => setCurrentAudioTime(time)}
+                                        onPlayingStateChange={(playing) => setIsCurrentlyPlaying(playing)}
                                         onEnded={() => {
                                             const nextIndex = (currentIndex + 1) % allMusics.length;
                                             const nextMusic = allMusics[nextIndex];
