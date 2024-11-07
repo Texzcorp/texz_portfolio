@@ -16,6 +16,8 @@ interface MusicPlayerProps {
   hasPrevious?: boolean;
   hasNext?: boolean;
   onEnded?: () => void;
+  onTimeUpdate?: (time: number) => void;
+  onPlayingStateChange?: (isPlaying: boolean) => void;
 }
 
 const MusicPlayer: React.FC<MusicPlayerProps> = ({ 
@@ -25,7 +27,9 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
   onNext,
   hasPrevious = false,
   hasNext = false,
-  onEnded
+  onEnded,
+  onTimeUpdate,
+  onPlayingStateChange,
 }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -65,13 +69,23 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
     const audio = audioRef.current;
     if (!audio) return;
 
-    const updateTime = () => setCurrentTime(audio.currentTime);
+    const updateTime = () => {
+      setCurrentTime(audio.currentTime);
+      onTimeUpdate?.(audio.currentTime);
+    };
+    
     const setAudioData = () => {
       setDuration(audio.duration);
       setCurrentTime(audio.currentTime);
     };
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
+    const handlePlay = () => {
+      setIsPlaying(true);
+      onPlayingStateChange?.(true);
+    };
+    const handlePause = () => {
+      setIsPlaying(false);
+      onPlayingStateChange?.(false);
+    };
     const handleEnded = () => {
       setIsPlaying(false);
       if (onEnded) {
@@ -94,7 +108,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
       audio.removeEventListener('pause', handlePause);
       audio.removeEventListener('ended', handleEnded);
     };
-  }, [src, stopMusic, onEnded]);
+  }, [onTimeUpdate, onPlayingStateChange, src, stopMusic, onEnded]);
 
   // Effet pour gérer l'analyseur audio
   useEffect(() => {

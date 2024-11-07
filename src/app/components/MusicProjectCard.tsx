@@ -2,6 +2,7 @@
 
 import { Flex, Heading, Text, RevealFx } from '@/once-ui/components';
 import MusicPlayer from './MusicPlayer';
+import VideoPlayer from './VideoPlayer';
 import styles from './MusicProjectCard.module.scss';
 import { useState, useCallback, useEffect } from 'react';
 import { useMusicPlayerContext } from './MusicPlayerContext';
@@ -13,6 +14,7 @@ interface Music {
     title: string;
     style: string;
     cover: string;
+    isVideo?: boolean; // Indique si cover est une vidéo
 }
 
 interface MusicProjectCardProps {
@@ -71,6 +73,17 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
         stopPlaying();
     }, [stopMusic, stopPlaying]);
 
+    const [currentAudioTime, setCurrentAudioTime] = useState(0);
+    const [isCurrentlyPlaying, setIsCurrentlyPlaying] = useState(false);
+
+    const handleTimeUpdate = (time: number) => {
+        setCurrentAudioTime(time);
+    };
+
+    const handlePlayingStateChange = (playing: boolean) => {
+        setIsCurrentlyPlaying(playing);
+    };
+
     return (
         <div className={styles.outerReveal}>
             <div className={styles.innerReveal}>
@@ -78,11 +91,20 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
                     <div className={styles.mainSection}>
                         <div className={styles.imageWrapper}>
                             {currentMusic?.cover && (
-                                <img 
-                                    src={currentMusic.cover} 
-                                    alt={currentMusic.title} 
-                                    className={styles.coverImage} 
-                                />
+                                currentMusic.isVideo ? (
+                                    <VideoPlayer
+                                        src={currentMusic.cover}
+                                        isPlaying={isCurrentlyPlaying}
+                                        audioTime={currentAudioTime}
+                                        className={styles.coverImage}
+                                    />
+                                ) : (
+                                    <img 
+                                        src={currentMusic.cover} 
+                                        alt={currentMusic.title} 
+                                        className={styles.coverImage} 
+                                    />
+                                )
                             )}
                         </div>
                         <div className={styles.mainContent}>
@@ -102,6 +124,8 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
                                         onNext={handleNext}
                                         hasPrevious={currentIndex > 0}
                                         hasNext={currentIndex < allMusics.length - 1}
+                                        onTimeUpdate={handleTimeUpdate}
+                                        onPlayingStateChange={handlePlayingStateChange}
                                         onEnded={() => {
                                             const nextIndex = (currentIndex + 1) % allMusics.length;
                                             const nextMusic = allMusics[nextIndex];
