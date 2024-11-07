@@ -7,6 +7,7 @@ import styles from './MusicProjectCard.module.scss';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useMusicPlayerContext } from './MusicPlayerContext';
 import { useBackground } from './BackgroundContext';
+import VideoThumbnail from './VideoThumbnail';
 
 // Définir l'interface Music ici en attendant
 interface Music {
@@ -15,6 +16,7 @@ interface Music {
     style: string;
     cover: string;
     isVideo?: boolean; // Indique si cover est une vidéo
+    thumbnailTime?: number; // Timecode en secondes pour la miniature
 }
 
 interface MusicProjectCardProps {
@@ -88,14 +90,14 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
     const videoWrapperRef = useRef<HTMLDivElement>(null);
 
     // Ajouter un useEffect pour le debug
-    useEffect(() => {
-        console.log('Debug:', {
-            currentMusic,
-            isVideoVisible,
-            isCurrentlyPlaying,
-            currentAudioTime
-        });
-    }, [currentMusic, isVideoVisible, isCurrentlyPlaying, currentAudioTime]);
+    // useEffect(() => {
+    //     console.log('Debug:', {
+    //         currentMusic,
+    //         isVideoVisible,
+    //         isCurrentlyPlaying,
+    //         currentAudioTime
+    //     });
+    // }, [currentMusic, isVideoVisible, isCurrentlyPlaying, currentAudioTime]);
 
     // Observer d'intersection pour charger la vidéo uniquement quand elle est visible
     useEffect(() => {
@@ -162,16 +164,16 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
                                         />
                                     ) : (
                                         <img 
-                                            src={currentMusic.cover.replace('.mp4', '.jpg')}
+                                            src={currentMusic.cover}
                                             alt={currentMusic.title}
                                             className={styles.coverImage}
                                         />
                                     )
                                 ) : (
                                     <img 
-                                        src={currentMusic.cover} 
-                                        alt={currentMusic.title} 
-                                        className={styles.coverImage} 
+                                        src={currentMusic.cover}
+                                        alt={currentMusic.title}
+                                        className={styles.coverImage}
                                     />
                                 )
                             )}
@@ -221,11 +223,19 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
                                     >
                                         <div className={styles.playlistItemContent}>
                                             <div className={styles.miniCover}>
-                                                <img 
-                                                    src={music.cover} 
-                                                    alt={music.title} 
-                                                    className={styles.miniCoverImage}
-                                                />
+                                                {music.isVideo ? (
+                                                    <VideoThumbnail 
+                                                        src={music.cover}
+                                                        time={music.thumbnailTime || 0}
+                                                        className={styles.miniCoverImage}
+                                                    />
+                                                ) : (
+                                                    <img 
+                                                        src={music.cover} 
+                                                        alt={music.title} 
+                                                        className={styles.miniCoverImage}
+                                                    />
+                                                )}
                                             </div>
                                             <div className={styles.trackInfo}>
                                                 <Text className={styles.trackTitle}>
