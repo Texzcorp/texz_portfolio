@@ -10,34 +10,52 @@ interface VideoThumbnailProps {
 
 const VideoThumbnail = ({ src, time = 0, className }: VideoThumbnailProps) => {
     const videoRef = useRef<HTMLVideoElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
         const video = videoRef.current;
-        if (!video) return;
+        const canvas = canvasRef.current;
+        if (!video || !canvas) return;
 
-        const handleLoadedData = () => {
+        const handleLoadedMetadata = () => {
             video.currentTime = time;
-            setIsReady(true);
         };
 
-        video.addEventListener('loadeddata', handleLoadedData);
-        
+        const handleSeeked = () => {
+            const context = canvas.getContext('2d');
+            if (context) {
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                setIsReady(true);
+            }
+        };
+
+        video.addEventListener('loadedmetadata', handleLoadedMetadata);
+        video.addEventListener('seeked', handleSeeked);
+
         return () => {
-            video.removeEventListener('loadeddata', handleLoadedData);
+            video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+            video.removeEventListener('seeked', handleSeeked);
         };
     }, [time]);
 
     return (
-        <video
-            ref={videoRef}
-            src={src}
-            className={className}
-            preload="metadata"
-            muted
-            playsInline
-            style={{ opacity: isReady ? 1 : 0 }}
-        />
+        <div className={className} style={{ position: 'relative' }}>
+            <video
+                ref={videoRef}
+                src={src}
+                preload="metadata"
+                muted
+                playsInline
+                style={{ display: 'none' }}
+            />
+            <canvas
+                ref={canvasRef}
+                width={160} // Set the desired width
+                height={160} // Set the desired height
+                style={{ opacity: isReady ? 1 : 0, width: '100%', height: 'auto' }}
+            />
+        </div>
     );
 };
 
