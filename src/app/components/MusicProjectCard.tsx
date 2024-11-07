@@ -147,6 +147,22 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
         return () => observer.disconnect();
     }, []);
 
+    const [nextVideo, setNextVideo] = useState<string | null>(null);
+
+    // Préchargement de la prochaine vidéo
+    useEffect(() => {
+        if (!currentMusic?.isVideo) return;
+        
+        const currentIndex = allMusics.findIndex(m => m.src === currentMusic.src);
+        const nextMusic = allMusics[(currentIndex + 1) % allMusics.length];
+        
+        if (nextMusic?.isVideo) {
+            const preloadVideo = new Image();
+            preloadVideo.src = nextMusic.cover;
+            setNextVideo(nextMusic.cover);
+        }
+    }, [currentMusic, allMusics]);
+
     return (
         <div className={styles.outerReveal}>
             <div className={styles.innerReveal}>
@@ -253,6 +269,9 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
                     )}
                 </div>
             </div>
+            {nextVideo && (
+                <link rel="preload" as="video" href={nextVideo} />
+            )}
         </div>
     );
 };
