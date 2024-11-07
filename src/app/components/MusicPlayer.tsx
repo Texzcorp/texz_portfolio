@@ -15,6 +15,7 @@ interface MusicPlayerProps {
   onNext?: () => void;
   hasPrevious?: boolean;
   hasNext?: boolean;
+  onEnded?: () => void;
 }
 
 const MusicPlayer: React.FC<MusicPlayerProps> = ({ 
@@ -23,7 +24,8 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
   onPrevious,
   onNext,
   hasPrevious = false,
-  hasNext = false
+  hasNext = false,
+  onEnded
 }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -72,7 +74,11 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
     const handlePause = () => setIsPlaying(false);
     const handleEnded = () => {
       setIsPlaying(false);
-      stopMusic(src);
+      if (onEnded) {
+        onEnded();
+      } else {
+        stopMusic(src);
+      }
     };
 
     audio.addEventListener('timeupdate', updateTime);
@@ -88,7 +94,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
       audio.removeEventListener('pause', handlePause);
       audio.removeEventListener('ended', handleEnded);
     };
-  }, [src, stopMusic]);
+  }, [src, stopMusic, onEnded]);
 
   // Effet pour gérer l'analyseur audio
   useEffect(() => {

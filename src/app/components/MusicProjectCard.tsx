@@ -102,6 +102,12 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
                                         onNext={handleNext}
                                         hasPrevious={currentIndex > 0}
                                         hasNext={currentIndex < allMusics.length - 1}
+                                        onEnded={() => {
+                                            const nextIndex = (currentIndex + 1) % allMusics.length;
+                                            const nextMusic = allMusics[nextIndex];
+                                            setCurrentMusic(nextMusic);
+                                            setActivePlayerSrc(nextMusic.src);
+                                        }}
                                     />
                                 </div>
                             )}
