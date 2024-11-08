@@ -7,7 +7,6 @@ import styles from './MusicProjectCard.module.scss';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useMusicPlayerContext } from './MusicPlayerContext';
 import { useBackground } from './BackgroundContext';
-import VideoThumbnail from './VideoThumbnail';
 
 // Définir l'interface Music ici en attendant
 interface Music {
@@ -15,8 +14,8 @@ interface Music {
     title: string;
     style: string;
     cover: string;
-    isVideo?: boolean; // Indique si cover est une vidéo
-    thumbnailTime?: number; // Timecode en secondes pour la miniature
+    isVideo?: boolean;
+    thumbnail?: string;
 }
 
 interface MusicProjectCardProps {
@@ -163,6 +162,11 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
         }
     }, [currentMusic, allMusics]);
 
+    // Fonction utilitaire pour obtenir le chemin du thumbnail
+    const getThumbnailPath = (videoPath: string): string => {
+        return videoPath.replace('.mp4', '.jpg');
+    };
+
     return (
         <div className={styles.outerReveal}>
             <div className={styles.innerReveal}>
@@ -239,19 +243,11 @@ export const MusicProjectCard: React.FC<MusicProjectCardProps> = ({
                                     >
                                         <div className={styles.playlistItemContent}>
                                             <div className={styles.miniCover}>
-                                                {music.isVideo ? (
-                                                    <VideoThumbnail 
-                                                        src={music.cover}
-                                                        time={music.thumbnailTime || 0}
-                                                        className={styles.miniCoverImage}
-                                                    />
-                                                ) : (
-                                                    <img 
-                                                        src={music.cover} 
-                                                        alt={music.title} 
-                                                        className={styles.miniCoverImage}
-                                                    />
-                                                )}
+                                                <img 
+                                                    src={music.isVideo ? getThumbnailPath(music.cover) : music.cover}
+                                                    alt={music.title} 
+                                                    className={styles.miniCoverImage}
+                                                />
                                             </div>
                                             <div className={styles.trackInfo}>
                                                 <Text className={styles.trackTitle}>

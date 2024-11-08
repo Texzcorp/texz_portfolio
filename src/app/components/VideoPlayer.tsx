@@ -14,12 +14,24 @@ const VideoPlayer = ({ src, isPlaying, audioTime, className }: VideoPlayerProps)
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const visibilityRef = useRef(true);
+    const previousSrcRef = useRef<string>(src);
+
+    // Réinitialiser l'état quand la source change
+    useEffect(() => {
+        if (previousSrcRef.current !== src) {
+            setIsLoaded(false);
+            previousSrcRef.current = src;
+        }
+    }, [src]);
 
     // Configuration initiale optimisée pour petite vidéo
     useEffect(() => {
         const video = videoRef.current;
         if (!video) return;
 
+        // Réinitialiser la vidéo lors du changement de source
+        video.load();
+        
         // Configuration de base optimisée pour 350x350
         video.playsInline = true;
         video.muted = true;
@@ -31,13 +43,24 @@ const VideoPlayer = ({ src, isPlaying, audioTime, className }: VideoPlayerProps)
         video.preload = "auto";
         video.setAttribute('playsinline', '');
         
-        // Réduire la qualité pour performance
+        // Optimisations supplémentaires
         if ('mediaKeys' in video) {
             video.style.objectFit = 'cover';
             video.style.transform = 'translateZ(0)';
         }
 
-        const handleLoaded = () => setIsLoaded(true);
+        const handleLoaded = () => {
+            setIsLoaded(true);
+            // Forcer une pause initiale pour éviter les saccades
+            video.pause();
+            if (isPlaying) {
+                // Petit délai avant de démarrer la lecture
+                setTimeout(() => {
+                    video.play().catch(() => {});
+                }, 50);
+            }
+        };
+
         video.addEventListener('loadeddata', handleLoaded);
 
         // Gestion optimisée de la visibilité
@@ -56,7 +79,7 @@ const VideoPlayer = ({ src, isPlaying, audioTime, className }: VideoPlayerProps)
             video.removeEventListener('loadeddata', handleLoaded);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
-    }, [src]);
+    }, [src]); // Dépendance à src pour réinitialiser lors du changement
 
     // Gestion optimisée lecture/pause
     useEffect(() => {
