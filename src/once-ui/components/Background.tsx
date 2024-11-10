@@ -114,16 +114,22 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                 const smoothingFactor = 0.05;
                 currentScrollInfluence = lerp(currentScrollInfluence, targetScrollInfluence, smoothingFactor);
 
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.clearRect(0, 0, w, h);
+
                 for (let i = 0; i < waveCount; i++) {
                     let frequency = baseFrequency + (i * 0.03) + (mouseX / w) * 0.005;
-                    const color = `hsla(${Math.sin(t * 0.0001 + i) * 180 + 180}, 100%, 70%, ${0.2 + (i * 0.05)})`;
-
+                    
+                    const timeIntensity = 1 + Math.sin(t * 0.001 + i * 0.5) * 0.3;
+                    const baseColor = `hsla(${Math.sin(t * 0.0001 + i) * 180 + 180}, 100%`;
+                    
                     ctx.beginPath();
-                    ctx.lineWidth = 2 + (i * 0.2);
-                    ctx.shadowBlur = 20;
-                    ctx.shadowColor = color;
-                    ctx.strokeStyle = color;
-                    ctx.globalAlpha = 0.95 + (i * 0.1);
+                    ctx.globalCompositeOperation = 'screen';
+                    ctx.lineWidth = 0.5 + (i * 0.3);
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = `${baseColor}, ${95}%, ${8.8 * timeIntensity})`;
+                    ctx.strokeStyle = `${baseColor}, ${50}%, ${2.6 * timeIntensity})`;
+                    ctx.globalAlpha = 0.8;
 
                     let previousY = 0, previousX = w / 2;
 
@@ -182,15 +188,14 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                     ctx.lineTo(w / 2, pageHeight);
                     ctx.stroke();
                 }
+
+                ctx.globalCompositeOperation = 'source-over';
                 ctx.globalAlpha = 1;
                 ctx.shadowBlur = 0;
                 ctx.shadowColor = 'transparent';
             };
 
             const animate = () => {
-                ctx.clearRect(0, 0, w, h);
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-                ctx.fillRect(0, 0, w, h);
                 drawVerticalFluidWaves();
                 t++;
                 animationFrameId.current = requestAnimationFrame(animate);
