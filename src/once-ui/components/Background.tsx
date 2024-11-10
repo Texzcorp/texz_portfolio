@@ -82,29 +82,29 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                     
                     const normalizedBass = bassRange.map(db => {
                         const clampedDb = Math.max(-80, Math.min(0, db));
-                        return Math.pow(10, clampedDb / 4);
+                        return Math.pow(10, clampedDb / 3);
                     });
                     
                     const bassValue = normalizedBass.reduce((acc, val) => acc + val, 0) / normalizedBass.length;
-                    const currentBassInfluence = Math.pow(bassValue, 1.8) * 40000;
+                    const currentBassInfluence = Math.pow(bassValue, 1.5) * 60000;
                     
                     accumulatedBassRef.current = Math.max(
-                        accumulatedBassRef.current + (currentBassInfluence * 0.2),
+                        accumulatedBassRef.current + (currentBassInfluence * 0.3),
                         currentBassInfluence
                     );
-                    accumulatedBassRef.current *= 0.99998;
+                    accumulatedBassRef.current *= 0.99995;
                     
                     bassInfluence = accumulatedBassRef.current;
                     
                     const normalizedVolume = audioData.map(db => {
                         const clampedDb = Math.max(-80, Math.min(0, db));
-                        return Math.log10(1 + Math.pow(10, clampedDb / 20)) * 2;
+                        return Math.log10(1 + Math.pow(10, clampedDb / 15)) * 3;
                     });
                     
                     const volumeValue = normalizedVolume.reduce((acc, val) => acc + val, 0) / normalizedVolume.length;
-                    volumeInfluence = Math.pow(volumeValue, 0.7) * 3000;
+                    volumeInfluence = Math.pow(volumeValue, 0.6) * 5000;
                     
-                    bassSpeedMultiplier = 1 + (currentBassInfluence / 1000);
+                    bassSpeedMultiplier = 1 + (currentBassInfluence / 800);
                 }
 
                 const waveSpeed = baseWaveSpeed * bassSpeedMultiplier;
@@ -126,8 +126,8 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                     ctx.beginPath();
                     ctx.globalCompositeOperation = 'screen';
                     ctx.lineWidth = 0.5 + (i * 0.3);
-                    ctx.shadowBlur = 10;
-                    ctx.shadowColor = `${baseColor}, ${95}%, ${8.8 * timeIntensity})`;
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = `${baseColor}, ${65}%, ${8.8 * timeIntensity})`;
                     ctx.strokeStyle = `${baseColor}, ${50}%, ${2.6 * timeIntensity})`;
                     ctx.globalAlpha = 0.8;
 
@@ -143,12 +143,12 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                             const normalizedValue = Math.pow(10, audioValue / 20);
                             
                             const baseAmplitude = volumeInfluence;
-                            const bassEffect = bassInfluence * (1.0 + i * 0.3);
-                            const amplitude = Math.min(2000, baseAmplitude + bassEffect);
+                            const bassEffect = bassInfluence * (1.2 + i * 0.4);
+                            const amplitude = Math.min(3000, baseAmplitude + bassEffect);
                             
                             const verticalOffset = (t * waveSpeed * bassSpeedMultiplier);
                             const mainWave = Math.sin((y * frequency) + verticalOffset + (i * Math.PI / 2)) * amplitude;
-                            const audioInfluence = normalizedValue * 150;
+                            const audioInfluence = normalizedValue * 250;
                             
                             const x = w / 2 + mainWave + audioInfluence;
 
