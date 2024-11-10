@@ -60,18 +60,10 @@ export const MusicPlayerProvider = ({ children }: MusicPlayerProviderProps) => {
             stopAllMusic();
         };
 
-        const handleVisibilityChange = () => {
-            if (document.hidden) {
-                stopAllMusic();
-            }
-        };
-
         window.addEventListener('beforeunload', handleBeforeUnload);
-        document.addEventListener('visibilitychange', handleVisibilityChange);
 
         return () => {
             window.removeEventListener('beforeunload', handleBeforeUnload);
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
             stopAllMusic();
         };
     }, [stopAllMusic]);
