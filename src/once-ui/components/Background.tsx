@@ -82,17 +82,17 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                     
                     const normalizedBass = bassRange.map(db => {
                         const clampedDb = Math.max(-80, Math.min(0, db));
-                        return Math.pow(10, clampedDb / 6);
+                        return Math.pow(10, clampedDb / 4);
                     });
                     
                     const bassValue = normalizedBass.reduce((acc, val) => acc + val, 0) / normalizedBass.length;
-                    const currentBassInfluence = Math.pow(bassValue, 1.8) * 20000;
+                    const currentBassInfluence = Math.pow(bassValue, 1.8) * 40000;
                     
                     accumulatedBassRef.current = Math.max(
-                        accumulatedBassRef.current + (currentBassInfluence * 0.1),
+                        accumulatedBassRef.current + (currentBassInfluence * 0.2),
                         currentBassInfluence
                     );
-                    accumulatedBassRef.current *= 0.99995;
+                    accumulatedBassRef.current *= 0.99998;
                     
                     bassInfluence = accumulatedBassRef.current;
                     
@@ -137,8 +137,8 @@ const Background = forwardRef<HTMLDivElement, BackgroundProps>(({
                             const normalizedValue = Math.pow(10, audioValue / 20);
                             
                             const baseAmplitude = volumeInfluence;
-                            const bassEffect = bassInfluence * (0.5 + i * 0.3);
-                            const amplitude = Math.min(1000, baseAmplitude + bassEffect);
+                            const bassEffect = bassInfluence * (1.0 + i * 0.3);
+                            const amplitude = Math.min(2000, baseAmplitude + bassEffect);
                             
                             const verticalOffset = (t * waveSpeed * bassSpeedMultiplier);
                             const mainWave = Math.sin((y * frequency) + verticalOffset + (i * Math.PI / 2)) * amplitude;
