@@ -300,7 +300,9 @@ export default function Home() {
                             textSize="l"
                             onBackground="neutral-strong"
                             >
-                            <RevealFx translateY="16" delay={0.6} speed="slow">I'm exploring innovative methods to capture the detailed essence of both the real world and cinema. Utilizing little-known and complex tools, I create unprecedented visuals in virtual production with real-time engines (UE5), ensuring seamless compatibility with live streaming.</RevealFx>
+                            <RevealFx translateY="16" delay={0.6} speed="slow">
+                                I showcase a blend of real-world elements and imaginative artistic creations, aiming to present environments and styles that are rarely seen. By leveraging specialized tools and real-time engines like UE5, I craft virtual production setups that seamlessly integrate with live streaming, focusing on organic transitions between the tangible and the visionary.
+                            </RevealFx>
                     </Flex>
                     
                     {/* Exemple de call de ma gallerie de projet virtual production */}
@@ -387,7 +389,9 @@ export default function Home() {
                             textSize="l"
                             onBackground="neutral-strong"
                             >
-                            <RevealFx translateY="16" delay={0.6} speed="slow">I craft deeply immersive narratives with a unique world-building approach and memorable, unconventional characters. My writing shifts between humor and complex dramatic stories with morally ambiguous themes. I believe the best comedies are those that reflect on impactful situations, and the most compelling villains are those that challenge our allegiance to the hero.</RevealFx>
+                            <RevealFx translateY="16" delay={0.6} speed="slow">
+                                I craft narratives that weave together intricate world-building with nuanced character development. My writing oscillates between subtle humor and complex dramatic themes, exploring moral ambiguity through carefully structured storylines. I believe in creating antagonists whose motivations challenge conventional storytelling expectations.
+                            </RevealFx>
                     </Flex>
 
                     {/* Exemple de call de projet d'écriture */}
@@ -418,7 +422,9 @@ export default function Home() {
                             textSize="l"
                             onBackground="neutral-strong"
                             >
-                            <RevealFx translateY="16" delay={0.6} speed="slow">I develop cutting-edge methods for complex, modular procedural generation to enhance productivity while maintaining a strong attention to detail and coherence across interconnected code systems and visual feedback. My work includes granular storytelling through level design, intuitive UI/UX design, and ensuring a seamless player experience. My approach is to create complex systems behind the scenes while presenting a clean, accessible interface that gradually reveals its depth as the player masters the game.</RevealFx>
+                            <RevealFx translateY="16" delay={0.6} speed="slow">
+                                I develop modular and optimized methods, creating well-thought-out systems that save time and enhance efficiency. By incorporating procedural generation, I balance this with a keen attention to detail, ensuring that each project is both robust and refined. My focus is on designing intuitive UI/UX while maintaining complex, interconnected systems that reveal their depth over time.
+                            </RevealFx>
                     </Flex>
 
                     {/* Exemple de call d'un projet de jeu vidéo */}
