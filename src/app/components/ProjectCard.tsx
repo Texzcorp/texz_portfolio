@@ -108,6 +108,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         alt={title}
                         aspectRatio="16 / 9"
                         src={images[activeIndex]}
+                        variant="glow"
                         priority={activeIndex === 0} // Priorité pour la première image
                         style={{
                             border: '1px solid var(--neutral-alpha-weak)',

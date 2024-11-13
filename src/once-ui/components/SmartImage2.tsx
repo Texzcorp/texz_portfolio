@@ -18,7 +18,6 @@ export type SmartImageProps = ImageProps & {
     objectFit?: CSSProperties['objectFit'];
     enlarge?: boolean;
     src: string;
-    variant?: 'default' | 'glow';
 };
 
 // Ajout de l'interface pour le NetworkInformation
@@ -38,7 +37,6 @@ const SmartImage: React.FC<SmartImageProps> = ({
     objectFit = 'cover',
     enlarge = false,
     src,
-    variant = 'default',
     ...props
 }) => {
     const [isEnlarged, setIsEnlarged] = useState(false);
@@ -158,90 +156,24 @@ const SmartImage: React.FC<SmartImageProps> = ({
     };
 
     const glowEffect = {
-        boxShadow: '0 0 20px rgba(30, 30, 80, 0.9)',
+        boxShadow: '0 0 20px rgba(30, 30, 80, 0.9)', // Adjust the color and intensity as needed
     };
 
     return (
         <>
-            {variant === 'glow' ? (
-                <Flex
-                    position="relative"
-                    style={{
-                        position: 'relative',
-                        aspectRatio,
-                        WebkitMaskImage: 'linear-gradient(black 100%, transparent 100%)',
-                        maskImage: 'linear-gradient(black 100%, transparent 100%)',
-                        filter: 'blur(0px)',
-                        transform: 'scale(1.1)',
-                        overflow: 'visible',
-                        zIndex: 0,
-                    }}>
-                    <Flex
-                        ref={imageRef}
-                        fillWidth
-                        position="relative"
-                        {...(!isEnlarged && { background: 'neutral-medium' })}
-                        style={{
-                            outline: 'none',
-                            overflow: 'hidden',
-                            width: '90%',
-                            height: '90%',
-                            margin: '5rem',
-                            cursor: enlarge ? 'pointer' : 'default',
-                            borderRadius: isEnlarged ? '0' : radius ? `var(--radius-${radius})` : undefined,
-                            ...calculateTransform(),
-                            ...style,
-                            ...glowEffect,
-                        }}
-                        className={classNames(className)}
-                        onClick={handleClick}>
-                        {(isLoading || (isVideo && !isVideoLoaded) || (!isVideo && !placeholderSrc) || isBuffering) && (
-                            <>
-                                <Skeleton shape="block" />
-                                <LoadingAnimation />
-                            </>
-                        )}
-                        {!isLoading && isVideo && isInView && (
-                            <video
-                                ref={videoRef}
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
-                                preload="metadata"
-                                onLoadedData={handleVideoLoad}
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: isEnlarged ? 'contain' : objectFit,
-                                    opacity: isVideoLoaded && !isBuffering ? 1 : 0,
-                                    transition: 'opacity 0.3s ease-in-out',
-                                }}
-                            />
-                        )}
-                        {!isLoading && !isVideo && (
-                            <Image
-                                {...props}
-                                src={src}
-                                alt={alt}
-                                fill
-                                placeholder="empty"
-                                sizes="100vw"
-                                quality={50}
-                                unoptimized={false}
-                                style={{
-                                    objectFit: isEnlarged ? 'contain' : objectFit,
-                                    transform: 'translate3d(0,0,0)',
-                                    backfaceVisibility: 'hidden',
-                                    willChange: 'transform, opacity',
-                                    opacity: 1,
-                                    transition: 'opacity 0.3s ease-in-out',
-                                }}
-                            />
-                        )}
-                    </Flex>
-                </Flex>
-            ) : (
+            <Flex
+                position="relative"
+                style={{
+                    position: 'relative',
+                    aspectRatio,
+                    WebkitMaskImage: 'linear-gradient(black 100%, transparent 100%)',
+                    maskImage: 'linear-gradient(black 100%, transparent 100%)',
+                    filter: 'blur(0px)',
+                    transform: 'scale(1.1)',
+                    overflow: 'visible',
+                    zIndex: 0,
+                }}
+            >
                 <Flex
                     ref={imageRef}
                     fillWidth
@@ -250,15 +182,16 @@ const SmartImage: React.FC<SmartImageProps> = ({
                     style={{
                         outline: 'none',
                         overflow: 'hidden',
-                        height: aspectRatio ? undefined : height ? `${height}rem` : '100%',
-                        aspectRatio,
+                        width: '90%',
+                        height: '90%',
+                        margin: '5rem',
                         cursor: enlarge ? 'pointer' : 'default',
                         borderRadius: isEnlarged ? '0' : radius ? `var(--radius-${radius})` : undefined,
                         ...calculateTransform(),
                         ...style,
+                        ...glowEffect,
                     }}
-                    className={classNames(className)}
-                    onClick={handleClick}>
+                    className={classNames(className)}>
                     {(isLoading || (isVideo && !isVideoLoaded) || (!isVideo && !placeholderSrc) || isBuffering) && (
                         <>
                             <Skeleton shape="block" />
@@ -304,69 +237,94 @@ const SmartImage: React.FC<SmartImageProps> = ({
                         />
                     )}
                 </Flex>
-            )}
+            </Flex>
 
-            {isEnlarged && enlarge && (
+            <Flex
+                position="absolute"
+                style={{
+                    top: '0',
+                    left: '0',
+                    width: '100%',
+                    height: aspectRatio
+                        ? undefined
+                        : height
+                        ? `${height}rem`
+                        : '100%',
+                    aspectRatio,
+                    pointerEvents: 'none',
+                }}
+            >
                 <Flex
-                    justifyContent="center"
-                    alignItems="center"
-                    position="fixed"
-                    zIndex={1}
-                    onClick={handleClick}
+                    position="relative"
                     style={{
-                        top: 0,
-                        left: 0,
-                        width: '100vw',
-                        height: '100vh',
-                        background: 'var(--backdrop)',
-                        cursor: 'pointer',
-                        transition: 'opacity 0.3s ease-in-out',
-                        opacity: isEnlarged ? 1 : 0,
-                    }}>
-                    <Flex
-                        position="relative"
-                        style={{
-                            height: '100vh',
-                            transform: 'translate(-50%, -50%)',
-                        }}
-                        onClick={(e) => e.stopPropagation()}>
-                        {isVideo && videoRef.current ? (
-                            <div
+                        width: '90%',
+                        height: '90%',
+                        margin: 'auto',
+                    }}
+                >
+                    {isEnlarged && enlarge && (
+                        <Flex
+                            justifyContent="center"
+                            alignItems="center"
+                            position="fixed"
+                            zIndex={1}
+                            onClick={handleClick}
+                            style={{
+                                top: 0,
+                                left: 0,
+                                width: '100vw',
+                                height: '100vh',
+                                background: 'var(--backdrop)',
+                                cursor: 'pointer',
+                                transition: 'opacity 0.3s ease-in-out',
+                                opacity: isEnlarged ? 1 : 0,
+                            }}>
+                            <Flex
+                                position="relative"
                                 style={{
-                                    width: '90vw',
-                                    height: 'auto',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }}>
-                                <video
-                                    ref={videoRef}
-                                    style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        objectFit: 'contain',
-                                    }}
-                                    autoPlay
-                                    loop
-                                    muted
-                                    playsInline
-                                />
-                            </div>
-                        ) : (
-                            <Image
-                                {...props}
-                                src={src}
-                                alt={alt}
-                                fill
-                                sizes="100vw"
-                                quality={100}
-                                unoptimized={true}
-                                style={{ objectFit: 'contain' }}
-                            />
-                        )}
-                    </Flex>
+                                    height: '100vh',
+                                    transform: 'translate(-50%, -50%)',
+                                }}
+                                onClick={(e) => e.stopPropagation()}>
+                                {isVideo && videoRef.current ? (
+                                    <div
+                                        style={{
+                                            width: '90vw',
+                                            height: 'auto',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}>
+                                        <video
+                                            ref={videoRef}
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'contain',
+                                            }}
+                                            autoPlay
+                                            loop
+                                            muted
+                                            playsInline
+                                        />
+                                    </div>
+                                ) : (
+                                    <Image
+                                        {...props}
+                                        src={src}
+                                        alt={alt}
+                                        fill
+                                        sizes="100vw"
+                                        quality={100}
+                                        unoptimized={true}
+                                        style={{ objectFit: 'contain' }}
+                                    />
+                                )}
+                            </Flex>
+                        </Flex>
+                    )}
                 </Flex>
-            )}
+            </Flex>
         </>
     );
 };
