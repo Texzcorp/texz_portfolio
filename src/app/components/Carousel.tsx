@@ -1,7 +1,7 @@
 "use client";
 
 import { Flex, RevealFx, SmartImage } from "@/once-ui/components";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 interface CarouselProps {
     images: string[];
@@ -10,42 +10,83 @@ interface CarouselProps {
 
 export const Carousel: React.FC<CarouselProps> = ({ images = [], title }) => {
     const [activeIndex, setActiveIndex] = useState(0);
-    const [isTransitioning, setIsTransitioning] = useState(false);
+    const [isTransitioning, setIsTransitioning] = useState(true);
+    const [preloadedImages, setPreloadedImages] = useState<HTMLImageElement[]>([]);
+    const nextImageRef = useRef<HTMLImageElement | null>(null);
+    const transitionTimeoutRef = useRef<NodeJS.Timeout>();
 
+    // Préchargement initial des images
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsTransitioning(true);
-        }, 1000);
+        const preloadImages = async () => {
+            const loadedImages = await Promise.all(
+                images.map((src) => {
+                    return new Promise<HTMLImageElement>((resolve) => {
+                        const img = new Image();
+                        img.src = src;
+                        img.onload = () => resolve(img);
+                    });
+                })
+            );
+            setPreloadedImages(loadedImages);
+        };
 
-        return () => clearTimeout(timer);
-    }, []);
+        preloadImages();
+    }, [images]);
+
+    const preloadNextImage = (nextIndex: number) => {
+        if (nextIndex >= 0 && nextIndex < images.length) {
+            nextImageRef.current = new Image();
+            nextImageRef.current.src = images[nextIndex];
+        }
+    };
 
     const handleImageClick = () => {
         if (images.length > 1) {
-            setIsTransitioning(false);
             const nextIndex = (activeIndex + 1) % images.length;
             handleControlClick(nextIndex);
         }
     };
 
-    const handleControlClick = (index: number) => {
-        if (index !== activeIndex) {
+    const handleControlClick = (nextIndex: number) => {
+        if (nextIndex !== activeIndex && !transitionTimeoutRef.current) {
+            // Précharger l'image suivante pendant la transition
+            preloadNextImage(nextIndex);
+            
             setIsTransitioning(false);
-            setTimeout(() => {
-                setActiveIndex(index);
-                setIsTransitioning(true);
-            }, 630);
+            
+            transitionTimeoutRef.current = setTimeout(() => {
+                setActiveIndex(nextIndex);
+                
+                setTimeout(() => {
+                    setIsTransitioning(true);
+                    transitionTimeoutRef.current = undefined;
+                }, 200); // Pause entre fade out et fade in
+                
+            }, 630); // Durée du fade out
         }
     };
+
+    // Nettoyage des timeouts
+    useEffect(() => {
+        return () => {
+            if (transitionTimeoutRef.current) {
+                clearTimeout(transitionTimeoutRef.current);
+            }
+        };
+    }, []);
 
     return (
         <Flex fillWidth gap="m" direction="column">
             <Flex onClick={handleImageClick}>
                 <RevealFx
-                    style={{ width: '100%' }}
+                    style={{
+                        width: '100%',
+                        willChange: 'transform, opacity'
+                    }}
                     delay={0.4}
                     trigger={isTransitioning}
                     speed="fast"
+                    skipInitialAnimation={true}
                 >
                     <SmartImage
                         tabIndex={0}
@@ -53,8 +94,11 @@ export const Carousel: React.FC<CarouselProps> = ({ images = [], title }) => {
                         alt={title}
                         aspectRatio="16 / 9"
                         src={images[activeIndex]}
+                        priority={activeIndex === 0}
                         style={{
                             border: '1px solid var(--neutral-alpha-weak)',
+                            transform: `translate3d(0,0,0)`,
+                            backfaceVisibility: 'hidden',
                             ...(images.length > 1 && {
                                 cursor: 'pointer',
                             }),
