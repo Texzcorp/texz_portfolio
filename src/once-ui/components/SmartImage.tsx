@@ -49,6 +49,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
     const [placeholderSrc, setPlaceholderSrc] = useState<string>('');
     const [isBuffering, setIsBuffering] = useState(false);
     const [hasError, setHasError] = useState(false);
+    const [isImageLoaded, setIsImageLoaded] = useState(false);
 
     const isVideo = src.endsWith('.mp4');
 
@@ -161,6 +162,18 @@ const SmartImage: React.FC<SmartImageProps> = ({
         boxShadow: '0 0 20px rgba(30, 30, 80, 0.9)',
     };
 
+    const handleImageLoad = () => {
+        setIsImageLoaded(true);
+    };
+
+    // Réinitialiser l'état de chargement quand la source change
+    useEffect(() => {
+        setIsImageLoaded(false);
+        if (isVideo) {
+            setIsVideoLoaded(false);
+        }
+    }, [src, isVideo]);
+
     return (
         <>
             {variant === 'glow' ? (
@@ -195,7 +208,10 @@ const SmartImage: React.FC<SmartImageProps> = ({
                         }}
                         className={classNames(className)}
                         onClick={handleClick}>
-                        {(isLoading || (isVideo && !isVideoLoaded) || (!isVideo && !placeholderSrc) || isBuffering) && (
+                        {(isLoading || 
+                          (isVideo && !isVideoLoaded) || 
+                          (!isVideo && !isImageLoaded) || 
+                          isBuffering) && (
                             <>
                                 <Skeleton shape="block" />
                                 <LoadingAnimation />
@@ -229,12 +245,13 @@ const SmartImage: React.FC<SmartImageProps> = ({
                                 sizes="100vw"
                                 quality={50}
                                 unoptimized={false}
+                                onLoad={handleImageLoad}
                                 style={{
                                     objectFit: isEnlarged ? 'contain' : objectFit,
                                     transform: 'translate3d(0,0,0)',
                                     backfaceVisibility: 'hidden',
                                     willChange: 'transform, opacity',
-                                    opacity: 1,
+                                    opacity: isImageLoaded ? 1 : 0,
                                     transition: 'opacity 0.3s ease-in-out',
                                 }}
                             />
@@ -259,7 +276,10 @@ const SmartImage: React.FC<SmartImageProps> = ({
                     }}
                     className={classNames(className)}
                     onClick={handleClick}>
-                    {(isLoading || (isVideo && !isVideoLoaded) || (!isVideo && !placeholderSrc) || isBuffering) && (
+                    {(isLoading || 
+                      (isVideo && !isVideoLoaded) || 
+                      (!isVideo && !isImageLoaded) || 
+                      isBuffering) && (
                         <>
                             <Skeleton shape="block" />
                             <LoadingAnimation />
@@ -293,12 +313,13 @@ const SmartImage: React.FC<SmartImageProps> = ({
                             sizes="100vw"
                             quality={50}
                             unoptimized={false}
+                            onLoad={handleImageLoad}
                             style={{
                                 objectFit: isEnlarged ? 'contain' : objectFit,
                                 transform: 'translate3d(0,0,0)',
                                 backfaceVisibility: 'hidden',
                                 willChange: 'transform, opacity',
-                                opacity: 1,
+                                opacity: isImageLoaded ? 1 : 0,
                                 transition: 'opacity 0.3s ease-in-out',
                             }}
                         />
