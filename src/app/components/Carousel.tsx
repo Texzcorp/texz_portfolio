@@ -11,27 +11,8 @@ interface CarouselProps {
 export const Carousel: React.FC<CarouselProps> = ({ images = [], title }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(true);
-    const [preloadedImages, setPreloadedImages] = useState<HTMLImageElement[]>([]);
     const nextImageRef = useRef<HTMLImageElement | null>(null);
     const transitionTimeoutRef = useRef<NodeJS.Timeout>();
-
-    // Préchargement initial des images
-    useEffect(() => {
-        const preloadImages = async () => {
-            const loadedImages = await Promise.all(
-                images.map((src) => {
-                    return new Promise<HTMLImageElement>((resolve) => {
-                        const img = new Image();
-                        img.src = src;
-                        img.onload = () => resolve(img);
-                    });
-                })
-            );
-            setPreloadedImages(loadedImages);
-        };
-
-        preloadImages();
-    }, [images]);
 
     const preloadNextImage = (nextIndex: number) => {
         if (nextIndex >= 0 && nextIndex < images.length) {
