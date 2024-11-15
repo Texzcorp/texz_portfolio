@@ -51,7 +51,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
     const [hasError, setHasError] = useState(false);
     const [isImageLoaded, setIsImageLoaded] = useState(false);
 
-    const isVideo = src.endsWith('.mp4');
+    const isVideo = typeof src === 'string' && src.endsWith('.mp4');
 
     // Intersection Observer pour le lazy loading
     useEffect(() => {
