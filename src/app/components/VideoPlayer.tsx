@@ -57,7 +57,7 @@ const VideoPlayer = ({ src, isPlaying, audioTime, className }: VideoPlayerProps)
                 // Petit délai avant de démarrer la lecture
                 setTimeout(() => {
                     video.play().catch(() => {});
-                }, 50);
+                }, 100);
             }
         };
 
@@ -69,6 +69,8 @@ const VideoPlayer = ({ src, isPlaying, audioTime, className }: VideoPlayerProps)
             if (document.hidden) {
                 video.pause();
             } else if (isPlaying) {
+                // Réinitialiser la vidéo pour éviter les saccades
+                video.load();
                 video.play().catch(() => {});
             }
         };
