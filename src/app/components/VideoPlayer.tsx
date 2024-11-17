@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import styles from './VideoPlayer.module.scss';
+import { LoadingAnimation } from '@/once-ui/components/LoadingAnimation';
 
 interface VideoPlayerProps {
     src: string;
@@ -13,6 +14,7 @@ interface VideoPlayerProps {
 const VideoPlayer = ({ src, isPlaying, audioTime, className }: VideoPlayerProps) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [isSyncing, setIsSyncing] = useState(false);
     const visibilityRef = useRef(true);
     const previousSrcRef = useRef<string>(src);
 
@@ -103,12 +105,22 @@ const VideoPlayer = ({ src, isPlaying, audioTime, className }: VideoPlayerProps)
         // Synchroniser seulement si nécessaire
         const drift = Math.abs(video.currentTime - audioTime);
         if (drift > 0.1) {
+            setIsSyncing(true);
             video.currentTime = audioTime;
+            video.play().catch(() => {}).finally(() => {
+                setIsSyncing(false);
+            });
         }
     }, [audioTime, isLoaded]);
 
     return (
         <div className={styles.videoWrapper}>
+            {(!isLoaded || isSyncing) && (
+                <>
+                    <div className={styles.overlay} />
+                    <LoadingAnimation />
+                </>
+            )}
             <video
                 ref={videoRef}
                 src={src}
