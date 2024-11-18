@@ -10,6 +10,7 @@ interface CarouselProps {
     fadeIntensity?: number;
     fadeAngle?: number;
     fadeSubtlety?: number;
+    blurIntensity?: number;
 }
 
 export const Carousel: React.FC<CarouselProps> = ({ 
@@ -18,7 +19,8 @@ export const Carousel: React.FC<CarouselProps> = ({
     fadeThickness = 1300,
     fadeIntensity = 1,
     fadeAngle = 65,
-    fadeSubtlety = 0.5
+    fadeSubtlety = 0.45,
+    blurIntensity = 7,
 }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(true);
@@ -68,8 +70,29 @@ export const Carousel: React.FC<CarouselProps> = ({
     }, []);
 
     return (
-        <Flex fillWidth gap="m" direction="column">
-            <Flex onClick={handleImageClick}>
+        <Flex 
+            fillWidth 
+            gap="m" 
+            direction="column" 
+            style={{
+                position: 'relative',
+            }}
+        >
+            <Flex onClick={handleImageClick} style={{ position: 'relative' }}>
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: -2,
+                        bottom: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backdropFilter: `blur(${blurIntensity}px)`,
+                        WebkitBackdropFilter: `blur(${blurIntensity}px)`,
+                        zIndex: -1,
+                        borderRadius: 'var(--radius-l)',
+                    }}
+                />
                 <div
                     style={{
                         width: '100%',
