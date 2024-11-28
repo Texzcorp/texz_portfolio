@@ -6,21 +6,17 @@ import { useEffect, useState, useRef } from "react";
 interface CarouselProps {
     images: string[];
     title: string;
-    fadeThickness?: number;
-    fadeIntensity?: number;
+    fadeSize?: number;
+    fadeStrength?: number;
     fadeAngle?: number;
-    fadeSubtlety?: number;
-    blurIntensity?: number;
 }
 
 export const Carousel: React.FC<CarouselProps> = ({ 
     images = [], 
     title,
-    fadeThickness = 1300,
-    fadeIntensity = 1,
+    fadeSize = 200,
+    fadeStrength = 0.4,
     fadeAngle = 65,
-    fadeSubtlety = 0.45,
-    blurIntensity = 7,
 }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(true);
@@ -82,39 +78,24 @@ export const Carousel: React.FC<CarouselProps> = ({
                 <div
                     style={{
                         position: 'absolute',
-                        top: -2,
-                        bottom: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        backdropFilter: `blur(${blurIntensity}px)`,
-                        WebkitBackdropFilter: `blur(${blurIntensity}px)`,
-                        zIndex: -1,
-                        borderRadius: 'var(--radius-l)',
+                        inset: 0,
+                        background: `
+                            linear-gradient(
+                                ${fadeAngle}deg,
+                                rgba(0, 0, 0, ${fadeStrength}) 0%,
+                                transparent ${fadeSize}px,
+                                transparent calc(100% - ${fadeSize}px),
+                                rgba(0, 0, 0, ${fadeStrength}) 100%
+                            )
+                        `,
+                        mixBlendMode: 'multiply',
+                        pointerEvents: 'none',
+                        zIndex: 1,
                     }}
                 />
                 <div
                     style={{
                         width: '100%',
-                        maskImage: `
-                            linear-gradient(
-                                ${fadeAngle}deg,
-                                rgba(0, 0, 0, ${fadeSubtlety}) 0%,
-                                black ${fadeThickness * 0.2}px,
-                                black calc(100% - ${fadeThickness * 0.8}px),
-                                rgba(0, 0, 0, ${fadeSubtlety}) 100%
-                            )
-                        `,
-                        WebkitMaskImage: `
-                            linear-gradient(
-                                ${fadeAngle}deg,
-                                rgba(0, 0, 0, ${fadeSubtlety}) 0%,
-                                black ${fadeThickness * 0.2}px,
-                                black calc(100% - ${fadeThickness * 0.8}px),
-                                rgba(0, 0, 0, ${fadeSubtlety}) 100%
-                            )
-                        `,
-                        opacity: fadeIntensity
                     }}
                 >
                     <RevealFx
