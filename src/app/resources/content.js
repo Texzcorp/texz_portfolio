@@ -281,6 +281,79 @@ const gallery = [
         ]
     },
     {
+        preset: 'logo',
+        title: 'My Photo Gallery',
+        description: `A photo collection by ${person.name}`,
+        images: [
+            { 
+                src: '/images/gallery/photos/DSC00964.JPG', 
+                alt: 'Photo',
+                orientation: 'square',
+                span: 2
+            },
+            { 
+                src: '/images/gallery/photos/DSC01183.JPG', 
+                alt: 'Photo',
+                orientation: 'square',
+                span: 1
+            },
+            { 
+                src: '/images/gallery/photos/DSC01446.JPG', 
+                alt: 'Photo',
+                orientation: 'square',
+                span: 1
+            },
+            { 
+                src: '/images/gallery/photos/DSC01512.JPG', 
+                alt: 'Photo',
+                orientation: 'square',
+                span: 1
+            },
+            { 
+                src: '/images/gallery/photos/DSC01785.JPG', 
+                alt: 'Photo',
+                orientation: 'square',
+                span: 1
+            },
+            { 
+                src: '/images/gallery/photos/DSC01946.JPG', 
+                alt: 'Photo',
+                orientation: 'Horizontal',
+                span: 1
+            },
+            { 
+                src: '/images/gallery/photos/DSC01962.JPG', 
+                alt: 'Photo',
+                orientation: 'Horizontal',
+                span: 1
+            },
+            { 
+                src: '/images/gallery/photos/DSC03527.JPG', 
+                alt: 'Photo',
+                orientation: 'square',
+                span: 2
+            },
+            { 
+                src: '/images/gallery/photos/DSC03390.JPG', 
+                alt: 'Photo',
+                orientation: 'square',
+                span: 2
+            },
+            { 
+                src: '/images/gallery/photos/DSC01846.JPG', 
+                alt: 'Photo',
+                orientation: 'Horizontal',
+                span: 1
+            },
+            { 
+                src: '/images/gallery/photos/DSC03629.JPG', 
+                alt: 'Photo',
+                orientation: 'Horizontal',
+                span: 1
+            }
+        ]
+    },
+    {
         preset: 'dessins',
         title: 'My drawings gallery',
         description: `Some drawings I made`,
@@ -361,98 +434,8 @@ const gallery = [
             },
 
         ]
-    },
-    {
-        preset: 'logo',
-        title: 'My Logo Gallery',
-        description: `A photo collection by ${person.name}`,
-        images: [
-            { 
-                src: '/images/gallery/logo/Texz (1).jpg', 
-                alt: 'image',
-                orientation: 'square',
-                span: 2
-            },
-            { 
-                src: '/images/gallery/logo/Texz (2).jpg', 
-                alt: 'image',
-                orientation: 'square'
-            },
-            { 
-                src: '/images/gallery/logo/Texz (3).jpg', 
-                alt: 'image',
-                orientation: 'square'
-            },
-            { 
-                src: '/images/gallery/logo/Texz (4).jpg', 
-                alt: 'image',
-                orientation: 'square'
-            },
-            { 
-                src: '/images/gallery/logo/Barba (1).jpg', 
-                alt: 'image',
-                orientation: 'square'
-            },
-            { 
-                src: '/images/gallery/logo/Din.jpg', 
-                alt: 'image',
-                orientation: 'square'
-            },
-            { 
-                src: '/images/gallery/logo/RCD (2).jpg', 
-                alt: 'image',
-                orientation: 'square'
-            },
-            { 
-                src: '/images/gallery/logo/Barba (2).jpg', 
-                alt: 'image',
-                orientation: 'square'
-            },
-            { 
-                src: '/images/gallery/logo/Barba (3).jpg', 
-                alt: 'image',
-                orientation: 'square'
-            },
-            { 
-                src: '/images/gallery/logo/RCD (1).jpg', 
-                alt: 'image',
-                orientation: 'square'
-            },
-            { 
-                src: '/images/gallery/logo/RCD (3).jpg', 
-                alt: 'image',
-                orientation: 'square'
-            },
-            { 
-                src: '/images/gallery/logo/Recul.jpg', 
-                alt: 'image',
-                orientation: 'square'
-            },
-            
-            
-            { 
-                src: '/images/gallery/logo/KAIROS.jpg', 
-                alt: 'image',
-                orientation: 'square'
-            },
-            { 
-                src: '/images/gallery/logo/Shaker.jpg', 
-                alt: 'image',
-                orientation: 'square'
-            },
-            { 
-                src: '/images/gallery/logo/infody (2).jpg', 
-                alt: 'image',
-                orientation: 'square'
-            },
-            { 
-                src: '/images/gallery/logo/infody (1).jpg', 
-                alt: 'image',
-                orientation: 'horizontal',
-            },
-            
-        ]
     }
+    
 ];
 
 
