@@ -4,6 +4,8 @@ This repository is a **personal fork** of **Magic Portfolio**—the Next.js tem
 
 My objective is to reuse the template while adding functionality that supports richer case studies, audio playback, and higher perceived performance.
 
+The project is not perfectly clean, there are little bad things lying around, tell me if anything bothers you.
+
 ---
 
 ## Quick start
