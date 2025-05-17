@@ -1,79 +1,50 @@
-# **Build your portfolio with Once UI's Magic Portfolio**
+# Custom Portfolio on Once UI
 
-Magic Portfolio was built with [Once UI](https://once-ui.com) for [Next.js](https://nextjs.org). It requires Node.js v18.17+.
+This repository is a **personal fork** of **Magic Portfolio**—the Next.js template maintained by Lorant One and Zsofia Komaromi and published under the **CC BY‑NC 4.0** license. The upstream project delivers a clean, responsive portfolio built with [Once UI](https://once-ui.com) (v0.3.1).
 
-**1. Clone the repository**
-```
-git clone https://github.com/once-ui-system/magic-portfolio.git
-```
+My objective is to reuse the template while adding functionality that supports richer case studies, audio playback, and higher perceived performance.
 
-**2. Install dependencies**
-```
+---
+
+## Quick start
+
+```bash
+git clone https://github.com/Texzcorp/texz_portfolio.git
+cd texz_portfolio
 npm install
-```
-
-**3. Run dev server**
-```
 npm run dev
 ```
 
-**4. Edit config**
-```
-src/app/resources/config
-```
+Edit configuration under `src/app/resources/config` and content under `src/app/resources/content`.
 
-**5. Edit content**
-```
-src/app/resources/content
-```
+---
 
-**6. Create blog posts / projects**
-```
-Add a new .mdx file to src/app/blog/posts or src/app/work/projects
-```
+## Additional features in this fork
 
-# **Features**
+| # | Enhancement                                 | Description                                                                                                                                                                                                                                                                |
+| - | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | **Interactive audio‑responsive background** | A sinusoidal backdrop that reacts to pointer movement, scrolling *and* music amplitude, adding subtle motion and depth to every page.                                                                                                                                                 |
+| 2 | **3D bird animation via Vanta.js**          | When a track is playing, Vanta's **BIRDS** shader releases interactive flocks in a lightweight WebGL space. The effect is easily swappable with any other Vanta scene [Vanta.js](https://www.vantajs.com/).                                                                                                     |
+| 3 | **Re‑worked Home (hero) section**           | The home page hero has been reorganised for a stronger first impression, re‑using elements originally located in the About page.                                                                                                                                           |
+| 4 | **Experimental organic masonry grid**       | A new, more fluid gallery layout supports arbitrary span sizes for tiles. Still experimental and not fully generalised, but simple to test and iterate. [Live demo](https://terencediazportfolio.vercel.app/gallery).                                                      |
+| 5 | **Subscribe notification (Music page)**     | A notification in the lower‑left corner invites visitors to follow the associated YouTube channel.                                                                                                                                                                    |
+| 6 | **Custom MDX carousel**                     | A bespoke carousel component callable from `.mdx`, enabling richer project walkthroughs (e.g. the [Example of one of my case studies](https://terencediazportfolio.vercel.app/programmation/Artemis)). Newer Once UI versions now ship an official carousel with additional capabilities. |
+| 7 | **Loading spinner for media**               | Displays a minimal loading indicator while videos or carousel assets buffer, improving perceived responsiveness.                                                                                                                                                           |
+| 8 | **Synced video clips for music tracks**     | A tuned video player keeps short clips synchronised with the audio track, despite the limited bandwidth of Vercel's free tier.                                                                                                                                             |
 
-## **Once UI**
-- All tokens, components & features of [Once UI](https://once-ui.com) (v0.3.1)
+## License compliance
 
-## **SEO**
-- Automatic open-graph and X image generation with next/og
-- Automatic schema and metadata generation based on the content file
+* **Upstream template**: Magic Portfolio by Lorant One & Zsofia Komaromi — CC BY‑NC 4.0. Commercial use is prohibited without express permission from the original authors.
+* **This fork**: All new source files and assets are released under **CC BY‑NC 4.0** and inherit the same non‑commercial limitation.
 
-## **Design**
-- Responsive layout optimized for all screen sizes
-- Timeless design without heavy animations and motion
-- Endless customization options through [data attributes](https://once-ui.com/docs/theming)
+See [`LICENSE.txt`](./LICENSE.txt) for full terms and attribution requirements.
 
-TIP:
-You try pre-built designs by changing the imports for the config and content in src/app/resources/index.ts
+---
 
-## **Content**
-- Render sections conditionally based on the content file
-- Enable or disable pages for blog, work, gallery and about / CV
-- Generate and display social links automatically
-- Set up password protection for URLs
+## Community & support
 
-# **Authors**
+For questions about Once UI or the original template, join the [Once UI Discord](https://discord.com/invite/5EyAQ4eNdS). Issues specific to this fork can be raised in this repository.
 
-Connect with us on X or LinkedIn.
+---
 
-Lorant Toth: [X](https://x.com/lorant_one), [LinkedIn](https://www.linkedin.com/in/tothlorant/)  
-Zsofia Komaromi: [X](https://x.com/zsofiakomaromi), [LinkedIn](https://www.linkedin.com/in/zsofiakomaromi/)
-
-# **Get involved**
-
-- Join the [Once UI Discord server](https://discord.com/invite/5EyAQ4eNdS) and share your portfolio with designers and developers!
-- Report a [bug](https://github.com/once-ui-system/magic-portfolio/issues/new?labels=bug&template=bug_report.md).
-
-# **License**
-
-Distributed under the CC BY-NC 4.0 License.
-- Commercial usage is not allowed.
-- Attribution is required.
-
-See `LICENSE.txt` for more information.
-
-# **Deploy with Vercel**
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fonce-ui-system%2Fmagic-portfolio&project-name=portfolio&repository-name=portfolio&redirect-url=https%3A%2F%2Fgithub.com%2Fonce-ui-system%2Fmagic-portfolio&demo-title=Magic%20Portfolio&demo-description=Showcase%20your%20designers%20or%20developer%20portfolio&demo-url=https%3A%2F%2Fdemo.magic-portfolio.com&demo-image=https%3A%2F%2Fonce-ui.com%2Fimages%2Ftemplates%2Fmagic-portfolio%2Fcover.jpg)
+*Last updated: 17 May 2025*
