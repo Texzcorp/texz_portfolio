@@ -2,8 +2,6 @@
 
 This repository is a **personal fork** of **Magic Portfolio**—the Next.js template maintained by Lorant One and Zsofia Komaromi and published under the **CC BY‑NC 4.0** license. The upstream project delivers a clean, responsive portfolio built with [Once UI](https://once-ui.com) (v0.3.1).
 
-My objective is to reuse the template while adding functionality that supports richer case studies, audio playback, and higher perceived performance.
-
 The project is not perfectly clean, there are little bad things lying around, tell me if anything bothers you.
 
 ---
