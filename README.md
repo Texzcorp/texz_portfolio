@@ -1,4 +1,4 @@
-# Custom Portfolio on Once UI
+# Texz's Custom Portfolio on Once UI
 
 This repository is a **personal fork** of **Magic Portfolio**—the Next.js template maintained by Lorant One and Zsofia Komaromi and published under the **CC BY‑NC 4.0** license. The upstream project delivers a clean, responsive portfolio built with [Once UI](https://once-ui.com) (v0.3.1).
 
