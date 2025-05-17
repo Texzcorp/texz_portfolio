@@ -30,7 +30,13 @@ Edit configuration under `src/app/resources/config` and content under `src/app/r
 | 5 | **Subscribe notification (Music page)**     | A notification in the lower‑left corner invites visitors to follow the associated YouTube channel.                                                                                                                                                                    |
 | 6 | **Custom MDX carousel**                     | A bespoke carousel component callable from `.mdx`, enabling richer project walkthroughs (e.g. the [Example of one of my case studies](https://terencediazportfolio.vercel.app/programmation/Artemis)). Newer Once UI versions now ship an official carousel with additional capabilities so maybe that you should consider importing their carousel. |
 | 7 | **Loading spinner for media**               | Displays a minimal loading indicator while videos or carousel assets buffer, improving perceived responsiveness.                                                                                                                                                           |
-| 8 | **Synced video clips for music tracks**     | A tuned video player keeps short clips synchronised with the audio track, despite the limited bandwidth of Vercel's free tier.                                                                                                                                             |
+| 8 | **Synced video clips for music tracks**     | A tuned video player keeps short clips synchronised with the audio track, despite the limited bandwidth of Vercel's free tier. 
+For this to work properly, videos need to be optimized to reduce their size and ease of playback. Here are some examples of commands I've used to achieve this: 
+For a normal video with noise :
+ffmpeg -i input.mp4   -vf "fps=25,scale=350:350:force_original_aspect_ratio=increase,crop=350:350"   -c:v libx264   -crf 28   -preset veryslow   -tune fastdecode   -profile:v baseline   -level 3.0   -movflags +faststart   -pix_fmt yuv420p   -an   -bufsize 1000k   -maxrate 1500k   output.mp4
+For videos with dark tones :                                                                                                                                            |
+ffmpeg -i input.mp4 -vf "fps=25,scale=350:350:force_original_aspect_ratio=increase,crop=350:350,format=yuv420p" -c:v libx264 -crf 22 -preset veryslow -x264-params "aq-mode=2:aq-strength=1.2" -profile:v baseline -level 3.0 -movflags +faststart -pix_fmt yuv420p -an -bufsize 2000k -maxrate 2000k output.mp4
+
 
 ## License compliance
 
