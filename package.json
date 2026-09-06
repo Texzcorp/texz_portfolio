@@ -17,7 +17,7 @@
 		"cookie": "^0.6.0",
 		"gray-matter": "^4.0.3",
 		"next": "^14.2.35",
-		"next-mdx-remote": "^5.0.0",
+		"next-mdx-remote": "^6.0.0",
 		"postcss": "^8.4.39",
 		"postcss-preset-env": "^9.5.15",
 		"react": "^18.3.1",
