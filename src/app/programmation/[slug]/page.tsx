@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation'
 import { CustomMDX } from '@/app/components/mdx'
 import { formatDate, getPosts } from '@/app/utils'
-import { AvatarGroup, Button, Flex, Heading, SmartImage, Text } from '@/once-ui/components'
+import { AvatarGroup, Button, Flex, Heading, Text } from '@/once-ui/components'
+import { Carousel } from '@/app/components/Carousel'
 import { baseURL, person } from '@/app/resources';
 
 interface WorkParams {
@@ -117,11 +118,9 @@ export default function Project({ params }: WorkParams) {
 				</Heading>
 			</Flex>
 			{post.metadata.images.length > 0 && (
-				<SmartImage
-					aspectRatio="16 / 9"
-					radius="m"
-					alt="image"
-					src={post.metadata.images[0]}/>
+				<Carousel
+					title={post.metadata.title}
+					images={post.metadata.images}/>
 			)}
 			<Flex style={{margin: 'auto'}}
 				as="article"

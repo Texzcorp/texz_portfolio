@@ -13,7 +13,7 @@ interface CarouselProps {
 
 export const Carousel: React.FC<CarouselProps> = ({ 
     images = [], 
-    title,
+    title = "Project",
     fadeSize = 200,
     fadeStrength = 0.4,
     fadeAngle = 65,
@@ -47,7 +47,7 @@ export const Carousel: React.FC<CarouselProps> = ({
             transitionTimeoutRef.current = setTimeout(() => {
                 setActiveIndex(nextIndex);
                 
-                setTimeout(() => {
+                transitionTimeoutRef.current = setTimeout(() => {
                     setIsTransitioning(true);
                     transitionTimeoutRef.current = undefined;
                 }, 200); // Pause entre fade out et fade in
@@ -67,6 +67,8 @@ export const Carousel: React.FC<CarouselProps> = ({
 
     return (
         <Flex 
+            role="group"
+            aria-label={`${title} image gallery`}
             fillWidth 
             gap="m" 
             direction="column" 
@@ -74,7 +76,22 @@ export const Carousel: React.FC<CarouselProps> = ({
                 position: 'relative',
             }}
         >
-            <Flex onClick={handleImageClick} style={{ position: 'relative' }}>
+            <Flex
+                onClick={handleImageClick}
+                role={images.length > 1 ? 'button' : undefined}
+                tabIndex={images.length > 1 ? 0 : undefined}
+                aria-label={images.length > 1 ? `Next image of ${title}` : undefined}
+                onKeyDown={(event) => {
+                    if (images.length < 2) return;
+                    if (event.key === 'Enter' || event.key === ' ' || event.key === 'ArrowRight') {
+                        event.preventDefault();
+                        handleImageClick();
+                    } else if (event.key === 'ArrowLeft') {
+                        event.preventDefault();
+                        handleControlClick((activeIndex - 1 + images.length) % images.length);
+                    }
+                }}
+                style={{ position: 'relative' }}>
                 <div
                     style={{
                         position: 'absolute',
@@ -109,7 +126,6 @@ export const Carousel: React.FC<CarouselProps> = ({
                         skipInitialAnimation={true}
                     >
                         <SmartImage
-                            tabIndex={0}
                             radius="l"
                             alt={title}
                             aspectRatio="16 / 9"
@@ -130,19 +146,28 @@ export const Carousel: React.FC<CarouselProps> = ({
             {images.length > 1 && (
                 <Flex gap="4" paddingX="s" fillWidth maxWidth={32} justifyContent="center">
                     {images.map((_, index) => (
-                        <Flex
+                        <button
+                            type="button"
                             key={index}
+                            aria-label={`Show image ${index + 1} of ${images.length} for ${title}`}
+                            aria-pressed={activeIndex === index}
                             onClick={() => handleControlClick(index)}
                             style={{
-                                background: activeIndex === index
-                                    ? 'var(--neutral-on-background-strong)'
-                                    : 'var(--neutral-alpha-medium)',
+                                width: '100%',
+                                padding: '8px 0',
+                                border: 'none',
+                                background: 'transparent',
                                 cursor: 'pointer',
-                                transition: 'background 0.3s ease',
-                            }}
-                            fillWidth
-                            height="2"
-                        ></Flex>
+                            }}>
+                            <Flex
+                                fillWidth height="2"
+                                style={{
+                                    background: activeIndex === index
+                                        ? 'var(--neutral-on-background-strong)'
+                                        : 'var(--neutral-alpha-medium)',
+                                    transition: 'background 0.3s ease',
+                                }}/>
+                        </button>
                     ))}
                 </Flex>
             )}
