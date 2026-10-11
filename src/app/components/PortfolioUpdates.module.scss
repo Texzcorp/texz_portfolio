@@ -1,0 +1,105 @@
+.section {
+    width: 100%;
+    min-width: 0;
+    container-type: inline-size;
+    margin-bottom: 2rem;
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); line-height: 1.15; }
+    h2 { font-size: 1.5rem; line-height: 1.3; }
+    h3 { font-size: 1.05rem; line-height: 1.35; }
+    p { line-height: 1.65; }
+}
+
+.eyebrow {
+    color: var(--brand-on-background-strong);
+    font-size: .75rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: .65rem;
+}
+
+.muted { color: var(--neutral-on-background-weak); }
+.note { font-size: .8rem; color: var(--neutral-on-background-weak); line-height: 1.5; }
+.actions { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; margin: 1rem 0; }
+
+.action {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 44px;
+    padding: .65rem 1rem;
+    border: 1px solid var(--brand-border-strong);
+    border-radius: .75rem;
+    background: var(--brand-alpha-weak);
+    color: var(--neutral-on-background-strong);
+    font: inherit;
+    font-size: .9rem;
+    cursor: pointer;
+    text-align: center;
+    line-height: 1.4;
+    &:hover { background: var(--brand-alpha-medium); }
+    &:focus-visible { outline: 2px solid var(--brand-on-background-strong); outline-offset: 4px; }
+}
+
+.stage {
+    border: 1px solid var(--neutral-border-medium);
+    border-radius: 1rem;
+    overflow: hidden;
+    margin: 1.25rem 0;
+    background: var(--neutral-alpha-weak);
+}
+
+.screen {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 9;
+    background: radial-gradient(ellipse at 30% 15%, var(--brand-alpha-medium), transparent 70%), var(--neutral-background-medium);
+    padding: 1rem;
+    text-align: center;
+    iframe { width: 100%; height: 100%; border: 0; }
+}
+
+.loadedScreen { padding: 0; }
+.stageCopy { padding: 1.2rem; h3, p { margin-bottom: .5rem; } }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+
+.track {
+    display: flex;
+    flex-direction: column;
+    gap: .45rem;
+    min-height: 95px;
+    width: 100%;
+    padding: 1rem;
+    text-align: left;
+    border-radius: .8rem;
+    border: 1px solid var(--neutral-border-medium);
+    background: var(--neutral-alpha-weak);
+    color: var(--neutral-on-background-strong);
+    font: inherit;
+    cursor: pointer;
+    strong { font-size: .95rem; line-height: 1.35; }
+    span { font-size: .8rem; color: var(--neutral-on-background-weak); }
+    &[aria-pressed="true"] { border-color: var(--brand-border-strong); background: var(--brand-alpha-weak); }
+    &:hover { border-color: var(--brand-border-strong); }
+    &:focus-visible { outline: 2px solid var(--brand-on-background-strong); outline-offset: 3px; }
+}
+
+.supporting { margin-top: 1.5rem; padding: 1.1rem; border: 1px solid var(--neutral-border-medium); border-radius: .8rem; }
+.details { margin: 1.5rem 0; summary { min-height: 44px; padding: .7rem 0; cursor: pointer; } }
+.referenceList { list-style: none; padding: 0; li { padding: .9rem 0; border-bottom: 1px solid var(--neutral-border-medium); } p { margin: .3rem 0 0; } }
+.offer { padding: 1.25rem; border: 1px solid var(--brand-border-medium); border-radius: 1rem; margin: 2rem 0; background: var(--brand-alpha-weak); }
+.project { padding: 1.2rem; border: 1px solid var(--neutral-border-medium); border-radius: .9rem; background: var(--neutral-alpha-weak); p { font-size: .9rem; } }
+.status { display: inline-block; font-size: .75rem; border: 1px solid var(--neutral-border-medium); padding: .3rem .6rem; border-radius: .5rem; margin-bottom: .85rem; }
+.projectLinks { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1rem; font-size: .9rem; a { min-height: 44px; display: inline-flex; align-items: center; } }
+
+@container (min-width: 720px) {
+    .stage { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); }
+    .stageCopy { align-self: center; }
+}
+
+@media (max-width: 560px) {
+    .grid { grid-template-columns: minmax(0, 1fr); }
+    .screen { aspect-ratio: 16 / 10; }
+    .offer, .stageCopy, .project { padding: 1rem; }
+}

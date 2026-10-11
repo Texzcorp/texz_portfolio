@@ -2,6 +2,8 @@ import { getPosts } from '@/app/utils';
 import { Flex } from '@/once-ui/components';
 import { Projects } from '@/app/programmation/components/Projects';
 import { baseURL, person, programmation } from '../resources';
+import { RecentProjects } from '@/app/components/RecentProjects';
+import updateStyles from '@/app/components/PortfolioUpdates.module.scss';
 
 export function generateMetadata() {
 	const title = programmation.title;
@@ -48,8 +50,8 @@ export default function Programmation() {
                         '@type': 'CollectionPage',
                         headline: programmation.title,
                         description: programmation.description,
-                        url: `https://${baseURL}/projects`,
-                        image: `${baseURL}/og?title=Design%20Projects`,
+                        url: `https://${baseURL}/programmation`,
+                        image: `https://${baseURL}/og?title=Software%20and%20games`,
                         author: {
                             '@type': 'Person',
                             name: person.name,
@@ -58,12 +60,18 @@ export default function Programmation() {
                             '@type': 'CreativeWork',
                             headline: project.metadata.title,
                             description: project.metadata.summary,
-                            url: `https://${baseURL}/projects/${project.slug}`,
+                            url: `https://${baseURL}/programmation/${project.slug}`,
                             image: `${baseURL}/${project.metadata.image}`,
                         })),
                     }),
                 }}
             />
+            <div className={updateStyles.section}>
+                <h1>Software & games</h1>
+                <p className={updateStyles.muted}>Public projects, product previews and work in development.</p>
+            </div>
+            <RecentProjects />
+            <h2>Earlier projects</h2>
             <Projects/>
         </Flex>
     );

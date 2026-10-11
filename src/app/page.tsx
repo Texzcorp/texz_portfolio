@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { Heading, Icon, IconButton, SmartImage, Flex, Tag, Text, Button,  Avatar, RevealFx } from '@/once-ui/components';
-import { Projects } from '@/app/programmation/components/Projects';
-import { MusicProjects } from '@/app/music/components/Projects';
+import { SelectedMusic } from '@/app/components/SelectedMusic';
+import { CompositionOffer } from '@/app/components/CompositionOffer';
+import { RecentProjects } from '@/app/components/RecentProjects';
 import MasonryGrid from '@/app/gallery/components/MasonryGrid';
 import { gallery as galleries } from '@/app/resources'; // Renommer pour éviter confusion
 
@@ -29,36 +30,12 @@ interface Gallery {
 }
 
 const structure = [
-    { 
-        title: about.intro.title,
-        display: about.intro.display,
-        items: []
-    },
-    { 
-        title: about.programmation.title,
-        display: about.programmation.display,
-        items: about.programmation.experiences.map(experience => experience.company)
-    },
-    { 
-        title: about.studies.title,
-        display: about.studies.display,
-        items: about.studies.institutions.map(institution => institution.name)
-    },
-    { 
-        title: about.writing.title,
-        display: about.writing.display,
-        items: []
-    },
-    { 
-        title: about.progvideogames.title,
-        display: about.progvideogames.display,
-        items: []
-    },
-    { 
-        title: about.technical.title,
-        display: about.technical.display,
-        items: about.technical.skills.map(skill => skill.title)
-    },
+    { title: about.intro.title, display: about.intro.display, items: [] },
+    { title: about.studies.title, display: about.studies.display, items: [] },
+    { title: about.programmation.title, display: about.programmation.display, items: [] },
+    { title: about.progvideogames.title, display: about.progvideogames.display, items: [] },
+    { title: about.writing.title, display: about.writing.display, items: [] },
+    { title: about.technical.title, display: about.technical.display, items: about.technical.skills.map(skill => skill.title) },
 ]
 
 export function generateMetadata() {
@@ -105,13 +82,13 @@ export default function Home() {
 						name: home.title,
 						description: home.description,
 						url: `https://${baseURL}`,
-						image: `${baseURL}/og?title=${encodeURIComponent(home.title)}`,
+						image: `https://${baseURL}/og?title=${encodeURIComponent(home.title)}`,
 						publisher: {
 							'@type': 'Person',
 							name: person.name,
 							image: {
 								'@type': 'ImageObject',
-								url: `${baseURL}${person.avatar}`,
+								url: `https://${baseURL}${person.avatar}`,
 							},
 						},
 					}),
@@ -126,16 +103,13 @@ export default function Home() {
                         '@type': 'Person',
                         name: person.name,
                         jobTitle: person.role,
-                        description: about.intro.description,
-                        url: `https://${baseURL}/about`,
-                        image: `${baseURL}/images/${person.avatar}`,
+                        description: home.description,
+                        url: `https://${baseURL}`,
+                        image: `https://${baseURL}${person.avatar}`,
                         sameAs: social
                             .filter((item) => item.link && !item.link.startsWith('mailto:')) // Filter out empty links and email links
                             .map((item) => item.link),
-                        programmationsFor: {
-                            '@type': 'Organization',
-                            name: about.programmation.experiences[0].company || ''
-                        },
+
                     }),
                 }}
             />
@@ -282,6 +256,16 @@ export default function Home() {
                         </Flex>
                     )}
 
+                    <Heading as="h2" id={about.studies.title} variant="display-strong-s" marginBottom="8">
+                        Music for film, advertising and games
+                    </Heading>
+                    <Text variant="body-default-m" onBackground="neutral-weak" marginBottom="16">
+                        Start with a piece presented with picture, then explore the other directions.
+                    </Text>
+                    <VantaBackground />
+                    <SelectedMusic compact />
+                    <CompositionOffer />
+
                     <RevealFx translateY="16" delay={0.8} speed="slow">
                         <Heading
                             as="h2"
@@ -301,7 +285,7 @@ export default function Home() {
                             onBackground="neutral-strong"
                             >
                             <RevealFx translateY="16" delay={0.6} speed="slow">
-                                I showcase a blend of real-world elements and imaginative artistic creations, aiming to present environments and styles that are rarely seen. By leveraging specialized tools and real-time engines like UE5, I craft virtual production setups that seamlessly integrate with live streaming, focusing on organic transitions between the tangible and the visionary.
+                                Supervision of 3D shot production in Unreal Engine 5: coordination, collaborator training, shot corrections and production troubleshooting. My experience also includes game development on a client project that ended before public release.
                             </RevealFx>
                     </Flex>
                     
@@ -335,7 +319,7 @@ export default function Home() {
                                                             name: person.name,
                                                             image: {
                                                                 '@type': 'ImageObject',
-                                                                url: `${baseURL}${person.avatar}`,
+                                                                url: `https://${baseURL}${person.avatar}`,
                                                             },
                                                         },
                                                     }),
@@ -349,29 +333,10 @@ export default function Home() {
                         </Flex>
                     </RevealFx>
 
-                    <Heading
-                        as="h2"
-                        id={about.studies.title}
-                        variant="display-strong-s" marginBottom="8" marginTop="40">
-                        Music composition
-                    </Heading>
-
-                    <Flex
-                            direction="column"
-                            textVariant="body-default-m"
-                            fillWidth
-                            gap="8"
-                            marginBottom="l"
-                            textSize="l"
-                            onBackground="neutral-strong"
-                            >
-                            <RevealFx translateY="16" delay={0.6} speed="slow">As a versatile composer, I focus on blending genres and creating unique musical styles. While my portfolio may categorize pieces into distinct genres, most of my work defies simple classification. I consistently bring something extra—whether it's harmonic richness, melodic depth, or intricate rhythms. Jazz-inspired chords often add emotional complexity and ambiguity to my compositions.</RevealFx>
-                    </Flex>
-                    
-                    {/* Exemple de call de projet musique */}
-
-                    <VantaBackground />
-					<MusicProjects range={[1,1]}/>
+                    <div id={about.progvideogames.title}>
+                        <RecentProjects />
+                    </div>
+                    <Button href="/programmation" variant="tertiary" label="See recent and earlier projects →" />
 
                     <Heading
                         as="h2"
@@ -406,30 +371,6 @@ export default function Home() {
 						</Flex>
 					)}
 
-                    <Heading
-                        as="h2"
-                        id={about.progvideogames.title}
-                        variant="display-strong-s" marginBottom="8" marginTop="40">
-                        Programmation & video games
-                    </Heading>
-
-                    <Flex
-                            direction="column"
-                            textVariant="body-default-m"
-                            fillWidth
-                            gap="8"
-                            marginBottom="l"
-                            textSize="l"
-                            onBackground="neutral-strong"
-                            >
-                            <RevealFx translateY="16" delay={0.6} speed="slow">
-                                I develop modular and optimized methods, creating well-thought-out systems that save time and enhance efficiency. By incorporating procedural generation, I balance this with a keen attention to detail, ensuring that each project is both robust and refined. My focus is on designing intuitive UI/UX while maintaining complex, interconnected systems that reveal their depth over time.
-                            </RevealFx>
-                    </Flex>
-
-                    {/* Exemple de call d'un projet de jeu vidéo */}
-                    <Projects range={[1,1]}/>
-                    
                     <hr style={{ marginBottom: '60px', border: 'none', borderTop: '1px solid #ccc', width: '70%' }} />
                     
                     { about.technical.display && (
@@ -509,9 +450,9 @@ export default function Home() {
             //             '@type': 'Person',
             //             name: person.name,
             //             jobTitle: person.role,
-            //             description: about.intro.description,
-            //             url: `https://${baseURL}/about`,
-            //             image: `${baseURL}/images/${person.avatar}`,
+            //             description: home.description,
+            //             url: `https://${baseURL}`,
+            //             image: `https://${baseURL}${person.avatar}`,
             //             sameAs: social
             //                 .filter((item) => item.link && !item.link.startsWith('mailto:')) // Filter out empty links and email links
             //                 .map((item) => item.link),

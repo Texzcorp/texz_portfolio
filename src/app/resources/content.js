@@ -6,7 +6,7 @@ const person = {
     get name() {
         return `${this.firstName} ${this.lastName}`;
     },
-    role:      'Multidisciplinary Artist and Creative Developer',
+    role:      'Composer · Creative Developer',
     avatar:    '/images/avatar.jpg',
     location:  'Europe/Paris',        // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
     languages: ['French', 'English']  // optional: Leave the array empty if you don't want to display languages
@@ -46,7 +46,7 @@ const social = [
 const home = {
     label: 'Home',
     title: `${person.name}'s Portfolio`,
-    description: `Portfolio website showcasing my work as a ${person.role}`,
+    description: 'Original music for film, advertising and games, alongside software, game development and Unreal Engine production experience.',
     headline: <>Multidisciplinary Artist and Creative Developer</>,
     subline: <>A creator pushing boundaries in game development, music, visual arts, and experimental projects.<br/> Explore my projects from experimental designs to professional work.</>
 }    
@@ -69,64 +69,17 @@ const about = {
     intro: {
         display: true,
         title: 'Introduction',
-        description: <>A multidisciplinary creator with deep technical expertise, seamlessly blending game development, software engineering, music production, and digital art. Driven by a relentless curiosity for mastering diverse tools and technologies, each project is an exploration of pushing boundaries and reimagining what’s achievable across multiple creative realms. </>
+        description: <>I compose music for film, advertising and games. I also develop software and games, and bring experience coordinating 3D production in Unreal Engine 5.</>
     },
     programmation: {
         display: true, // set to false to hide this section
         title: 'Virtual production',
-        experiences: [
-            {
-                company: 'FLY',
-                timeframe: '2022 - Present',
-                role: 'Senior Design Engineer',
-                achievements: [
-                    <>Redesigned the UI/UX for the FLY platform, resulting in a 20% increase in user engagement and 30% faster load times.</>,
-                    <>Spearheaded the integration of AI tools into design workflows, enabling designers to iterate 50% faster.</>
-                ],
-                images: [ // optional: leave the array empty if you don't want to display images
-                    {
-                        src: '/images/projects/project-01/cover-01.jpg',
-                        alt: 'Once UI Project',
-                        width: 16,
-                        height: 9
-                    }
-                ]
-            },
-            {
-                company: 'Creativ3',
-                timeframe: '2018 - 2022',
-                role: 'Lead Designer',
-                achievements: [
-                    <>Developed a design system that unified the brand across multiple platforms, improving design consistency by 40%.</>,
-                    <>Led a cross-functional team to launch a new product line, contributing to a 15% increase in overall company revenue.</>
-                ],
-                images: [ ]
-            },
-            {
-                company: 'test',
-                timeframe: '2018 - 2022',
-                role: 'Lead Designer',
-                achievements: [
-                    <>Developed a design system that unified the brand across multiple platforms, improving design consistency by 40%.</>,
-                    <>Led a cross-functional team to launch a new product line, contributing to a 15% increase in overall company revenue.</>
-                ],
-                images: [ ]
-            }
-        ]
+        experiences: /** @type {Array<{company: string, timeframe: string, role: string, achievements: import('react').ReactNode[], images: Array<{src: string, alt: string, width: number, height: number}>}>} */ ([])
     },
     studies: {
         display: true, // set to false to hide this section
         title: 'Music',
-        institutions: [
-            {
-                name: 'University of Jakarta',
-                description: <>Studied software engineering.</>,
-            },
-            {
-                name: 'Build the Future',
-                description: <>Studied online marketing and personal branding.</>,
-            }
-        ]
+        institutions: /** @type {Array<{name: string, description: import('react').ReactNode}>} */ ([])
     },
     writing: {
         display: true, // set to false to hide this section
@@ -232,8 +185,8 @@ const writing = {
 
 const programmation = {
     label: 'Dev & Games',
-    title: 'My video Games & programming projects',
-    description: `Design and dev projects by ${person.name}`
+    title: 'Terence Diaz — Software and games',
+    description: 'Recent software and game projects, with public links, product previews and development status.'
     // Create new project pages by adding a new .mdx file to app/blog/posts
     // All projects will be listed on the /home and /work routes
 }
@@ -248,8 +201,8 @@ const experimentalproj = {
 
 const music = {
     label: 'Music',
-    title: 'My musics',
-    description: `Design and dev projects by ${person.name}`
+    title: 'Terence Diaz — Music for film, advertising and games',
+    description: 'Selected music: cinema with picture, house, drum & bass, dark fantasy, retrowave, ambient, groove and orchestral writing.'
     // Create new project pages by adding a new .mdx file to app/blog/posts
     // All projects will be listed on the /home and /work routes
 }

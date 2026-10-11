@@ -79,7 +79,7 @@ const RevealFx = forwardRef<HTMLSpanElement, RevealFxProps>(({
 	return (
 		<span
 			ref={ref}
-			aria-hidden="true"
+			aria-hidden={isRevealed ? undefined : true}
 			style={revealStyle}
 			className={combinedClassName}
 			{...rest}>
