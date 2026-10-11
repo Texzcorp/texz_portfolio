@@ -24,7 +24,7 @@ export const Carousel: React.FC<CarouselProps> = ({
     const transitionTimeoutRef = useRef<NodeJS.Timeout>();
 
     const preloadNextImage = (nextIndex: number) => {
-        if (nextIndex >= 0 && nextIndex < images.length) {
+        if (nextIndex >= 0 && nextIndex < images.length && !images[nextIndex].endsWith('.mp4')) {
             nextImageRef.current = new Image();
             nextImageRef.current.src = images[nextIndex];
         }
@@ -130,7 +130,9 @@ export const Carousel: React.FC<CarouselProps> = ({
                             alt={title}
                             aspectRatio="16 / 9"
                             src={images[activeIndex]}
-                            priority={activeIndex === 0}
+                            poster={images[activeIndex]?.endsWith('.mp4') ? images[activeIndex].replace('.mp4', images[activeIndex].endsWith('/showcase.mp4') ? '.webp' : '.jpg') : undefined}
+                            sizes="(max-width: 1024px) 100vw, 960px"
+                            unoptimized={images[activeIndex]?.endsWith('.webp')}
                             style={{
                                 border: '1px solid var(--neutral-alpha-weak)',
                                 transform: `translate3d(0,0,0)`,

@@ -19,6 +19,7 @@ export type SmartImageProps = ImageProps & {
     enlarge?: boolean;
     src: string;
     variant?: 'default' | 'glow';
+    poster?: string;
 };
 
 // Ajout de l'interface pour le NetworkInformation
@@ -39,6 +40,10 @@ const SmartImage: React.FC<SmartImageProps> = ({
     enlarge = false,
     src,
     variant = 'default',
+    poster,
+    quality = 85,
+    sizes = '100vw',
+    unoptimized = false,
     ...props
 }) => {
     const [isEnlarged, setIsEnlarged] = useState(false);
@@ -46,6 +51,8 @@ const SmartImage: React.FC<SmartImageProps> = ({
     const imageRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isInView, setIsInView] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+    const [canAnimate, setCanAnimate] = useState(false);
     const [placeholderSrc, setPlaceholderSrc] = useState<string>('');
     const [isBuffering, setIsBuffering] = useState(false);
     const [hasError, setHasError] = useState(false);
@@ -58,10 +65,8 @@ const SmartImage: React.FC<SmartImageProps> = ({
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        setIsInView(true);
-                        observer.disconnect();
-                    }
+                    setIsVisible(entry.isIntersecting);
+                    if (entry.isIntersecting) setIsInView(true);
                 });
             },
             { threshold: 0.1 }
@@ -81,40 +86,46 @@ const SmartImage: React.FC<SmartImageProps> = ({
         }
     }, [src, isVideo]);
 
-    // Gestion optimisée des vidéos
     useEffect(() => {
-        if (isVideo && videoRef.current && isInView) {
-            const video = videoRef.current;
-            video.src = src;
-            video.preload = "metadata";
+        const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const connection = (navigator as any).connection as NetworkInformation | undefined;
+        const update = () => setCanAnimate(!motion.matches && !connection?.saveData);
+        update();
+        motion.addEventListener('change', update);
+        return () => motion.removeEventListener('change', update);
+    }, []);
 
+    // Load a preview once, then pause it outside the viewport or in a hidden tab.
+    useEffect(() => {
+        if (isVideo && videoRef.current) {
+            const video = videoRef.current;
             const handleWaiting = () => setIsBuffering(true);
             const handlePlaying = () => setIsBuffering(false);
             const handleError = () => setHasError(true);
+            const updatePlayback = () => {
+                if (isVisible && canAnimate && !document.hidden) {
+                    video.play().catch(() => setIsBuffering(false));
+                } else {
+                    video.pause();
+                }
+            };
 
             video.addEventListener('waiting', handleWaiting);
             video.addEventListener('playing', handlePlaying);
             video.addEventListener('error', handleError);
-
-            // Qualité adaptative basique
-            video.addEventListener('loadedmetadata', () => {
-                if (video.videoHeight > 720) {
-                    // Typage sécurisé de l'API Connection
-                    const connection = (navigator as any).connection as NetworkInformation | undefined;
-                    if (connection && (connection.downlink < 2 || connection.saveData)) {
-                        // Réduire la qualité pour les connexions lentes
-                        video.style.maxHeight = '480px';
-                    }
-                }
-            });
+            document.addEventListener('visibilitychange', updatePlayback);
+            if (isInView && canAnimate) updatePlayback();
+            else video.pause();
 
             return () => {
+                video.pause();
                 video.removeEventListener('waiting', handleWaiting);
                 video.removeEventListener('playing', handlePlaying);
                 video.removeEventListener('error', handleError);
+                document.removeEventListener('visibilitychange', updatePlayback);
             };
         }
-    }, [isVideo, isInView, src]);
+    }, [isVideo, isInView, isVisible, canAnimate, src]);
 
     const handleClick = () => {
         if (enlarge) {
@@ -169,6 +180,8 @@ const SmartImage: React.FC<SmartImageProps> = ({
     // Réinitialiser l'état de chargement quand la source change
     useEffect(() => {
         setIsImageLoaded(false);
+        setHasError(false);
+        setIsBuffering(false);
         if (isVideo) {
             setIsVideoLoaded(false);
         }
@@ -209,28 +222,30 @@ const SmartImage: React.FC<SmartImageProps> = ({
                         className={classNames(className)}
                         onClick={handleClick}>
                         {(isLoading || 
-                          (isVideo && !isVideoLoaded) || 
+                          (isVideo && !poster && !isVideoLoaded && !hasError) ||
                           (!isVideo && !isImageLoaded) || 
-                          isBuffering) && (
+                          (isBuffering && !poster)) && (
                             <>
                                 <Skeleton shape="block" />
                                 <LoadingAnimation />
                             </>
                         )}
-                        {!isLoading && isVideo && isInView && (
+                        {!isLoading && isVideo && (
                             <video
                                 ref={videoRef}
-                                autoPlay
+                                src={isInView && canAnimate ? src : undefined}
+                                poster={poster}
+                                aria-label={`${alt} video preview`}
                                 loop
                                 muted
                                 playsInline
-                                preload="metadata"
+                                preload="none"
                                 onLoadedData={handleVideoLoad}
                                 style={{
                                     width: '100%',
                                     height: '100%',
                                     objectFit: isEnlarged ? 'contain' : objectFit,
-                                    opacity: isVideoLoaded && !isBuffering ? 1 : 0,
+                                    opacity: poster || isVideoLoaded ? 1 : 0,
                                     transition: 'opacity 0.3s ease-in-out',
                                 }}
                             />
@@ -242,9 +257,9 @@ const SmartImage: React.FC<SmartImageProps> = ({
                                 alt={alt}
                                 fill
                                 placeholder="empty"
-                                sizes="100vw"
-                                quality={50}
-                                unoptimized={false}
+                                sizes={sizes}
+                                quality={quality}
+                                unoptimized={unoptimized}
                                 onLoad={handleImageLoad}
                                 style={{
                                     objectFit: isEnlarged ? 'contain' : objectFit,
@@ -277,28 +292,30 @@ const SmartImage: React.FC<SmartImageProps> = ({
                     className={classNames(className)}
                     onClick={handleClick}>
                     {(isLoading || 
-                      (isVideo && !isVideoLoaded) || 
+                      (isVideo && !poster && !isVideoLoaded && !hasError) ||
                       (!isVideo && !isImageLoaded) || 
-                      isBuffering) && (
+                      (isBuffering && !poster)) && (
                         <>
                             <Skeleton shape="block" />
                             <LoadingAnimation />
                         </>
                     )}
-                    {!isLoading && isVideo && isInView && (
+                    {!isLoading && isVideo && (
                         <video
                             ref={videoRef}
-                            autoPlay
+                            src={isInView && canAnimate ? src : undefined}
+                            poster={poster}
+                            aria-label={`${alt} video preview`}
                             loop
                             muted
                             playsInline
-                            preload="metadata"
+                            preload="none"
                             onLoadedData={handleVideoLoad}
                             style={{
                                 width: '100%',
                                 height: '100%',
                                 objectFit: isEnlarged ? 'contain' : objectFit,
-                                opacity: isVideoLoaded && !isBuffering ? 1 : 0,
+                                opacity: poster || isVideoLoaded ? 1 : 0,
                                 transition: 'opacity 0.3s ease-in-out',
                             }}
                         />
@@ -310,9 +327,9 @@ const SmartImage: React.FC<SmartImageProps> = ({
                             alt={alt}
                             fill
                             placeholder="empty"
-                            sizes="100vw"
-                            quality={50}
-                            unoptimized={false}
+                            sizes={sizes}
+                            quality={quality}
+                            unoptimized={unoptimized}
                             onLoad={handleImageLoad}
                             style={{
                                 objectFit: isEnlarged ? 'contain' : objectFit,

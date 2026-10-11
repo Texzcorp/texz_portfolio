@@ -361,7 +361,7 @@ export default function Home() {
                             textSize="l"
                             onBackground="neutral-strong"
                             >
-                            <RevealFx translateY="16" delay={0.6} speed="slow">My music moves between cinematic writing, house, drum & bass, dark fantasy, retrowave, ambient and groove. Harmony, texture and rhythm connect these directions — explore the on-site collection, or the further pieces linked on YouTube.</RevealFx>
+                            <RevealFx translateY="16" delay={0.6} speed="slow">My music moves between cinematic writing, house, drum & bass, dark fantasy, retrowave, ambient and groove. Harmony, texture and rhythm connect these directions — explore a selection of nine pieces in the music collection.</RevealFx>
                     </Flex>
 
                     {/* Exemple de call de projet musique */}

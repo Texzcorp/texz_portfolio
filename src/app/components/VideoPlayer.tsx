@@ -16,16 +16,22 @@ interface VideoPlayerProps {
 const VideoPlayer = ({ src, poster, thumbnailTime = 0, isPlaying, audioTime, className }: VideoPlayerProps) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [hasStarted, setHasStarted] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
     const visibilityRef = useRef(true);
     const playingRef = useRef(isPlaying);
     playingRef.current = isPlaying;
     const previousSrcRef = useRef<string>(src);
 
+    useEffect(() => {
+        if (isPlaying) setHasStarted(true);
+    }, [isPlaying]);
+
     // Réinitialiser l'état quand la source change
     useEffect(() => {
         if (previousSrcRef.current !== src) {
             setIsLoaded(false);
+            setHasStarted(false);
             previousSrcRef.current = src;
         }
     }, [src]);
@@ -36,7 +42,7 @@ const VideoPlayer = ({ src, poster, thumbnailTime = 0, isPlaying, audioTime, cla
         if (!video) return;
 
         // Réinitialiser la vidéo lors du changement de source
-        video.load();
+        if (hasStarted) video.load();
 
         // Configuration de base optimisée pour 350x350
         video.playsInline = true;
@@ -46,7 +52,7 @@ const VideoPlayer = ({ src, poster, thumbnailTime = 0, isPlaying, audioTime, cla
         video.height = 350;
 
         // Optimisation du buffer pour petite vidéo
-        video.preload = "auto";
+        video.preload = hasStarted ? "auto" : "none";
         video.setAttribute('playsinline', '');
 
         // Optimisations supplémentaires
@@ -83,7 +89,7 @@ const VideoPlayer = ({ src, poster, thumbnailTime = 0, isPlaying, audioTime, cla
             video.removeEventListener('loadeddata', handleLoaded);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
-    }, [src, thumbnailTime]);
+    }, [src, thumbnailTime, hasStarted]);
 
     // Gestion optimisée lecture/pause
     useEffect(() => {
@@ -116,7 +122,7 @@ const VideoPlayer = ({ src, poster, thumbnailTime = 0, isPlaying, audioTime, cla
 
     return (
         <div className={styles.videoWrapper}>
-            {(!isLoaded || isSyncing) && (
+            {hasStarted && (!isLoaded || isSyncing) && (
                 <>
                     <div className={styles.overlay} />
                     <LoadingAnimation />
@@ -124,15 +130,15 @@ const VideoPlayer = ({ src, poster, thumbnailTime = 0, isPlaying, audioTime, cla
             )}
             <video
                 ref={videoRef}
-                src={src}
+                src={hasStarted ? src : undefined}
                 poster={poster}
-                className={`${className} ${styles.video} ${isLoaded ? styles.loaded : ''}`}
+                className={`${className} ${styles.video} ${poster || isLoaded ? styles.loaded : ''}`}
                 muted
                 playsInline
                 loop
                 width="350"
                 height="350"
-                preload="auto"
+                preload="none"
             />
         </div>
     );
