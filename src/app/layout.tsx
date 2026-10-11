@@ -93,8 +93,8 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children } : RootLayoutProps) {
 	return (
-		<MusicPlayerProvider>
-			<BackgroundProvider>
+		<BackgroundProvider>
+			<MusicPlayerProvider>
 				<Flex
 					as="html" lang="en"
 					background="page"
@@ -143,7 +143,7 @@ export default function RootLayout({ children } : RootLayoutProps) {
 						<Footer />
 					</Flex>
 				</Flex>
-			</BackgroundProvider>
-		</MusicPlayerProvider>
+			</MusicPlayerProvider>
+		</BackgroundProvider>
 	);
 }

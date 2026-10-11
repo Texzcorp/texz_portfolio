@@ -22,13 +22,4 @@ export const supportingMusic = [
     { id: 'P16', title: 'Kav in the sky', style: 'Retro electronica · tribute', note: 'A tribute to Kavinsky, with no affiliation.', url: 'https://www.youtube.com/watch?v=M86rHGv7VDs' },
 ];
 
-export const recentProjects = [
-    { name: 'PlayPicka', category: 'Web · party games', status: 'Public · Which of Us playable', description: 'A platform for party games, starting with Which of Us: choose a mode and pass the phone around.', role: 'Design and development', url: 'https://playpicka.com', linkLabel: 'Visit PlayPicka' },
-    { name: 'Rift & Grid', category: 'Web · strategy game', status: 'Public · free to play', description: 'Fractal tic-tac-toe with hidden, simultaneous moves. Local, bot and online modes.', role: 'Design and development', url: 'https://riftandgrid.vercel.app', linkLabel: 'Play Rift & Grid' },
-    { name: 'Cadrance', category: 'Windows · subtitle editing', status: 'Prelaunch · limited beta', description: 'Transcribe, correct and split subtitles, then export SRT files. A public preview and launch list are available.', role: 'Product design and development', url: 'https://cadrance.cadrance.workers.dev', linkLabel: 'See the product preview' },
-    { name: 'PhotoSortingPro', category: 'Windows · photography', status: 'Prelaunch', description: 'Compare sharpness and sort local photos while keeping control of the selection. Sales are not open yet.', role: 'Product design and development', url: 'https://photo-sorting-pro.cadrance.workers.dev', linkLabel: 'See the product preview' },
-    { name: 'Jack & Snag', category: 'Godot · game project', status: 'In development', description: 'A game project exploring combat, movement, visual effects and editable level systems.', role: 'Creative direction and development', url: null, linkLabel: null },
-    { name: 'Undertaker', category: 'Unreal Engine · team project', status: 'In development · public demo', description: 'Music and gameplay contributions to a gothic first-person game developed by Dobrx.', role: 'Soundtrack and gameplay contributions', url: 'https://store.steampowered.com/app/4030360/Undertaker/', linkLabel: 'See the game on Steam', demoUrl: 'https://store.steampowered.com/app/4234410/Undertaker_Demo/' },
-];
-
 export const compositionContact = 'mailto:texzcorp@gmail.com?subject=Original%20music%20brief';

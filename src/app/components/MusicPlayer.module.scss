@@ -152,6 +152,11 @@
     transform: scale(0.95);
   }
 
+  &:focus-visible {
+    outline: 2px solid var(--brand-on-background-strong);
+    outline-offset: 4px;
+  }
+
   &.skipButton {
     opacity: 0.7;
     &:hover {

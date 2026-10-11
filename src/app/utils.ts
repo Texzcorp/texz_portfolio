@@ -23,6 +23,10 @@ type Metadata = {
     team: Team[];
     mainMusic?: any;          // Changé pour être implicite
     extraMusics?: any[];      // Changé pour être implicite
+    status?: string;
+    role?: string;
+    links?: { label: string; href: string }[];
+    portfolioOrder?: number;
 };
 
 function getMDXFiles(dir: string) {
@@ -49,6 +53,10 @@ function readMDXFile(filePath: string) {
         team: data.team || [],
         mainMusic: data.mainMusic,     // Passage direct des données
         extraMusics: data.extraMusics, // Passage direct des données
+        status: data.status,
+        role: data.role,
+        links: data.links,
+        portfolioOrder: data.portfolioOrder,
     };
 
     return { metadata, content };

@@ -8,6 +8,7 @@
 }
 
 .outerReveal {
+    container-type: inline-size;
     margin: 2rem -4rem;
     width: calc(100% + 8rem);
     max-width: 1600px;
@@ -26,7 +27,7 @@
     backdrop-filter: blur(0px);
     border-radius: var(--radius-l);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 2.5rem;
+    padding: var(--static-space-24);
     overflow: hidden;
     height: auto;
 }
@@ -35,18 +36,18 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 2.2rem;
+    gap: var(--static-space-24);
     align-items: center;
     justify-content: flex-start;
-    padding: 1.5rem;
-    padding-top: 2.5rem;
+    padding: var(--static-space-16);
+    padding-top: var(--static-space-24);
     width: 50%;
     min-width: 0;
 }
 
 .imageWrapper {
     width: 100%;
-    max-width: 350px;
+    max-width: 300px;
     aspect-ratio: 1;
     border-radius: 1.5rem;
     overflow: hidden;
@@ -83,7 +84,7 @@
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    max-height: 650px;
+    max-height: 560px;
     overflow-y: auto;
 }
 
@@ -102,6 +103,10 @@
 }
 
 .playlistItem {
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    flex-shrink: 0;
     padding: 0.5rem;
     background: rgba(0, 255, 255, 0.05);
     border-radius: 0.8rem;
@@ -121,6 +126,11 @@
         background: rgba(0, 255, 255, 0.15);
         border-color: rgba(0, 255, 255, 0.3);
         box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--brand-on-background-strong);
+        outline-offset: 2px;
     }
 }
 
@@ -144,8 +154,8 @@
     gap: 0.3rem;
     align-items: center;
     width: 100%;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: var(--static-space-8);
+    margin-bottom: var(--static-space-8);
 }
 
 .styleText {
@@ -196,7 +206,7 @@
     border-radius: 4px;
     flex-shrink: 0;
     background: rgba(0, 0, 0, 0.1);
-    
+
     video, img {
         width: 100%;
         height: 100%;
@@ -216,6 +226,32 @@
 
 .trackInfo {
     flex-grow: 1;
+    min-width: 0;
+}
+
+.referenceItem {
+    padding: var(--static-space-8) 0;
+    border-bottom: 1px solid var(--neutral-alpha-weak);
+    flex-shrink: 0;
+}
+
+.referenceLink {
+    width: 100%;
+    padding: var(--static-space-8) var(--static-space-12);
+    margin: 0 !important;
+}
+
+@container (max-width: 760px) {
+    .cardContainer {
+        flex-direction: column;
+        padding: var(--static-space-16);
+        gap: var(--static-space-24);
+    }
+    .mainSection, .playlistSection {
+        width: 100%;
+        padding: var(--static-space-8);
+    }
+    .playlistSection { max-height: 480px; }
 }
 
 .playlistItem {
@@ -256,7 +292,7 @@
         width: 100%;
         display: block;
     }
-    
+
     .innerReveal {
         width: 100%;
         display: block;

@@ -6,16 +6,20 @@ import { LoadingAnimation } from '@/once-ui/components/LoadingAnimation';
 
 interface VideoPlayerProps {
     src: string;
+    poster?: string;
+    thumbnailTime?: number;
     isPlaying: boolean;
     audioTime: number;
     className?: string;
 }
 
-const VideoPlayer = ({ src, isPlaying, audioTime, className }: VideoPlayerProps) => {
+const VideoPlayer = ({ src, poster, thumbnailTime = 0, isPlaying, audioTime, className }: VideoPlayerProps) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
     const visibilityRef = useRef(true);
+    const playingRef = useRef(isPlaying);
+    playingRef.current = isPlaying;
     const previousSrcRef = useRef<string>(src);
 
     // Réinitialiser l'état quand la source change
@@ -33,18 +37,18 @@ const VideoPlayer = ({ src, isPlaying, audioTime, className }: VideoPlayerProps)
 
         // Réinitialiser la vidéo lors du changement de source
         video.load();
-        
+
         // Configuration de base optimisée pour 350x350
         video.playsInline = true;
         video.muted = true;
         video.loop = true;
         video.width = 350;
         video.height = 350;
-        
+
         // Optimisation du buffer pour petite vidéo
         video.preload = "auto";
         video.setAttribute('playsinline', '');
-        
+
         // Optimisations supplémentaires
         if ('mediaKeys' in video) {
             video.style.objectFit = 'cover';
@@ -53,13 +57,11 @@ const VideoPlayer = ({ src, isPlaying, audioTime, className }: VideoPlayerProps)
 
         const handleLoaded = () => {
             setIsLoaded(true);
-            // Forcer une pause initiale pour éviter les saccades
-            video.pause();
-            if (isPlaying) {
-                // Petit délai avant de démarrer la lecture
-                setTimeout(() => {
-                    video.play().catch(() => {});
-                }, 100);
+            if (playingRef.current && visibilityRef.current) {
+                video.play().catch(() => {});
+            } else {
+                video.pause();
+                if (thumbnailTime > 0) video.currentTime = thumbnailTime;
             }
         };
 
@@ -70,9 +72,7 @@ const VideoPlayer = ({ src, isPlaying, audioTime, className }: VideoPlayerProps)
             visibilityRef.current = !document.hidden;
             if (document.hidden) {
                 video.pause();
-            } else if (isPlaying) {
-                // Réinitialiser la vidéo pour éviter les saccades
-                video.load();
+            } else if (playingRef.current) {
                 video.play().catch(() => {});
             }
         };
@@ -83,7 +83,7 @@ const VideoPlayer = ({ src, isPlaying, audioTime, className }: VideoPlayerProps)
             video.removeEventListener('loadeddata', handleLoaded);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
-    }, [src]); // Dépendance à src pour réinitialiser lors du changement
+    }, [src, thumbnailTime]);
 
     // Gestion optimisée lecture/pause
     useEffect(() => {
@@ -101,17 +101,18 @@ const VideoPlayer = ({ src, isPlaying, audioTime, className }: VideoPlayerProps)
     useEffect(() => {
         const video = videoRef.current;
         if (!video || !isLoaded || !visibilityRef.current) return;
+        if (!isPlaying && audioTime === 0) return;
 
         // Synchroniser seulement si nécessaire
-        const drift = Math.abs(video.currentTime - audioTime);
+        const targetTime = Number.isFinite(video.duration) && video.duration > 0 ? audioTime % video.duration : audioTime;
+        const drift = Math.abs(video.currentTime - targetTime);
         if (drift > 0.1) {
             setIsSyncing(true);
-            video.currentTime = audioTime;
-            video.play().catch(() => {}).finally(() => {
-                setIsSyncing(false);
-            });
+            video.currentTime = targetTime;
+            if (isPlaying) video.play().catch(() => {});
+            setIsSyncing(false);
         }
-    }, [audioTime, isLoaded]);
+    }, [audioTime, isLoaded, isPlaying]);
 
     return (
         <div className={styles.videoWrapper}>
@@ -124,6 +125,7 @@ const VideoPlayer = ({ src, isPlaying, audioTime, className }: VideoPlayerProps)
             <video
                 ref={videoRef}
                 src={src}
+                poster={poster}
                 className={`${className} ${styles.video} ${isLoaded ? styles.loaded : ''}`}
                 muted
                 playsInline

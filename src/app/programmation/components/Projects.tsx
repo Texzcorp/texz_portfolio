@@ -11,6 +11,9 @@ export function Projects({ range }: ProjectsProps) {
     let allProjects = getPosts(['src', 'app', 'programmation', 'projects']);
 
     const sortedProjects = allProjects.sort((a, b) => {
+        if (a.metadata.portfolioOrder !== undefined || b.metadata.portfolioOrder !== undefined) {
+            return (a.metadata.portfolioOrder ?? 100) - (b.metadata.portfolioOrder ?? 100);
+        }
         return new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime();
     });
 
@@ -30,7 +33,10 @@ export function Projects({ range }: ProjectsProps) {
                     title={post.metadata.title}
                     description={post.metadata.summary}
                     content={post.content}
-                    avatars={post.metadata.team?.map((member) => ({ src: member.avatar })) || []}/>
+                    avatars={post.metadata.team?.map((member) => ({ src: member.avatar })) || []}
+                    status={post.metadata.status}
+                    role={post.metadata.role}
+                    links={post.metadata.links}/>
             ))}
         </Flex>
     );

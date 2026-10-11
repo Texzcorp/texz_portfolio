@@ -1,9 +1,7 @@
 import { getPosts } from '@/app/utils';
-import { Flex } from '@/once-ui/components';
+import { Flex, Heading, Text, RevealFx } from '@/once-ui/components';
 import { Projects } from '@/app/programmation/components/Projects';
 import { baseURL, person, programmation } from '../resources';
-import { RecentProjects } from '@/app/components/RecentProjects';
-import updateStyles from '@/app/components/PortfolioUpdates.module.scss';
 
 export function generateMetadata() {
 	const title = programmation.title;
@@ -61,17 +59,16 @@ export default function Programmation() {
                             headline: project.metadata.title,
                             description: project.metadata.summary,
                             url: `https://${baseURL}/programmation/${project.slug}`,
-                            image: `${baseURL}/${project.metadata.image}`,
                         })),
                     }),
                 }}
             />
-            <div className={updateStyles.section}>
-                <h1>Software & games</h1>
-                <p className={updateStyles.muted}>Public projects, product previews and work in development.</p>
-            </div>
-            <RecentProjects />
-            <h2>Earlier projects</h2>
+            <RevealFx translateY="16" style={{ width: '100%' }}>
+                <Flex fillWidth paddingX="l" paddingTop="24" paddingBottom="40" direction="column" gap="12">
+                    <Heading variant="display-strong-s">Software & games</Heading>
+                    <Text as="p" variant="body-default-m" onBackground="neutral-weak">Interactive worlds, tools and systems. Current projects alongside earlier experiments.</Text>
+                </Flex>
+            </RevealFx>
             <Projects/>
         </Flex>
     );

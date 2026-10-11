@@ -5,6 +5,7 @@ import { MusicProjectCard } from '@/app/components/MusicProjectCard'; // Importe
 
 interface ProjectsProps {
     range?: [number, number?];
+    headingLevel?: 'h1' | 'h2' | 'h3';
 }
 
 // Définir l'interface Music ici en attendant
@@ -15,7 +16,7 @@ interface Music {
     cover: string;
 }
 
-export function MusicProjects({ range }: ProjectsProps) {
+export function MusicProjects({ range, headingLevel = 'h3' }: ProjectsProps) {
     let allProjects = getPosts(['src', 'app', 'music', 'projects']);
 
     const sortedProjects = allProjects.sort((a, b) => {
@@ -42,6 +43,7 @@ export function MusicProjects({ range }: ProjectsProps) {
                             href={`/music/${post.slug}`}
                             mainMusic={post.metadata.mainMusic}
                             extraMusics={post.metadata.extraMusics}
+                            headingLevel={headingLevel}
                         />
                     );
                 }

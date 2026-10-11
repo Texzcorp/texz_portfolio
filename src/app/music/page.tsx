@@ -1,11 +1,9 @@
+import { getPosts } from '@/app/utils';
 import { Flex } from '@/once-ui/components';
 import { MusicProjects } from '@/app/music/components/Projects';
 import { baseURL, person, music } from '../resources';
 import VantaBackground from '@/app/components/VantaBackground';
-import { SelectedMusic } from '@/app/components/SelectedMusic';
 import { CompositionOffer } from '@/app/components/CompositionOffer';
-import { musicSelection } from '@/app/resources/portfolio';
-import updateStyles from '@/app/components/PortfolioUpdates.module.scss';
 
 export function generateMetadata() {
     const title = music.title;
@@ -37,6 +35,8 @@ export function generateMetadata() {
 }
 
 export default function Music() {
+    let allProjects = getPosts(['src', 'app', 'music', 'projects']);
+
     return (
         <>
             <VantaBackground />
@@ -56,28 +56,18 @@ export default function Music() {
                                 '@type': 'Person',
                                 name: person.name,
                             },
-                            hasPart: musicSelection.map(track => ({
-                                '@type': 'MusicRecording',
-                                name: track.title,
-                                genre: track.style,
-                                url: track.url,
+                            hasPart: allProjects.map(project => ({
+                                '@type': 'CreativeWork',
+                                headline: project.metadata.title,
+                                description: project.metadata.summary,
+                                url: `https://${baseURL}/music/${project.slug}`,
                             })),
                         }),
                     }}
                 />
 
-                <div className={updateStyles.section}>
-                    <p className={updateStyles.eyebrow}>Terence Diaz · composer</p>
-                    <h1>Music for pictures, brands and games.</h1>
-                    <p className={updateStyles.muted}>Start with music to picture, then explore house, drum & bass, dark fantasy, retrowave, ambient and groove, with a complementary orchestral sketch. My work also brings these directions together.</p>
-                    <a href="#composition-offer">Discuss a music brief →</a>
-                </div>
-                <SelectedMusic />
+                <MusicProjects headingLevel="h1" />
                 <CompositionOffer />
-                <details className={updateStyles.details}>
-                    <summary>Earlier collection · listen with the on-site audio player</summary>
-                    <MusicProjects />
-                </details>
             </Flex>
         </>
     );

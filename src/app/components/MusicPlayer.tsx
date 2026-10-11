@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { MdOutlineMusicNote, MdVolumeUp, MdVolumeOff } from 'react-icons/md';
 import { HiPlay, HiPause, HiRewind, HiFastForward } from 'react-icons/hi';
 import styles from './MusicPlayer.module.scss';
-import { useBackground } from "@/app/components/BackgroundContext";
 import { useMusicPlayerContext } from "@/app/components/MusicPlayerContext";
 
 interface MusicPlayerProps {
@@ -22,6 +21,7 @@ interface MusicPlayerProps {
 
 const MusicPlayer: React.FC<MusicPlayerProps> = ({ 
   src, 
+  title = 'track',
   compact = false,
   onPrevious,
   onNext,
@@ -34,6 +34,8 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
   const audioRef = useRef<HTMLAudioElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const frameRef = useRef<number>(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -56,6 +58,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
         }).catch(error => {
           console.error('Error playing audio:', error);
           setIsPlaying(false);
+          stopMusic(src);
         });
       }
     } else {
@@ -75,7 +78,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
     };
     
     const setAudioData = () => {
-      setDuration(audio.duration);
+      setDuration(Number.isFinite(audio.duration) ? audio.duration : 0);
       setCurrentTime(audio.currentTime);
     };
     const handlePlay = () => {
@@ -96,14 +99,14 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
     };
 
     audio.addEventListener('timeupdate', updateTime);
-    audio.addEventListener('loadeddata', setAudioData);
+    audio.addEventListener('loadedmetadata', setAudioData);
     audio.addEventListener('play', handlePlay);
     audio.addEventListener('pause', handlePause);
     audio.addEventListener('ended', handleEnded);
 
     return () => {
       audio.removeEventListener('timeupdate', updateTime);
-      audio.removeEventListener('loadeddata', setAudioData);
+      audio.removeEventListener('loadedmetadata', setAudioData);
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
       audio.removeEventListener('ended', handleEnded);
@@ -121,42 +124,47 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
         audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
       }
 
-      const analyser = audioContextRef.current.createAnalyser();
+      if (!analyserRef.current) {
+        analyserRef.current = audioContextRef.current.createAnalyser();
+        analyserRef.current.fftSize = 256;
+      }
+      const analyser = analyserRef.current;
       
       // Créer une nouvelle source seulement si nécessaire
       if (!sourceRef.current) {
         sourceRef.current = audioContextRef.current.createMediaElementSource(audio);
+        sourceRef.current.connect(analyser);
+        analyser.connect(audioContextRef.current.destination);
       }
-
-      analyser.fftSize = 256;
-      sourceRef.current.connect(analyser);
-      analyser.connect(audioContextRef.current.destination);
+      void audioContextRef.current.resume();
 
       const dataArray = new Float32Array(analyser.frequencyBinCount);
       
-      const updateData = () => {
-        analyser.getFloatFrequencyData(dataArray);
-        setAudioData(dataArray);
-        if (isPlaying) {
-          requestAnimationFrame(updateData);
+      let lastUpdate = 0;
+      const updateData = (time: number) => {
+        if (time - lastUpdate > 80) {
+          analyser.getFloatFrequencyData(dataArray);
+          setAudioData(new Float32Array(dataArray));
+          lastUpdate = time;
         }
+        frameRef.current = requestAnimationFrame(updateData);
       };
-
-      updateData();
+      frameRef.current = requestAnimationFrame(updateData);
 
       return () => {
-        analyser.disconnect();
-        if (!isPlaying) {
-          sourceRef.current?.disconnect();
-          sourceRef.current = null;
-          audioContextRef.current?.close();
-          audioContextRef.current = null;
-        }
+        cancelAnimationFrame(frameRef.current);
       };
     } catch (error) {
       console.error('Error setting up audio analysis:', error);
     }
   }, [isPlaying, setAudioData]);
+
+  useEffect(() => () => {
+    cancelAnimationFrame(frameRef.current);
+    sourceRef.current?.disconnect();
+    analyserRef.current?.disconnect();
+    void audioContextRef.current?.close();
+  }, []);
 
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
@@ -190,6 +198,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
   }, [volume]);
 
   const formatTime = (seconds: number): string => {
+    if (!Number.isFinite(seconds)) return '0:00';
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
@@ -204,13 +213,15 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
   };
 
   return (
-    <div className={`${styles.container} ${isCurrentPlayer && isPlaying ? styles.playing : ''}`}>
+    <div role="group" aria-label={'Audio player: ' + title} className={`${styles.container} ${isCurrentPlayer && isPlaying ? styles.playing : ''}`}>
       <audio ref={audioRef} src={src} preload="metadata" />
       
       {/* Progress bar en haut */}
       <div className={styles.progressContainer}>
         <input
           type="range"
+          aria-label="Playback position"
+          aria-valuetext={formatTime(currentTime) + ' of ' + formatTime(duration)}
           min="0"
           max={duration || 0}
           value={currentTime}
@@ -228,6 +239,8 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
         <div className={`${styles.controlsGroup} ${compact ? styles.compact : ''}`}>
           {!compact && (
             <button 
+              type="button"
+              aria-label="Previous track"
               onClick={onPrevious}
               className={`${styles.button} ${styles.skipButton}`}
               disabled={!hasPrevious}
@@ -237,12 +250,14 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
             </button>
           )}
           
-          <button onClick={togglePlay} className={`${styles.button} ${compact ? styles.compact : ''}`}>
+          <button type="button" aria-label={(isPlaying ? 'Pause ' : 'Play ') + title} onClick={togglePlay} className={`${styles.button} ${compact ? styles.compact : ''}`}>
             {isPlaying ? <HiPause size={compact ? 38 : 38} /> : <HiPlay size={compact ? 38 : 38} />}
           </button>
 
           {!compact && (
             <button 
+              type="button"
+              aria-label="Next track"
               onClick={onNext}
               className={`${styles.button} ${styles.skipButton}`}
               disabled={!hasNext}
@@ -254,11 +269,12 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
         </div>
 
         <div className={`${styles.volumeControl} ${compact ? styles.compact : ''}`}>
-          <button onClick={handleMuteToggle} className={`${styles.button} ${compact ? styles.compact : ''}`}>
+          <button type="button" aria-label={muted ? 'Unmute' : 'Mute'} onClick={handleMuteToggle} className={`${styles.button} ${compact ? styles.compact : ''}`}>
             {muted || volume === 0 ? <MdVolumeOff size={24} /> : <MdVolumeUp size={24} />}
           </button>
           <input
             type="range"
+            aria-label="Volume"
             min="0"
             max="1"
             step="0.01"

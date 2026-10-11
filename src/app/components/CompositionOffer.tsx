@@ -1,17 +1,19 @@
 import { compositionContact } from '@/app/resources/portfolio';
-import styles from './PortfolioUpdates.module.scss';
+import { Button, Flex, Heading, Text } from '@/once-ui/components';
 
 export function CompositionOffer() {
     return (
-        <section className={styles.offer} aria-labelledby="composition-offer">
-            <p className={styles.eyebrow}>Original music · film / advertising / games</p>
-            <h2 id="composition-offer">A piece built around your brief.</h2>
-            <p>Creation from €4,500 excl. VAT. A 30–60 second composition, two shorter versions and stems, with two rounds of consolidated feedback. Usage rights are quoted separately.</p>
-            <p className={styles.note}>Projects scoped to a maximum of five working days. The schedule is agreed after the brief, quote, picture or reference material, and feedback timings are confirmed.</p>
-            <div className={styles.actions}>
-                <a className={styles.action} href={compositionContact}>Discuss a music brief →</a>
-            </div>
-            <p className={styles.note}>Send the intended use, picture or references, deadline and budget.</p>
-        </section>
+        <Flex as="section" id="composition-offer" fillWidth paddingX="l" paddingY="40" gap="l" mobileDirection="column" border="neutral-medium" style={{ borderWidth: '1px 0 0' }}>
+            <Flex flex={5} direction="column" gap="12">
+                <Text variant="label-default-s" onBackground="brand-weak">Film · advertising · games</Text>
+                <Heading as="h2" variant="display-strong-xs">Original composition</Heading>
+                <Flex><Button href={compositionContact} variant="secondary" size="s" prefixIcon="email" suffixIcon="arrowUpRight">Discuss your project</Button></Flex>
+            </Flex>
+            <Flex flex={7} direction="column" gap="16">
+                <Text as="p" variant="body-default-m">Music written around your picture, world or brief. Creation from €4,500 excl. VAT; usage rights quoted separately.</Text>
+                <Text as="p" variant="body-default-s" onBackground="neutral-weak">A 30–60 second composition, two shorter versions and stems, with two rounds of consolidated feedback.</Text>
+                <Text as="p" variant="body-default-s" onBackground="neutral-weak">A maximum of five working days for the agreed scope, once the brief, quote, picture or references and feedback schedule are confirmed.</Text>
+            </Flex>
+        </Flex>
     );
 }

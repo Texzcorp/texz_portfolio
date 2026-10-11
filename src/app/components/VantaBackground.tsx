@@ -1,100 +1,50 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import BIRDS from 'vanta/dist/vanta.birds.min';
-import { useBackground } from "@/app/components/BackgroundContext";
-import { useMusicPlayerContext } from "@/app/components/MusicPlayerContext";
-import styles from './VantaBackground.module.scss'; // Import du fichier SCSS
+import { useMusicPlayerContext } from './MusicPlayerContext';
+import styles from './VantaBackground.module.scss';
 
 const VantaBackground = () => {
     const vantaRef = useRef<HTMLDivElement>(null);
-    const { effectActive } = useBackground();
-    const { isAnyMusicPlaying } = useMusicPlayerContext();  // Add this
-    const [vantaEffect, setVantaEffect] = useState<any>(null);
-    const [isVisible, setIsVisible] = useState(false);
-    const [isFadingOut, setIsFadingOut] = useState(false);
+    const effectRef = useRef<{ destroy: () => void } | null>(null);
+    const fadeTimer = useRef<ReturnType<typeof setTimeout>>();
+    const { isAnyMusicPlaying } = useMusicPlayerContext();
+    const [visible, setVisible] = useState(false);
 
     useEffect(() => {
-        let isComponentMounted = true;
-
-        // Fonction pour initialiser l'effet Vanta
-        const initVanta = () => {
-            if (vantaRef.current && isComponentMounted) {
-                if (vantaEffect) {
-                    vantaEffect.destroy();
-                    setVantaEffect(null);
-                }
-
-                const newEffect = BIRDS({
-                    el: vantaRef.current,
-                    THREE,
-                    mouseControls: true,
-                    touchControls: true,
-                    gyroControls: false,
-                    minHeight: 200.0,
-                    minWidth: 200.0,
-                    scale: 1.0,
-                    scaleMobile: 1.0,
-                    color1: 0x4d4229,
-                    color2: 0x69b2ff,
-                    birdSize: 0.7,
-                    wingSpan: 10.0,
-                    speedLimit: 5.0,
-                    separation: 7.0,
-                    alignment: 50.0,
-                    cohesion: 90.0,
-                    quantity: 3.0,
+        clearTimeout(fadeTimer.current);
+        if (isAnyMusicPlaying && vantaRef.current) {
+            if (!effectRef.current) {
+                effectRef.current = BIRDS({
+                    el: vantaRef.current, THREE,
+                    mouseControls: true, touchControls: true, gyroControls: false,
+                    minHeight: 200.0, minWidth: 200.0, scale: 1.0, scaleMobile: 1.0,
+                    color1: 0x4d4229, color2: 0x69b2ff,
+                    birdSize: 0.7, wingSpan: 10.0, speedLimit: 5.0,
+                    separation: 7.0, alignment: 50.0, cohesion: 90.0, quantity: 3.0,
                     backgroundAlpha: 0.0,
                 });
-
-                setVantaEffect(newEffect);
-                setIsVisible(true);
-                setIsFadingOut(false);
             }
-        };
-
-        // Only show birds if music is playing
-        if (isAnyMusicPlaying) {
-            initVanta();
+            setVisible(true);
         } else {
-            if (vantaEffect) {
-                setIsFadingOut(true);
-                setTimeout(() => {
-                    if (isComponentMounted) {
-                        vantaEffect.destroy();
-                        setVantaEffect(null);
-                        setIsVisible(false);
-                    }
-                }, 1000); // Durée du fade out en millisecondes (ici, 1000ms = 1s)
-            }
+            setVisible(false);
+            fadeTimer.current = setTimeout(() => {
+                effectRef.current?.destroy();
+                effectRef.current = null;
+            }, 1000);
         }
+        return () => clearTimeout(fadeTimer.current);
+    }, [isAnyMusicPlaying]);
 
-        // Cleanup à la destruction du composant ou au changement de `effectActive`
-        return () => {
-            isComponentMounted = false;
-            if (vantaEffect) {
-                vantaEffect.destroy();
-                setVantaEffect(null);
-            }
-        };
-    }, [isAnyMusicPlaying]); // Changed from effectActive to isAnyMusicPlaying
+    useEffect(() => () => {
+        clearTimeout(fadeTimer.current);
+        effectRef.current?.destroy();
+    }, []);
 
-    return (
-        <div
-            ref={vantaRef}
-            className={`${styles.vantaBackground} ${isVisible ? styles.vantaBackgroundVisible : ''} ${isFadingOut ? styles.fadeOut : ''}`}
-            style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                zIndex: -2,
-                width: '100%',
-                height: '100%',
-                opacity: isVisible && !isFadingOut ? 0.5 : 0, // Réduit l'opacité à 0 pendant le fade out
-            }}
-        />
-    );
+    return <div ref={vantaRef} className={styles.vantaBackground + (visible ? ' ' + styles.vantaBackgroundVisible : ' ' + styles.fadeOut)}
+        style={{ position: 'fixed', top: 0, left: 0, zIndex: -2, width: '100%', height: '100%', opacity: visible ? 0.5 : 0, pointerEvents: 'none' }} />;
 };
 
 export default VantaBackground;

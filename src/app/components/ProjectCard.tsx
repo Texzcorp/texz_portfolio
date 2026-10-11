@@ -1,6 +1,6 @@
 "use client";
 
-import { AvatarGroup, Flex, Heading, SmartLink, Text } from "@/once-ui/components";
+import { AvatarGroup, Flex, Heading, SmartLink, Tag, Text } from "@/once-ui/components";
 import { Carousel } from "./Carousel";
 
 interface ProjectCardProps {
@@ -10,6 +10,9 @@ interface ProjectCardProps {
     content: string;
     description: string;
     avatars: { src: string }[];
+    status?: string;
+    role?: string;
+    links?: { label: string; href: string }[];
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -18,23 +21,27 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     title,
     content,
     description,
-    avatars
+    avatars,
+    status,
+    role,
+    links = [],
 }) => {
     return (
         <Flex
             fillWidth gap="m"
             direction="column">
-            <Carousel 
+            {images.length > 0 && <Carousel
                 images={images}
                 title={title}
-            />
-            
+            />}
+
             <Flex
                 mobileDirection="column"
                 fillWidth paddingX="l" paddingTop="xs" paddingBottom="m" gap="l">
                 {title && (
                     <Flex
-                        flex={5}>
+                        flex={5} direction="column" gap="12">
+                        {status && <Flex><Tag size="s">{status}</Tag></Flex>}
                         <Heading
                             as="h2"
                             wrap="balance"
@@ -61,6 +68,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                                 {description}
                             </Text>
                         )}
+                        {role && <Text variant="label-default-s" onBackground="neutral-weak">{role}</Text>}
+                        {links.map(link => <SmartLink key={link.href} href={link.href} suffixIcon="arrowUpRight" style={{ margin: '0', width: 'fit-content' }}><Text variant="body-default-s">{link.label}</Text></SmartLink>)}
                         {content?.trim() && (
                             <SmartLink
                                 suffixIcon="chevronRight"
