@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "routes": [
+    {
+      "src": "/((?!api(?:/|$)|_next(?:/|$)|og(?:/|$)|.*\\.[^/]+$).*)",
+      "methods": ["GET", "HEAD"],
+      "has": [{ "type": "host", "value": "terencediazportfolio.vercel.app" }],
+      "status": 308,
+      "headers": { "Location": "https://cosmocrow.com/$1" }
+    }
+  ]
+}
