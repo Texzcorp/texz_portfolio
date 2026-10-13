@@ -7,6 +7,8 @@ const withMDX = mdx({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    // Keep the original request URL when redirecting legacy pages.
+    skipMiddlewareUrlNormalize: true,
     pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
     eslint: {
         // ESLint is not part of this project's dependencies; skip it during

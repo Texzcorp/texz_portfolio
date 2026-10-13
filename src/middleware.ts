@@ -16,7 +16,7 @@ export function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    const destination = request.nextUrl.clone();
+    const destination = new URL(request.url);
     destination.protocol = 'https:';
     destination.hostname = 'cosmocrow.com';
     destination.port = '';
