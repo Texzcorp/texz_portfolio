@@ -1,0 +1,5 @@
+@media (max-width: 1168px) {
+    footer.footer {
+        padding-bottom: calc(var(--static-space-64) + var(--static-space-24));
+    }
+}

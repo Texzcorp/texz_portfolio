@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 	openGraph: {
 		title: `${person.firstName}'s Portfolio`,
 		description: 'Portfolio website showcasing my work.',
-		url: baseURL,
+		url: `https://${baseURL}`,
 		siteName: `${person.firstName}'s Portfolio`,
 		locale: 'en_US',
 		type: 'website',

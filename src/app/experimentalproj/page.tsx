@@ -11,6 +11,7 @@ export function generateMetadata() {
 	return {
 		title,
 		description,
+		alternates: { canonical: '/experimentalproj' },
 		openGraph: {
 			title,
 			description,
@@ -48,8 +49,8 @@ export default function Experimentalproj() {
                         '@type': 'CollectionPage',
                         headline: experimentalproj.title,
                         description: experimentalproj.description,
-                        url: `https://${baseURL}/projects`,
-                        image: `${baseURL}/og?title=Design%20Projects`,
+                        url: `https://${baseURL}/experimentalproj`,
+                        image: `https://${baseURL}/og?title=Design%20Projects`,
                         author: {
                             '@type': 'Person',
                             name: person.name,
@@ -58,8 +59,10 @@ export default function Experimentalproj() {
                             '@type': 'CreativeExperimentalproj',
                             headline: project.metadata.title,
                             description: project.metadata.summary,
-                            url: `https://${baseURL}/projects/${project.slug}`,
-                            image: `${baseURL}/${project.metadata.image}`,
+                            url: `https://${baseURL}/experimentalproj/${project.slug}`,
+                            image: project.metadata.image
+                                ? `https://${baseURL}${project.metadata.image}`
+                                : `https://${baseURL}/og?title=${encodeURIComponent(project.metadata.title)}`,
                         })),
                     }),
                 }}

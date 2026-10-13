@@ -40,6 +40,7 @@ export function generateMetadata({ params }: WorkParams) {
 	return {
 		title,
 		description,
+		alternates: { canonical: `/experimentalproj/${post.slug}` },
 		images,
 		team,
 		openGraph: {

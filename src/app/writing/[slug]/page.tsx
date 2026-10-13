@@ -39,6 +39,7 @@ export function generateMetadata({ params }: WritingParams) {
 	return {
 		title,
 		description,
+		alternates: { canonical: `/writing/${post.slug}` },
 		openGraph: {
 			title,
 			description,

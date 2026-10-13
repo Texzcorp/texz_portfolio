@@ -1,5 +1,6 @@
 import { Flex, IconButton, SmartLink, Text } from "@/once-ui/components"
 import { person, social } from '@/app/resources'
+import styles from './Footer.module.scss';
 
 export const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -7,6 +8,7 @@ export const Footer = () => {
     return (
         <Flex
             as="footer"
+            className={styles.footer}
             position="relative"
             fillWidth padding="8"
             justifyContent="center">
@@ -22,6 +24,9 @@ export const Footer = () => {
                     </Text>
                     <Text paddingX="4">
                         {person.name}
+                    </Text>
+                    <Text onBackground="neutral-weak">
+                        / by Cosmo Crow
                     </Text>
                     <Text onBackground="neutral-weak">
                         {/* Usage of this template requires attribution. Please don't remove the link to Once UI. */}

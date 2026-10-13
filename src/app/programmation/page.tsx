@@ -11,6 +11,7 @@ export function generateMetadata() {
 	return {
 		title,
 		description,
+		alternates: { canonical: '/programmation' },
 		openGraph: {
 			title,
 			description,

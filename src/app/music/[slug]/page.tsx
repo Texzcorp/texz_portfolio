@@ -40,6 +40,7 @@ export function generateMetadata({ params }: musicParams) {
 	return {
 		title,
 		description,
+		alternates: { canonical: `/music/${post.slug}` },
 		images,
 		team,
 		openGraph: {

@@ -13,6 +13,7 @@ export function generateMetadata() {
 	return {
 		title,
 		description,
+		alternates: { canonical: '/writing' },
 		openGraph: {
 			title,
 			description,
@@ -49,13 +50,13 @@ export default function Writing() {
 						headline: writing.title,
 						description: writing.description,
 						url: `https://${baseURL}/writing`,
-						image: `${baseURL}/og?title=${encodeURIComponent(writing.title)}`,
+						image: `https://${baseURL}/og?title=${encodeURIComponent(writing.title)}`,
 						author: {
 							'@type': 'Person',
 							name: person.name,
                             image: {
 								'@type': 'ImageObject',
-								url: `${baseURL}${person.avatar}`,
+								url: `https://${baseURL}${person.avatar}`,
 							},
 						},
 					}),

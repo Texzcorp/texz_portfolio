@@ -13,6 +13,7 @@ export function generateMetadata() {
     return {
         title,
         description,
+        alternates: { canonical: '/music' },
         openGraph: {
             title,
             description,

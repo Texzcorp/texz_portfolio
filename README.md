@@ -4,7 +4,7 @@ This repository is a **personal fork** of **Magic Portfolio**—the Next.js tem
 
 The project is not perfectly clean, there are little bad things lying around, tell me if anything bothers you.
 
- You can see it hosted here : https://terencediazportfolio.vercel.app/
+ You can see it hosted here : https://cosmocrow.com/
 
 ---
 
@@ -28,9 +28,9 @@ Edit configuration under `src/app/resources/config` and content under `src/app/r
 | 1 | **Interactive audio‑responsive background** | A sinusoidal backdrop that reacts to pointer movement, scrolling *and* music amplitude, adding subtle motion and depth to every page.                                                                                                                                                 |
 | 2 | **3D bird animation via Vanta.js**          | When a track is playing, Vanta's **BIRDS** shader releases interactive flocks in a lightweight WebGL space. The effect is easily swappable with any other Vanta scene [Vanta.js](https://www.vantajs.com/).                                                                                                     |
 | 3 | **Re‑worked Home (hero) section**           | The home page hero has been reorganised for a stronger first impression, re‑using elements originally located in the About page.                                                                                                                                           |
-| 4 | **Experimental organic masonry grid**       | A new, more fluid gallery layout supports arbitrary span sizes for tiles. Still experimental and not fully generalised, but simple to test and iterate. [Live demo](https://terencediazportfolio.vercel.app/gallery).                                                      |
+| 4 | **Experimental organic masonry grid**       | A new, more fluid gallery layout supports arbitrary span sizes for tiles. Still experimental and not fully generalised, but simple to test and iterate. [Live demo](https://cosmocrow.com/gallery).                                                      |
 | 5 | **Subscribe notification (Music page)**     | A notification in the lower‑left corner invites visitors to follow the associated YouTube channel.                                                                                                                                                                    |
-| 6 | **Custom MDX carousel**                     | A bespoke carousel component callable from `.mdx`, enabling richer project walkthroughs (e.g. the [Example of one of my case studies](https://terencediazportfolio.vercel.app/programmation/Artemis)). Newer Once UI versions now ship an official carousel with additional capabilities so maybe that you should consider importing their carousel. |
+| 6 | **Custom MDX carousel**                     | A bespoke carousel component callable from `.mdx`, enabling richer project walkthroughs (e.g. the [Example of one of my case studies](https://cosmocrow.com/programmation/Artemis)). Newer Once UI versions now ship an official carousel with additional capabilities so maybe that you should consider importing their carousel. |
 | 7 | **Loading spinner for media**               | Displays a minimal loading indicator while videos or carousel assets buffer, improving perceived responsiveness.                                                                                                                                                           |
 | 8 | **Synced video clips for music tracks**     | A tuned video player keeps short clips synchronised with the audio track, despite the limited bandwidth of Vercel's free tier.                                                                                                                                             |
 
