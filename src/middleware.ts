@@ -18,7 +18,7 @@ export function middleware(request: NextRequest) {
 
     const destination = new URL(request.url);
     destination.protocol = 'https:';
-    destination.hostname = 'cosmocrow.com';
+    destination.hostname = 'portfolio.cosmocrow.com';
     destination.port = '';
     return NextResponse.redirect(destination, 308);
 }

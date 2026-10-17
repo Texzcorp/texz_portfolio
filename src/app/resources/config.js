@@ -1,4 +1,4 @@
-const baseURL = 'cosmocrow.com'
+const baseURL = 'portfolio.cosmocrow.com'
 
 const routes = {
     '/':        true,

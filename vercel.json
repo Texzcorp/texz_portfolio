@@ -6,7 +6,7 @@
       "methods": ["GET", "HEAD"],
       "has": [{ "type": "host", "value": "terencediazportfolio.vercel.app" }],
       "status": 308,
-      "headers": { "Location": "https://cosmocrow.com/$1" }
+      "headers": { "Location": "https://portfolio.cosmocrow.com/$1" }
     }
   ]
 }
