@@ -10,9 +10,8 @@ export function CompositionOffer() {
                 <Flex><Button href={compositionContact} variant="secondary" size="s" prefixIcon="email" suffixIcon="arrowUpRight">Discuss your project</Button></Flex>
             </Flex>
             <Flex flex={7} direction="column" gap="16">
-                <Text as="p" variant="body-default-m">Music written around your picture, world or brief. Creation from €4,500 excl. VAT; usage rights quoted separately.</Text>
-                <Text as="p" variant="body-default-s" onBackground="neutral-weak">A 30–60 second composition, two shorter versions and stems, with two rounds of consolidated feedback.</Text>
-                <Text as="p" variant="body-default-s" onBackground="neutral-weak">A maximum of five working days for the agreed scope, once the brief, quote, picture or references and feedback schedule are confirmed.</Text>
+                <Text as="p" variant="body-default-m">Music written around your picture, world or brief. Let's discuss your project and find the right musical direction together.</Text>
+                <Text as="p" variant="body-default-s" onBackground="neutral-weak">Share your ideas, references and timeline so we can talk through what you have in mind.</Text>
             </Flex>
         </Flex>
     );
